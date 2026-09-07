@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Встреча</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0B0E14;
+      --card-bg: #131A23;
+      --border: #2A3442;
+      --accent: #6C5CE7;
+      --accent-light: #A29BFE;
+      --text: #FFFFFF;
+      --text-muted: #8B95A9;
+      --radius: 28px;
+      --danger: #FF4D6D;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .app {
+      max-width: 700px;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-online {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .dot-online {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    .btn-login {
+      padding: 6px 18px;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      border-radius: 30px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-login:active { transform: scale(0.95); background: var(--accent); }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .avatar:active { transform: scale(0.9); }
+
+    .main {
+      flex: 1;
+      padding-top: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-title span { color: var(--text-muted); font-weight: 400; font-size: 15px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      position: relative;
+    }
+
+    .card:active { transform: scale(0.96); }
+    .card-icon { font-size: 28px; margin-bottom: 8px; }
+    .card h3 { font-size: 15px; font-weight: 600; }
+    .card p { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+
+    .card.adult {
+      border-color: var(--danger);
+      opacity: 0.7;
+      cursor: not-allowed;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card.adult::after {
+      content: '🔞 18+';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 77, 109, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--danger);
+      letter-spacing: 2px;
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .card.adult .card-badge { background: var(--danger); }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .overlay.active {
+      display: flex;
+      animation: overlayFade 0.3s ease;
+    }
+
+    @keyframes overlayFade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .expanded-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 36px;
+      padding: 32px 28px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow-y: auto;
+    }
+
+    .overlay.active .expanded-card {
+      transform: scale(1);
+    }
+
+    .expanded-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 28px;
+      color: var(--text-muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: 0.2s;
+      z-index: 10;
+    }
+
+    .expanded-close:active { transform: scale(0.8); color: #fff; }
+
+    .expanded-icon { font-size: 56px; margin-bottom: 8px; }
+    .expanded-title { font-size: 28px; font-weight: 700; }
+    .expanded-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin: 4px 0 20px 0;
+    }
+
+    .expanded-action {
+      padding: 14px 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    .expanded-action:active { transform: scale(0.96); }
+
+    .card-tools {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-tools h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .tool-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .tool-row:last-child { border-bottom: none; }
+    .tool-row .label { color: var(--text-muted); }
+    .tool-row .value { font-weight: 500; }
+
+    /* --- МОДАЛКА ВХОДА --- */
+    .login-modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 36px;
+      padding: 32px 28px;
+      max-width: 380px;
+      width: 100%;
+      transform: scale(0.9);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .overlay.active .login-modal {
+      transform: scale(1);
+    }
+
+    .login-modal .icon { font-size: 48px; text-align: center; margin-bottom: 12px; }
+    .login-modal h2 { font-size: 24px; text-align: center; margin-bottom: 4px; }
+    .login-modal .sub {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .login-modal input {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 16px;
+    }
+
+    .login-modal input:focus { border-color: var(--accent); }
+    .login-modal input::placeholder { color: var(--text-muted); }
+
+    .login-modal .btn-login-action {
+      padding: 14px;
+      background: var(--accent);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    .login-modal .btn-login-action:active { transform: scale(0.96); }
+    .login-modal .btn-login-action.secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      margin-top: 10px;
+    }
+
+    .login-modal .btn-login-action.secondary:active { background: var(--border); }
+
+    .placeholder-content { text-align: center; padding: 20px 0; }
+    .placeholder-content .big-icon { font-size: 64px; margin-bottom: 16px; }
+    .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
+    .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
+
+    .placeholder-adult {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .placeholder-adult .big-icon { font-size: 72px; margin-bottom: 12px; }
+    .placeholder-adult h2 { font-size: 28px; color: var(--danger); margin-bottom: 6px; }
+    .placeholder-adult .sub {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .placeholder-adult .warning {
+      background: rgba(255, 77, 109, 0.1);
+      border: 1px solid var(--danger);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 400px) {
+      .grid { gap: 10px; }
+      .card { padding: 14px; border-radius: 20px; }
+      .card h3 { font-size: 13px; }
+      .card p { font-size: 11px; }
+      .expanded-card { padding: 24px 18px; }
+      .expanded-title { font-size: 22px; }
+      .expanded-icon { font-size: 44px; }
+      .login-modal { padding: 24px 18px; }
+      .login-modal h2 { font-size: 20px; }
+    }
+
+    @media (min-width: 600px) {
+      .grid { gap: 18px; }
+      .card { padding: 24px; }
+      .card h3 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ШАПКА -->
+  <header class="header">
+    <span class="logo">📍 ВСТРЕЧА</span>
+    <div class="header-right">
+      <div class="status-online">
+        <span class="dot-online"></span>
+        <span>Онлайн</span>
+      </div>
+      <div id="authContainer">
+        <button class="btn-login" id="loginBtn">🔑 Войти</button>
+        <div class="avatar hidden" id="avatar"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ОСНОВНОЙ БЛОК -->
+  <main class="main">
+    <div class="section-title">Чем займёмся? <span>выбери активность</span></div>
+    <div class="grid">
+
+      <!-- 1. ПРОГУЛЯТЬСЯ -->
+      <div class="card" data-card="walk">
+        <div class="card-icon">🚶</div>
+        <h3>Прогуляться</h3>
+        <p>Найди попутчика</p>
+        <span class="card-badge">Активно</span>
+      </div>
+
+      <!-- 2. ВЫГУЛ СОБАК -->
+      <div class="card" data-card="dog">
+        <div class="card-icon">🐕</div>
+        <h3>Выгул собак</h3>
+        <p>Друзья для питомца</p>
+        <span class="card-badge">Скоро</span>
+      </div>
+
+      <!-- 3. РАЗГОВОРЫ -->
+      <div class="card" data-card="chat">
+        <div class="card-icon">💬</div>
+        <h3>Разговоры по душам</h3>
+        <p>Анонимное общение</p>
+        <span class="card-badge">Скоро</span>
+      </div>
+
+      <!-- 4. СЛУЧАЙНАЯ ВСТРЕЧА -->
+      <div class="card" data-card="random">
+        <div class="card-icon">🎲</div>
+        <h3>Случайная встреча</h3>
+        <p>По интересам</p>
+        <span class="card-badge">Новое</span>
+      </div>
+
+      <!-- 5. 18+ -->
+      <div class="card adult" data-card="adult">
+        <div class="card-icon">🔞</div>
+        <h3>Для взрослых</h3>
+        <p>Контент 18+</p>
+        <span class="card-badge">18+</span>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ОВЕРЛЕЙ -->
+<div class="overlay" id="overlay">
+  <div id="overlayContent"></div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    const overlay = document.getElementById('overlay');
+    const overlayContent = document.getElementById('overlayContent');
+    const loginBtn = document.getElementById('loginBtn');
+    const avatar = document.getElementById('avatar');
+
+    let isLoggedIn = false;
+    let userName = '';
+
+    // --- ЗАГРУЗКА СОСТОЯНИЯ ---
+    function loadState() {
+      const saved = localStorage.getItem('meet_user');
+      if (saved && saved.trim().length > 0) {
+        userName = saved.trim();
+        isLoggedIn = true;
+        updateAuthUI();
+      }
+    }
+
+    // --- ОБНОВЛЕНИЕ ШАПКИ ---
+    function updateAuthUI() {
+      if (isLoggedIn) {
+        loginBtn.classList.add('hidden');
+        avatar.classList.remove('hidden');
+        avatar.textContent = userName.charAt(0).toUpperCase();
+      } else {
+        loginBtn.classList.remove('hidden');
+        avatar.classList.add('hidden');
+      }
+    }
+
+    // --- ПОКАЗАТЬ МОДАЛКУ ВХОДА (исправленная) ---
+    function showLoginModal(callback) {
+      overlayContent.innerHTML = `
+        <div class="login-modal">
+          <div class="icon">🔐</div>
+          <h2>Вход в приложение</h2>
+          <div class="sub">Введите ваше имя, чтобы продолжить</div>
+          <input type="text" id="loginNameInput" placeholder="👤 Ваше имя" maxlength="20" autofocus>
+          <button class="btn-login-action" id="loginConfirmBtn" disabled style="opacity: 0.5; pointer-events: none;">🚪 Войти</button>
+          <button class="btn-login-action secondary" id="loginCancelBtn">Позже</button>
+        </div>
+      `;
+
+      overlay.classList.add('active');
+
+      const input = document.getElementById('loginNameInput');
+      const confirmBtn = document.getElementById('loginConfirmBtn');
+      const cancelBtn = document.getElementById('loginCancelBtn');
+
+      setTimeout(() => { if (input) input.focus(); }, 100);
+
+      function validateInput() {
+        const val = input.value.trim();
+        if (val.length >= 1) {
+          confirmBtn.disabled = false;
+          confirmBtn.style.opacity = '1';
+          confirmBtn.style.pointerEvents = 'auto';
+        } else {
+          confirmBtn.disabled = true;
+          confirmBtn.style.opacity = '0.5';
+          confirmBtn.style.pointerEvents = 'none';
+        }
+      }
+
+      input.addEventListener('input', validateInput);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !confirmBtn.disabled) {
+          doLogin();
+        }
+      });
+
+      function doLogin() {
+        const name = input.value.trim();
+        if (name.length === 0) return;
+
+        userName = name;
+        isLoggedIn = true;
+        localStorage.setItem('meet_user', userName);
+        updateAuthUI();
+        overlay.classList.remove('active');
+        if (callback) callback();
+      }
+
+      confirmBtn.addEventListener('click', doLogin);
+      cancelBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+      });
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      }, { once: true });
+    }
+
+    // --- ЗАКРЫТЬ ОВЕРЛЕЙ ---
+    function closeOverlay() {
+      overlay.classList.remove('active');
+    }
+
+    // --- ОТКРЫТЬ КАРТОЧКУ ---
+    function openCard(type) {
+      // 18+
+      if (type === 'adult') {
+        overlayContent.innerHTML = `
+          <div class="expanded-card">
+            <button class="expanded-close" id="closeExpanded">✕</button>
+            <div class="placeholder-adult">
+              <div class="big-icon">🔞</div>
+              <h2>18+</h2>
+              <div class="sub">Раздел для взрослых</div>
+              <div class="warning">
+                ⚠️ Контент предназначен для пользователей старше 18 лет.<br>
+                Требуется подтверждение возраста.
+              </div>
+              <button class="expanded-action" id="closeAdult" style="background: var(--danger);">Понятно, позже 🔒</button>
+            </div>
+          </div>
+        `;
+        overlay.classList.add('active');
+        document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
+        document.getElementById('closeAdult').addEventListener('click', closeOverlay);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
+        return;
+      }
+
+      // Прогулка
+      if (type === 'walk') {
+        if (!isLoggedIn) {
+          showLoginModal(() => {
+            openCard('walk');
+          });
+          return;
+        }
+
+        const walkData = {
+          icon: '🚶',
+          title: 'Прогуляться',
+          desc: 'Найди компанию для пешей прогулки.',
+          action: '👟 Начать прогулку',
+          tools: [
+            ['☀️ Погода', '+18°C, ясно'],
+            ['👥 Людей рядом', '8 человек'],
+            ['📏 Дистанция', '3.5 км']
+          ]
+        };
+
+        let toolsHtml = '';
+        walkData.tools.forEach(t => {
+          toolsHtml += `<div class="tool-row"><span class="label">${t[0]}</span><span class="value">${t[1]}</span></div>`;
+        });
+
+        overlayContent.innerHTML = `
+          <div class="expanded-card">
+            <button class="expanded-close" id="closeExpanded">✕</button>
+            <div class="expanded-icon">${walkData.icon}</div>
+            <div class="expanded-title">${walkData.title}</div>
+            <div class="expanded-desc">${walkData.desc}</div>
+            <button class="expanded-action" id="actionBtn">${walkData.action}</button>
+            <div class="card-tools">
+              <h4>📊 Инструменты</h4>
+              ${toolsHtml}
+            </div>
+          </div>
+        `;
+
+        overlay.classList.add('active');
+
+        document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
+        document.getElementById('actionBtn').addEventListener('click', () => {
+          alert(`🚀 Запускаем прогулку, ${userName}!`);
+        });
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
+
+        return;
+      }
+
+      // Заглушка для остальных
+      overlayContent.innerHTML = `
+        <div class="expanded-card">
+          <button class="expanded-close" id="closeExpanded">✕</button>
+          <div class="placeholder-content">
+            <div class="big-icon">🚧</div>
+            <h2>В разработке</h2>
+            <p>Скоро здесь появится что-то интересное!</p>
+            <button class="expanded-action" id="closePlaceholder">Понятно 🙌</button>
+          </div>
+        </div>
+      `;
+
+      overlay.classList.add('active');
+
+      document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
+      document.getElementById('closePlaceholder').addEventListener('click', closeOverlay);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
+    }
+
+    // --- СОБЫТИЯ КАРТОЧЕК ---
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        const type = card.getAttribute('data-card');
+        if (type) openCard(type);
+      });
+    });
+
+    // --- КНОПКА ВХОДА ---
+    loginBtn.addEventListener('click', () => {
+      showLoginModal(() => {});
+    });
+
+    // --- АВАТАР (выход) ---
+    avatar.addEventListener('click', () => {
+      if (confirm(`Выйти из аккаунта "${userName}"?`)) {
+        isLoggedIn = false;
+        userName = '';
+        localStorage.removeItem('meet_user');
+        updateAuthUI();
+      }
+    });
+
+    // --- ESC ---
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeOverlay();
+    });
+
+    // --- СТАРТ ---
+    loadState();
+
+  })();
+</script>
+</body>
+</html>
