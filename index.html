@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Встреча</title>
   <style>
+    /* --- БАЗА --- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -40,6 +41,7 @@
       flex-direction: column;
     }
 
+    /* --- ШАПКА --- */
     .header {
       display: flex;
       justify-content: space-between;
@@ -115,6 +117,7 @@
 
     .avatar:active { transform: scale(0.9); }
 
+    /* --- ОСНОВНАЯ СЕТКА --- */
     .main {
       flex: 1;
       padding-top: 20px;
@@ -136,6 +139,7 @@
       gap: 14px;
     }
 
+    /* --- КАРТОЧКИ --- */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -192,6 +196,7 @@
 
     .card.adult .card-badge { background: var(--danger); }
 
+    /* --- ОВЕРЛЕЙ (для входа и заглушек) --- */
     .overlay {
       display: none;
       position: fixed;
@@ -216,89 +221,6 @@
       0% { opacity: 0; }
       100% { opacity: 1; }
     }
-
-    .expanded-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 36px;
-      padding: 32px 28px;
-      max-width: 500px;
-      width: 100%;
-      max-height: 80vh;
-      position: relative;
-      transform: scale(0.9);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      overflow-y: auto;
-    }
-
-    .overlay.active .expanded-card {
-      transform: scale(1);
-    }
-
-    .expanded-close {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      font-size: 28px;
-      color: var(--text-muted);
-      cursor: pointer;
-      background: none;
-      border: none;
-      transition: 0.2s;
-      z-index: 10;
-    }
-
-    .expanded-close:active { transform: scale(0.8); color: #fff; }
-
-    .expanded-icon { font-size: 56px; margin-bottom: 8px; }
-    .expanded-title { font-size: 28px; font-weight: 700; }
-    .expanded-desc {
-      font-size: 16px;
-      color: var(--text-muted);
-      margin: 4px 0 20px 0;
-    }
-
-    .expanded-action {
-      padding: 14px 24px;
-      background: var(--accent);
-      border: none;
-      border-radius: 30px;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      width: 100%;
-    }
-
-    .expanded-action:active { transform: scale(0.96); }
-
-    .card-tools {
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .card-tools h4 {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .tool-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 15px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .tool-row:last-child { border-bottom: none; }
-    .tool-row .label { color: var(--text-muted); }
-    .tool-row .value { font-weight: 500; }
 
     /* --- МОДАЛКА ВХОДА --- */
     .login-modal {
@@ -362,43 +284,68 @@
 
     .login-modal .btn-login-action.secondary:active { background: var(--border); }
 
+    /* --- ЗАГЛУШКА --- */
     .placeholder-content { text-align: center; padding: 20px 0; }
     .placeholder-content .big-icon { font-size: 64px; margin-bottom: 16px; }
     .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
     .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
 
-    .placeholder-adult {
-      text-align: center;
-      padding: 20px 0;
+    .expanded-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 36px;
+      padding: 32px 28px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow-y: auto;
     }
 
-    .placeholder-adult .big-icon { font-size: 72px; margin-bottom: 12px; }
-    .placeholder-adult h2 { font-size: 28px; color: var(--danger); margin-bottom: 6px; }
-    .placeholder-adult .sub {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 16px;
+    .overlay.active .expanded-card {
+      transform: scale(1);
     }
-    .placeholder-adult .warning {
-      background: rgba(255, 77, 109, 0.1);
-      border: 1px solid var(--danger);
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 14px;
+
+    .expanded-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 28px;
       color: var(--text-muted);
-      margin-bottom: 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: 0.2s;
+      z-index: 10;
     }
+
+    .expanded-close:active { transform: scale(0.8); color: #fff; }
+
+    .expanded-action {
+      padding: 14px 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    .expanded-action:active { transform: scale(0.96); }
 
     .hidden { display: none !important; }
 
+    /* --- АДАПТИВ --- */
     @media (max-width: 400px) {
       .grid { gap: 10px; }
       .card { padding: 14px; border-radius: 20px; }
       .card h3 { font-size: 13px; }
       .card p { font-size: 11px; }
-      .expanded-card { padding: 24px 18px; }
-      .expanded-title { font-size: 22px; }
-      .expanded-icon { font-size: 44px; }
       .login-modal { padding: 24px 18px; }
       .login-modal h2 { font-size: 20px; }
     }
@@ -434,8 +381,8 @@
     <div class="section-title">Чем займёмся? <span>выбери активность</span></div>
     <div class="grid">
 
-      <!-- 1. ПРОГУЛЯТЬСЯ -->
-      <div class="card" data-card="walk">
+      <!-- 1. ПРОГУЛЯТЬСЯ (активная, ведёт на walk.html) -->
+      <div class="card" id="walkCard">
         <div class="card-icon">🚶</div>
         <h3>Прогуляться</h3>
         <p>Найди попутчика</p>
@@ -478,7 +425,7 @@
   </main>
 </div>
 
-<!-- ОВЕРЛЕЙ -->
+<!-- ОВЕРЛЕЙ (для входа и заглушек) -->
 <div class="overlay" id="overlay">
   <div id="overlayContent"></div>
 </div>
@@ -517,7 +464,7 @@
       }
     }
 
-    // --- ПОКАЗАТЬ МОДАЛКУ ВХОДА (исправленная) ---
+    // --- ПОКАЗАТЬ МОДАЛКУ ВХОДА ---
     function showLoginModal(callback) {
       overlayContent.innerHTML = `
         <div class="login-modal">
@@ -587,90 +534,14 @@
       overlay.classList.remove('active');
     }
 
-    // --- ОТКРЫТЬ КАРТОЧКУ ---
-    function openCard(type) {
-      // 18+
-      if (type === 'adult') {
-        overlayContent.innerHTML = `
-          <div class="expanded-card">
-            <button class="expanded-close" id="closeExpanded">✕</button>
-            <div class="placeholder-adult">
-              <div class="big-icon">🔞</div>
-              <h2>18+</h2>
-              <div class="sub">Раздел для взрослых</div>
-              <div class="warning">
-                ⚠️ Контент предназначен для пользователей старше 18 лет.<br>
-                Требуется подтверждение возраста.
-              </div>
-              <button class="expanded-action" id="closeAdult" style="background: var(--danger);">Понятно, позже 🔒</button>
-            </div>
-          </div>
-        `;
-        overlay.classList.add('active');
-        document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
-        document.getElementById('closeAdult').addEventListener('click', closeOverlay);
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
-        return;
-      }
-
-      // Прогулка
-      if (type === 'walk') {
-        if (!isLoggedIn) {
-          showLoginModal(() => {
-            openCard('walk');
-          });
-          return;
-        }
-
-        const walkData = {
-          icon: '🚶',
-          title: 'Прогуляться',
-          desc: 'Найди компанию для пешей прогулки.',
-          action: '👟 Начать прогулку',
-          tools: [
-            ['☀️ Погода', '+18°C, ясно'],
-            ['👥 Людей рядом', '8 человек'],
-            ['📏 Дистанция', '3.5 км']
-          ]
-        };
-
-        let toolsHtml = '';
-        walkData.tools.forEach(t => {
-          toolsHtml += `<div class="tool-row"><span class="label">${t[0]}</span><span class="value">${t[1]}</span></div>`;
-        });
-
-        overlayContent.innerHTML = `
-          <div class="expanded-card">
-            <button class="expanded-close" id="closeExpanded">✕</button>
-            <div class="expanded-icon">${walkData.icon}</div>
-            <div class="expanded-title">${walkData.title}</div>
-            <div class="expanded-desc">${walkData.desc}</div>
-            <button class="expanded-action" id="actionBtn">${walkData.action}</button>
-            <div class="card-tools">
-              <h4>📊 Инструменты</h4>
-              ${toolsHtml}
-            </div>
-          </div>
-        `;
-
-        overlay.classList.add('active');
-
-        document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
-        document.getElementById('actionBtn').addEventListener('click', () => {
-          alert(`🚀 Запускаем прогулку, ${userName}!`);
-        });
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
-
-        return;
-      }
-
-      // Заглушка для остальных
+    // --- ОТКРЫТЬ ЗАГЛУШКУ ДЛЯ КАРТОЧКИ ---
+    function showPlaceholder(title, icon = '🚧') {
       overlayContent.innerHTML = `
         <div class="expanded-card">
           <button class="expanded-close" id="closeExpanded">✕</button>
           <div class="placeholder-content">
-            <div class="big-icon">🚧</div>
-            <h2>В разработке</h2>
+            <div class="big-icon">${icon}</div>
+            <h2>${title}</h2>
             <p>Скоро здесь появится что-то интересное!</p>
             <button class="expanded-action" id="closePlaceholder">Понятно 🙌</button>
           </div>
@@ -684,20 +555,64 @@
       overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
     }
 
-    // --- СОБЫТИЯ КАРТОЧЕК ---
-    document.querySelectorAll('.card').forEach(card => {
+    // --- ПЕРЕХОД НА walk.html (с проверкой авторизации) ---
+    document.getElementById('walkCard').addEventListener('click', () => {
+      if (!isLoggedIn) {
+        showLoginModal(() => {
+          // После входа — переходим на прогулку
+          window.location.href = 'walk.html';
+        });
+      } else {
+        window.location.href = 'walk.html';
+      }
+    });
+
+    // --- ЗАГЛУШКИ ДЛЯ ОСТАЛЬНЫХ КАРТОЧЕК ---
+    document.querySelectorAll('.card:not(#walkCard)').forEach(card => {
       card.addEventListener('click', () => {
         const type = card.getAttribute('data-card');
-        if (type) openCard(type);
+        let title = 'В разработке';
+        let icon = '🚧';
+
+        if (type === 'dog') { title = 'Выгул собак'; icon = '🐕'; }
+        else if (type === 'chat') { title = 'Разговоры по душам'; icon = '💬'; }
+        else if (type === 'random') { title = 'Случайная встреча'; icon = '🎲'; }
+        else if (type === 'adult') { 
+          title = '18+';
+          icon = '🔞';
+          // Для 18+ показываем специальную заглушку
+          overlayContent.innerHTML = `
+            <div class="expanded-card">
+              <button class="expanded-close" id="closeExpanded">✕</button>
+              <div class="placeholder-adult" style="text-align:center;padding:20px 0;">
+                <div class="big-icon" style="font-size:72px;margin-bottom:12px;">🔞</div>
+                <h2 style="font-size:28px;color:var(--danger);margin-bottom:6px;">18+</h2>
+                <div class="sub" style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Раздел для взрослых</div>
+                <div class="warning" style="background:rgba(255,77,109,0.1);border:1px solid var(--danger);border-radius:16px;padding:14px;font-size:14px;color:var(--text-muted);margin-bottom:20px;">
+                  ⚠️ Контент предназначен для пользователей старше 18 лет.<br>
+                  Требуется подтверждение возраста.
+                </div>
+                <button class="expanded-action" id="closeAdult" style="background:var(--danger);">Понятно, позже 🔒</button>
+              </div>
+            </div>
+          `;
+          overlay.classList.add('active');
+          document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
+          document.getElementById('closeAdult').addEventListener('click', closeOverlay);
+          overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
+          return;
+        }
+
+        showPlaceholder(title, icon);
       });
     });
 
-    // --- КНОПКА ВХОДА ---
+    // --- КНОПКА ВХОДА В ШАПКЕ ---
     loginBtn.addEventListener('click', () => {
       showLoginModal(() => {});
     });
 
-    // --- АВАТАР (выход) ---
+    // --- АВАТАР (ВЫХОД) ---
     avatar.addEventListener('click', () => {
       if (confirm(`Выйти из аккаунта "${userName}"?`)) {
         isLoggedIn = false;
