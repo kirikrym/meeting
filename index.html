@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Встреча</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,12 +19,16 @@
       --danger: #FF4D6D;
     }
 
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       height: 100dvh;
-      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -186,7 +190,8 @@
       z-index: 1000;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 12px;
+      overflow-x: hidden;
     }
 
     .overlay.active {
@@ -207,11 +212,12 @@
       padding: 32px 28px;
       max-width: 500px;
       width: 100%;
-      max-height: 80vh;
+      max-height: 85vh;
       position: relative;
       transform: scale(0.9);
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .overlay.active .expanded-card {
@@ -283,7 +289,7 @@
     .tool-row .label { color: var(--text-muted); }
     .tool-row .value { font-weight: 500; }
 
-    /* --- ОКНО-ПРЕДУПРЕЖДЕНИЕ (НОВОЕ) --- */
+    /* --- ОКНО-ПРЕДУПРЕЖДЕНИЕ --- */
     .warning-screen {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -301,29 +307,15 @@
       transform: scale(1);
     }
 
-    .warning-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
-
-    .warning-title {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
+    .warning-icon { font-size: 56px; margin-bottom: 12px; }
+    .warning-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
     .warning-text {
       font-size: 15px;
       color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 24px;
     }
-
-    .warning-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .warning-actions { display: flex; flex-direction: column; gap: 10px; }
 
     /* --- ФОРМА ВХОДА --- */
     .login-screen {
@@ -331,18 +323,35 @@
       border: 1px solid var(--border);
       border-radius: 36px;
       padding: 32px 28px;
-      max-width: 500px;
+      max-width: 580px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
       transform: scale(0.9);
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      -webkit-overflow-scrolling: touch;
     }
 
     .overlay.active .login-screen {
       transform: scale(1);
     }
+
+    .login-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 28px;
+      color: var(--text-muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: 0.2s;
+      z-index: 10;
+    }
+
+    .login-close:active { transform: scale(0.8); color: #fff; }
 
     .login-header {
       text-align: center;
@@ -393,8 +402,20 @@
       margin-top: 8px;
     }
 
+    /* --- ФОРМА: СЕТКА ПОЛЕЙ --- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
     .form-group {
-      margin-bottom: 16px;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
     }
 
     .form-group label {
@@ -422,10 +443,21 @@
       font-size: 16px;
       outline: none;
       transition: 0.2s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      appearance: none;
+      min-width: 0;
     }
 
     .form-group input:focus { border-color: var(--accent); }
     .form-group input::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+    .form-group input[type="date"] {
+      min-height: 52px;
+    }
 
     .form-actions {
       display: flex;
@@ -477,6 +509,7 @@
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
       transform: scale(0.9);
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -541,11 +574,6 @@
     .info-row:last-child { border-bottom: none; }
     .info-row .label { color: var(--text-muted); }
     .info-row .value { font-weight: 500; }
-    .info-row .value.empty {
-      color: var(--text-muted);
-      font-weight: 400;
-      font-style: italic;
-    }
 
     .info-row .link {
       color: var(--accent-light);
@@ -562,7 +590,17 @@
     .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
     .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
 
-    /* --- АДАПТИВ --- */
+    /* --- АДАПТИВ: ЛАНДШАФТ → СЕТКА 2 КОЛОНКИ --- */
+    @media (orientation: landscape) and (min-width: 560px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-group.full {
+        grid-column: 1 / -1;
+      }
+    }
+
+    /* --- АДАПТИВ: МАЛЕНЬКИЕ ЭКРАНЫ --- */
     @media (max-width: 400px) {
       .grid { gap: 10px; }
       .card { padding: 14px; border-radius: 20px; }
@@ -571,7 +609,7 @@
       .expanded-card { padding: 24px 18px; }
       .expanded-title { font-size: 22px; }
       .expanded-icon { font-size: 44px; }
-      .login-screen, .profile-screen { padding: 24px 18px; }
+      .login-screen { padding: 24px 18px; max-width: 100%; }
       .login-header h2 { font-size: 22px; }
       .avatar-circle, .profile-avatar { width: 80px; height: 80px; }
       .profile-name { font-size: 20px; }
@@ -579,8 +617,10 @@
       .warning-icon { font-size: 44px; }
       .warning-title { font-size: 18px; }
       .warning-text { font-size: 14px; }
+      .form-group input { font-size: 15px; padding: 12px 16px; }
     }
 
+    /* --- АДАПТИВ: БОЛЬШИЕ ЭКРАНЫ --- */
     @media (min-width: 600px) {
       .grid { gap: 18px; }
       .card { padding: 24px; }
@@ -594,7 +634,6 @@
 
 <div class="app">
 
-  <!-- ШАПКА -->
   <header class="header">
     <span class="logo">📍 ВСТРЕЧА</span>
     <div class="header-right">
@@ -609,7 +648,6 @@
     </div>
   </header>
 
-  <!-- ОСНОВНОЙ БЛОК -->
   <main class="main">
     <div class="section-title">Чем займёмся? <span>выбери активность</span></div>
     <div class="grid">
@@ -646,7 +684,6 @@
   </main>
 </div>
 
-<!-- ОВЕРЛЕЙ -->
 <div class="overlay" id="overlay">
   <div id="overlayContent"></div>
 </div>
@@ -739,7 +776,12 @@
       return `${day}.${month}.${d.getFullYear()}`;
     }
 
-    // --- ОКНО-ПРЕДУПРЕЖДЕНИЕ (НОВОЕ) ---
+    function closeOverlay() {
+      overlay.classList.remove('active');
+      overlayContent.innerHTML = '';
+    }
+
+    // --- ПРЕДУПРЕЖДЕНИЕ ---
     function showWarning(callback) {
       overlayContent.innerHTML = `
         <div class="warning-screen">
@@ -757,7 +799,7 @@
       overlay.classList.add('active');
 
       document.getElementById('warningGo').addEventListener('click', () => {
-        overlay.classList.remove('active');
+        closeOverlay();
         setTimeout(() => {
           if (callback) callback();
           else showLoginForm();
@@ -765,10 +807,6 @@
       });
 
       document.getElementById('warningCancel').addEventListener('click', closeOverlay);
-
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) closeOverlay();
-      }, { once: true });
     }
 
     // --- ФОРМА ВХОДА ---
@@ -777,6 +815,7 @@
 
       overlayContent.innerHTML = `
         <div class="login-screen">
+          <button class="login-close" id="loginClose">✕</button>
           <div class="login-header">
             <div class="icon">${editMode ? '✏️' : '🔐'}</div>
             <h2>${editMode ? 'Редактирование' : 'Создайте профиль'}</h2>
@@ -793,29 +832,31 @@
             <input type="file" id="avatarInput" accept="image/*" style="display:none;">
           </div>
 
-          <div class="form-group">
-            <label>Имя *</label>
-            <input type="text" id="inputName" placeholder="Алексей" maxlength="30" value="${user.name || ''}">
-          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Имя *</label>
+              <input type="text" id="inputName" placeholder="Алексей" maxlength="30" value="${user.name || ''}">
+            </div>
 
-          <div class="form-group">
-            <label>Фамилия *</label>
-            <input type="text" id="inputSurname" placeholder="Иванов" maxlength="30" value="${user.surname || ''}">
-          </div>
+            <div class="form-group">
+              <label>Фамилия *</label>
+              <input type="text" id="inputSurname" placeholder="Иванов" maxlength="30" value="${user.surname || ''}">
+            </div>
 
-          <div class="form-group">
-            <label>Никнейм *</label>
-            <input type="text" id="inputNick" placeholder="alex_ivanov_25" maxlength="40" value="${user.nick || ''}">
-          </div>
+            <div class="form-group">
+              <label>Никнейм *</label>
+              <input type="text" id="inputNick" placeholder="alex_ivanov_25" maxlength="40" value="${user.nick || ''}">
+            </div>
 
-          <div class="form-group">
-            <label>Дата рождения <span class="optional">(необязательно)</span></label>
-            <input type="date" id="inputBirth" value="${user.birth || ''}">
-          </div>
+            <div class="form-group">
+              <label>Дата рождения <span class="optional">(необязательно)</span></label>
+              <input type="date" id="inputBirth" value="${user.birth || ''}">
+            </div>
 
-          <div class="form-group">
-            <label>Телефон <span class="optional">(необязательно)</span></label>
-            <input type="tel" id="inputPhone" placeholder="+7 999 123-45-67" maxlength="20" value="${user.phone || ''}">
+            <div class="form-group full">
+              <label>Телефон <span class="optional">(необязательно)</span></label>
+              <input type="tel" id="inputPhone" placeholder="+7 999 123-45-67" maxlength="20" value="${user.phone || ''}">
+            </div>
           </div>
 
           <div class="form-actions">
@@ -837,6 +878,7 @@
       const btnSave = document.getElementById('btnSave');
       const avatarCircle = document.getElementById('avatarCircle');
       const avatarInput = document.getElementById('avatarInput');
+      const loginClose = document.getElementById('loginClose');
 
       let avatarData = user.avatar || null;
 
@@ -890,14 +932,12 @@
         if (callback) callback();
       });
 
+      loginClose.addEventListener('click', closeOverlay);
+
       const btnCancel = document.getElementById('btnCancel');
       const btnLater = document.getElementById('btnLater');
       if (btnCancel) btnCancel.addEventListener('click', closeOverlay);
       if (btnLater) btnLater.addEventListener('click', closeOverlay);
-
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) closeOverlay();
-      }, { once: true });
     }
 
     // --- ПРОФИЛЬ ---
@@ -911,7 +951,7 @@
 
       overlayContent.innerHTML = `
         <div class="profile-screen">
-          <button class="expanded-close" id="closeProfile">✕</button>
+          <button class="login-close" id="profileClose">✕</button>
           
           <div class="profile-header">
             <div class="profile-avatar">
@@ -953,9 +993,9 @@
 
       overlay.classList.add('active');
 
-      document.getElementById('closeProfile').addEventListener('click', closeOverlay);
+      document.getElementById('profileClose').addEventListener('click', closeOverlay);
       document.getElementById('btnEdit').addEventListener('click', () => {
-        overlay.classList.remove('active');
+        closeOverlay();
         setTimeout(() => showLoginForm(null, true), 200);
       });
       document.getElementById('btnLogout').addEventListener('click', () => {
@@ -968,67 +1008,37 @@
         }
       });
 
-      const addBirth = document.getElementById('addBirth');
-      const addPhone = document.getElementById('addPhone');
-      const addAvatar = document.getElementById('addAvatar');
-      
-      [addBirth, addPhone, addAvatar].forEach(el => {
+      ['addBirth', 'addPhone', 'addAvatar'].forEach(id => {
+        const el = document.getElementById(id);
         if (el) el.addEventListener('click', () => {
-          overlay.classList.remove('active');
+          closeOverlay();
           setTimeout(() => showLoginForm(null, true), 200);
         });
       });
-
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) closeOverlay();
-      }, { once: true });
     }
 
-    function closeOverlay() {
-      overlay.classList.remove('active');
-    }
-
-    // --- ОТКРЫТИЕ КАРТОЧКИ (С ПРЕДУПРЕЖДЕНИЕМ) ---
+    // --- ОТКРЫТИЕ КАРТОЧКИ ---
     function openCard(type) {
-      // Если не авторизован — показываем предупреждение
       if (!isLoggedIn) {
         showWarning(() => {
-          // После перехода к регистрации, если пользователь зарегистрируется,
-          // callback от showLoginForm вызовет openCard снова
           showLoginForm(() => openCard(type));
         });
         return;
       }
 
-      // Авторизован — открываем карточку
       if (type === 'walk') {
-        const walkData = {
-          icon: '🚶',
-          title: 'Прогуляться',
-          desc: 'Найди компанию для пешей прогулки.',
-          action: '👟 Начать прогулку',
-          tools: [
-            ['☀️ Погода', '+18°C, ясно'],
-            ['👥 Людей рядом', '8 человек'],
-            ['📏 Дистанция', '3.5 км']
-          ]
-        };
-
-        let toolsHtml = '';
-        walkData.tools.forEach(t => {
-          toolsHtml += `<div class="tool-row"><span class="label">${t[0]}</span><span class="value">${t[1]}</span></div>`;
-        });
-
         overlayContent.innerHTML = `
           <div class="expanded-card">
             <button class="expanded-close" id="closeExpanded">✕</button>
-            <div class="expanded-icon">${walkData.icon}</div>
-            <div class="expanded-title">${walkData.title}</div>
-            <div class="expanded-desc">${walkData.desc}</div>
-            <button class="expanded-action" id="actionBtn">${walkData.action}</button>
+            <div class="expanded-icon">🚶</div>
+            <div class="expanded-title">Прогуляться</div>
+            <div class="expanded-desc">Найди компанию для пешей прогулки.</div>
+            <button class="expanded-action" id="actionBtn">👟 Начать прогулку</button>
             <div class="card-tools">
               <h4>📊 Инструменты</h4>
-              ${toolsHtml}
+              <div class="tool-row"><span class="label">☀️ Погода</span><span class="value">+18°C, ясно</span></div>
+              <div class="tool-row"><span class="label">👥 Людей рядом</span><span class="value">8 человек</span></div>
+              <div class="tool-row"><span class="label">📏 Дистанция</span><span class="value">3.5 км</span></div>
             </div>
           </div>
         `;
@@ -1039,12 +1049,10 @@
         document.getElementById('actionBtn').addEventListener('click', () => {
           alert(`🚀 Запускаем прогулку, ${currentUser.name}!`);
         });
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
 
         return;
       }
 
-      // Заглушка для остальных
       overlayContent.innerHTML = `
         <div class="expanded-card">
           <button class="expanded-close" id="closeExpanded">✕</button>
@@ -1061,7 +1069,6 @@
 
       document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
       document.getElementById('closePlaceholder').addEventListener('click', closeOverlay);
-      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); }, { once: true });
     }
 
     // --- СОБЫТИЯ ---
@@ -1077,19 +1084,13 @@
       if (isLoggedIn) showProfile();
     });
 
-    // --- СВАЙП ВНИЗ ---
-    let touchStartY = 0;
-    overlay.addEventListener('touchstart', (e) => {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    overlay.addEventListener('touchmove', (e) => {
-      if (e.touches[0].clientY - touchStartY > 80) {
-        closeOverlay();
-      }
-    }, { passive: true });
-
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeOverlay();
+    });
+
+    // --- ГЛОБАЛЬНЫЙ ТАП ПО ФОНУ (закрывает любое окно) ---
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeOverlay();
     });
 
     // --- СТАРТ ---
