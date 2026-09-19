@@ -699,7 +699,6 @@
       z-index: 0 !important;
     }
 
-    /* Тёмная карта с домами через CSS-инверсию */
     #walkMap .leaflet-tile-pane {
       filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.15) saturate(0.7);
     }
@@ -708,7 +707,7 @@
     #walkMap .leaflet-top,
     #walkMap .leaflet-bottom { z-index: 2 !important; }
 
-    /* --- СЛАЙДЕР (поверх карты) --- */
+    /* --- СЛАЙДЕР --- */
     .walk-slider {
       position: absolute;
       bottom: 0;
@@ -728,50 +727,75 @@
 
     .walk-slider.expanded { height: 55vh; }
 
+    /* --- ВЕРХНЯЯ ЧАСТЬ СЛАЙДЕРА (жест + статистика) --- */
+    .slider-header {
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      padding: 10px 16px 14px;
+      border-bottom: 1px solid #2A3442;
+      touch-action: none;
+    }
+
     .slider-handle {
       width: 40px;
       height: 4px;
       background: #2A3442;
       border-radius: 4px;
-      margin: 10px auto 6px;
-      cursor: pointer;
-      flex-shrink: 0;
+      margin: 0 auto 12px;
       transition: 0.2s;
     }
 
-    .slider-handle:hover { background: #6C5CE7; }
+    .slider-header:hover .slider-handle {
+      background: #6C5CE7;
+    }
 
+    /* --- СТАТИСТИКА В СТРОКУ --- */
+    .slider-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #8B95A9;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .stat-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-item b {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .stat-sep {
+      color: #4A5568;
+    }
+
+    /* --- ТЕЛО СЛАЙДЕРА (контент) --- */
     .slider-body {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 8px 16px 24px;
+      padding: 12px 16px 24px;
       -webkit-overflow-scrolling: touch;
     }
-
-    .slider-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 8px 0 12px;
-      border-bottom: 1px solid #2A3442;
-    }
-
-    .stat-row {
-      font-size: 14px;
-      color: #8B95A9;
-    }
-
-    .stat-row b { color: #fff; font-weight: 600; }
 
     .carousel-title {
       text-align: center;
       font-size: 12px;
       color: #8B95A9;
-      margin: 14px 0 10px;
+      margin: 4px 0 10px;
       letter-spacing: 0.5px;
     }
 
+    /* --- КАРУСЕЛЬ --- */
     .carousel {
       overflow-x: auto;
       overflow-y: hidden;
@@ -856,6 +880,7 @@
       border-radius: 3px;
     }
 
+    /* --- ВЫБРАННЫЙ --- */
     .selected-user {
       display: flex;
       align-items: center;
@@ -1113,7 +1138,7 @@
 
   function formatTime(m) {
     const min = Math.max(1, Math.round(m / 80));
-    return '~' + min + ' мин пешком';
+    return '~' + min + ' мин';
   }
 
   function statusIcon(s) {
@@ -1145,7 +1170,10 @@
       </div>
 
       <div class="walk-slider" id="walkSlider">
-        <div class="slider-handle" id="sliderHandle"></div>
+        <div class="slider-header" id="sliderHeader">
+          <div class="slider-handle" id="sliderHandle"></div>
+          <div class="slider-stats" id="sliderStats"></div>
+        </div>
         <div class="slider-body" id="sliderBody"></div>
       </div>
     `;
@@ -1154,9 +1182,10 @@
   }
 
   function renderSlider() {
+    const stats = document.getElementById('sliderStats');
     const body = document.getElementById('sliderBody');
     const slider = document.getElementById('walkSlider');
-    if (!body || !slider) return;
+    if (!stats || !body || !slider) return;
 
     slider.classList.remove('expanded');
 
@@ -1168,11 +1197,10 @@
     const sorted = getSortedUsers();
 
     if (sorted.length === 0) {
+      stats.innerHTML = `
+        <span class="stat-item">👥 Никого рядом</span>
+      `;
       body.innerHTML = `
-        <div class="slider-stats">
-          <div class="stat-row"><span>👥 Рядом никого нет</span></div>
-          <div class="stat-row"><span>☀️ Погода: +18°C, ясно</span></div>
-        </div>
         <div class="empty-state">
           <div class="empty-icon">😔</div>
           <div class="empty-text">Пока никого нет рядом</div>
@@ -1186,6 +1214,15 @@
 
     const avgDist = sorted.reduce((sum, u) =>
       sum + calcDistance(walkState.userLat, walkState.userLng, u.lat, u.lng), 0) / sorted.length;
+
+    // Статистика в одну строку
+    stats.innerHTML = `
+      <span class="stat-item">👥 <b>${sorted.length}</b></span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">☀️ +18°C</span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">📏 <b>${formatDistance(avgDist)}</b></span>
+    `;
 
     let cardsHtml = '';
     sorted.forEach((u, i) => {
@@ -1207,20 +1244,12 @@
     });
 
     body.innerHTML = `
-      <div class="slider-stats">
-        <div class="stat-row"><span>👥 Рядом гуляют: <b>${sorted.length}</b></span></div>
-        <div class="stat-row"><span>☀️ Погода: +18°C, ясно</span></div>
-        <div class="stat-row"><span>📏 Средняя дистанция: <b>${formatDistance(avgDist)}</b></span></div>
-      </div>
-
       <div class="carousel-title">─── Кто рядом ───</div>
-
       <div class="carousel" id="carousel">
         <div class="carousel-track" id="carouselTrack">
           ${cardsHtml}
         </div>
       </div>
-
       <div class="carousel-dots" id="carouselDots">
         ${dotsHtml}
       </div>
@@ -1287,14 +1316,24 @@
   }
 
   function renderSelectedUser() {
+    const stats = document.getElementById('sliderStats');
     const body = document.getElementById('sliderBody');
     const slider = document.getElementById('walkSlider');
     const user = walkState.nearbyUsers.find(u => u.id === walkState.selectedUserId);
-    if (!user || !body || !slider) return;
+    if (!user || !stats || !body || !slider) return;
 
     const d = calcDistance(walkState.userLat, walkState.userLng, user.lat, user.lng);
 
     slider.classList.add('expanded');
+
+    // Статистика выбранного тоже в строку
+    stats.innerHTML = `
+      <span class="stat-item">📏 <b>${formatDistance(d)}</b></span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">⏱ ${formatTime(d)}</span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">☀️ +18°C</span>
+    `;
 
     body.innerHTML = `
       <div class="selected-user">
@@ -1304,12 +1343,6 @@
           <div class="selected-nick">@${user.name.toLowerCase()}_${user.age}</div>
         </div>
         <button class="selected-close" id="selectedClose">✕</button>
-      </div>
-
-      <div class="selected-details">
-        <div class="detail-row">📏 ${formatDistance(d)} от тебя · ${formatTime(d)}</div>
-        <div class="detail-row">🚶 Идёт гулять</div>
-        <div class="detail-row">☀️ +18°C, ясно</div>
       </div>
 
       <div class="selected-actions">
@@ -1347,7 +1380,6 @@
       attributionControl: false,
     }).setView([lat, lng], 17);
 
-    // Стандартный OpenStreetMap — светлый, но мы его инвертируем через CSS
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
     }).addTo(walkState.map);
@@ -1459,15 +1491,17 @@
     renderSlider();
   }
 
+  // --- ЖЕСТЫ СЛАЙДЕРА (теперь на всю верхнюю часть) ---
   function setupSliderGestures() {
     const slider = document.getElementById('walkSlider');
-    const handle = document.getElementById('sliderHandle');
-    if (!slider || !handle) return;
+    const header = document.getElementById('sliderHeader');
+    if (!slider || !header) return;
 
     let startY = 0;
     let startState = null;
+    let moved = false;
 
-    const heights = { collapsed: '60px', medium: '45vh' };
+    const heights = { collapsed: '85px', medium: '45vh' };
 
     function setState(s) {
       walkState.sliderState = s;
@@ -1476,18 +1510,26 @@
 
     setState('medium');
 
-    handle.addEventListener('touchstart', (e) => {
+    header.addEventListener('touchstart', (e) => {
       startY = e.touches[0].clientY;
       startState = walkState.sliderState;
+      moved = false;
     }, { passive: true });
 
-    handle.addEventListener('touchmove', (e) => {
+    header.addEventListener('touchmove', (e) => {
       const diff = startY - e.touches[0].clientY;
-      if (startState === 'medium' && diff < -60) setState('collapsed');
-      else if (startState === 'collapsed' && diff > 60) setState('medium');
+      if (Math.abs(diff) > 20) moved = true;
+
+      if (startState === 'medium' && diff < -40) {
+        setState('collapsed');
+      } else if (startState === 'collapsed' && diff > 40) {
+        setState('medium');
+      }
     }, { passive: true });
 
-    handle.addEventListener('click', () => {
+    // Тап по header — переключение (если не было свайпа)
+    header.addEventListener('click', () => {
+      if (moved) return;
       if (walkState.sliderState === 'medium') setState('collapsed');
       else setState('medium');
     });
