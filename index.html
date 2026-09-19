@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Встреча</title>
+
+  <!-- Leaflet (карта) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
+    /* ============================================================
+       ОБЩИЕ СТИЛИ
+       ============================================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -22,6 +30,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
+      overflow-x: hidden;
     }
 
     body {
@@ -33,15 +42,17 @@
       justify-content: center;
       align-items: center;
       padding: 16px;
+      overflow-x: hidden;
     }
 
     .app {
-      max-width: 700px;
+      max-width: 100%;
       width: 100%;
       height: 100%;
       background: var(--bg);
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     /* --- ШАПКА --- */
@@ -62,11 +73,7 @@
       -webkit-text-fill-color: transparent;
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .header-right { display: flex; align-items: center; gap: 12px; }
 
     .status-online {
       display: flex;
@@ -120,19 +127,15 @@
       flex-shrink: 0;
     }
 
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .avatar:active { transform: scale(0.9); }
 
-    /* --- ОСНОВНАЯ СЕТКА --- */
+    /* --- ОСНОВНОЙ БЛОК --- */
     .main {
       flex: 1;
       padding-top: 20px;
       overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -144,47 +147,100 @@
     }
     .section-title span { color: var(--text-muted); font-weight: 400; font-size: 15px; }
 
+    /* --- СЕТКА КАРТОЧЕК --- */
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      width: 100%;
+      padding-bottom: 20px;
+      overflow-x: hidden;
     }
 
+    @media (min-width: 600px) {
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
+    @media (min-width: 900px) {
+      .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    }
+    @media (min-width: 1200px) {
+      .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    }
+
+    /* --- КАРТОЧКА --- */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 18px 16px;
+      padding: 18px 20px;
       cursor: pointer;
       transition: 0.2s;
       position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      min-height: 80px;
+      overflow: hidden;
+      max-width: 100%;
     }
 
-    .card:active { transform: scale(0.96); }
-    .card-icon { font-size: 28px; margin-bottom: 8px; }
-    .card h3 { font-size: 15px; font-weight: 600; }
-    .card p { font-size: 12px; color: var(--text-muted); margin: 0; }
+    .card:active { transform: scale(0.98); }
+
+    .card-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
+
+    .card-text {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      padding-right: 80px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 2px 0 0 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .card-badge {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 50%;
+      right: 16px;
+      transform: translateY(-50%);
       background: var(--accent);
       color: #fff;
-      font-size: 8px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 2px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
+      flex-shrink: 0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* --- ОВЕРЛЕЙ --- */
     .overlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(6px);
       z-index: 1000;
@@ -194,10 +250,7 @@
       overflow-x: hidden;
     }
 
-    .overlay.active {
-      display: flex;
-      animation: overlayFade 0.3s ease;
-    }
+    .overlay.active { display: flex; animation: overlayFade 0.3s ease; }
 
     @keyframes overlayFade {
       0% { opacity: 0; }
@@ -220,14 +273,11 @@
       overflow-x: hidden;
     }
 
-    .overlay.active .expanded-card {
-      transform: scale(1);
-    }
+    .overlay.active .expanded-card { transform: scale(1); }
 
     .expanded-close {
       position: absolute;
-      top: 16px;
-      right: 20px;
+      top: 16px; right: 20px;
       font-size: 28px;
       color: var(--text-muted);
       cursor: pointer;
@@ -241,11 +291,7 @@
 
     .expanded-icon { font-size: 56px; margin-bottom: 8px; }
     .expanded-title { font-size: 28px; font-weight: 700; }
-    .expanded-desc {
-      font-size: 16px;
-      color: var(--text-muted);
-      margin: 4px 0 20px 0;
-    }
+    .expanded-desc { font-size: 16px; color: var(--text-muted); margin: 4px 0 20px 0; }
 
     .expanded-action {
       padding: 14px 24px;
@@ -301,20 +347,14 @@
       position: relative;
       transform: scale(0.9);
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow-x: hidden;
     }
 
-    .overlay.active .warning-screen {
-      transform: scale(1);
-    }
+    .overlay.active .warning-screen { transform: scale(1); }
 
     .warning-icon { font-size: 56px; margin-bottom: 12px; }
     .warning-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    .warning-text {
-      font-size: 15px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
+    .warning-text { font-size: 15px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px; }
     .warning-actions { display: flex; flex-direction: column; gap: 10px; }
 
     /* --- ФОРМА ВХОДА --- */
@@ -334,14 +374,11 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    .overlay.active .login-screen {
-      transform: scale(1);
-    }
+    .overlay.active .login-screen { transform: scale(1); }
 
     .login-close {
       position: absolute;
-      top: 16px;
-      right: 20px;
+      top: 16px; right: 20px;
       font-size: 28px;
       color: var(--text-muted);
       cursor: pointer;
@@ -353,11 +390,7 @@
 
     .login-close:active { transform: scale(0.8); color: #fff; }
 
-    .login-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
+    .login-header { text-align: center; margin-bottom: 24px; }
     .login-header .icon { font-size: 48px; margin-bottom: 8px; }
     .login-header h2 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
     .login-header p { color: var(--text-muted); font-size: 14px; }
@@ -388,35 +421,18 @@
 
     .avatar-circle:hover { border-color: var(--accent); }
     .avatar-circle:active { transform: scale(0.95); }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .avatar-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
 
-    .avatar-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    .avatar-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
-    /* --- ФОРМА: СЕТКА ПОЛЕЙ --- */
+    /* --- ФОРМА --- */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
     }
 
-    .form-group {
-      margin: 0;
-      min-width: 0;
-    }
-
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
+    .form-group { margin: 0; min-width: 0; }
+    .form-group.full { grid-column: 1 / -1; }
 
     .form-group label {
       display: block;
@@ -454,10 +470,7 @@
 
     .form-group input:focus { border-color: var(--accent); }
     .form-group input::placeholder { color: var(--text-muted); opacity: 0.5; }
-
-    .form-group input[type="date"] {
-      min-height: 52px;
-    }
+    .form-group input[type="date"] { min-height: 52px; }
 
     .form-actions {
       display: flex;
@@ -479,11 +492,7 @@
     }
 
     .btn-primary:active { transform: scale(0.97); }
-    .btn-primary:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
     .btn-secondary {
       padding: 16px;
@@ -515,14 +524,9 @@
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .overlay.active .profile-screen {
-      transform: scale(1);
-    }
+    .overlay.active .profile-screen { transform: scale(1); }
 
-    .profile-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+    .profile-header { text-align: center; margin-bottom: 24px; }
 
     .profile-avatar {
       width: 100px;
@@ -539,22 +543,9 @@
       overflow: hidden;
     }
 
-    .profile-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .profile-name {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .profile-nick {
-      font-size: 15px;
-      color: var(--text-muted);
-    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .profile-nick { font-size: 15px; color: var(--text-muted); }
 
     .profile-info {
       margin: 24px 0;
@@ -590,22 +581,19 @@
     .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
     .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
 
-    /* --- АДАПТИВ: ЛАНДШАФТ → СЕТКА 2 КОЛОНКИ --- */
+    /* --- АДАПТИВ --- */
     @media (orientation: landscape) and (min-width: 560px) {
-      .form-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .form-group.full {
-        grid-column: 1 / -1;
-      }
+      .form-grid { grid-template-columns: 1fr 1fr; }
+      .form-group.full { grid-column: 1 / -1; }
     }
 
-    /* --- АДАПТИВ: МАЛЕНЬКИЕ ЭКРАНЫ --- */
     @media (max-width: 400px) {
-      .grid { gap: 10px; }
-      .card { padding: 14px; border-radius: 20px; }
-      .card h3 { font-size: 13px; }
-      .card p { font-size: 11px; }
+      .card { padding: 16px; border-radius: 22px; }
+      .card-icon { font-size: 28px; }
+      .card h3 { font-size: 14px; }
+      .card p { font-size: 12px; }
+      .card-text { padding-right: 70px; }
+      .card-badge { font-size: 9px; padding: 3px 10px; right: 14px; max-width: 70px; }
       .expanded-card { padding: 24px 18px; }
       .expanded-title { font-size: 22px; }
       .expanded-icon { font-size: 44px; }
@@ -620,14 +608,352 @@
       .form-group input { font-size: 15px; padding: 12px 16px; }
     }
 
-    /* --- АДАПТИВ: БОЛЬШИЕ ЭКРАНЫ --- */
-    @media (min-width: 600px) {
-      .grid { gap: 18px; }
-      .card { padding: 24px; }
-      .card h3 { font-size: 18px; }
+    .hidden { display: none !important; }
+
+    /* ============================================================
+       СТИЛИ ЭКРАНА "ПРОГУЛЯТЬСЯ"
+       ============================================================ */
+
+    .walk-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: #0B0E14;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      overflow: hidden;
     }
 
-    .hidden { display: none !important; }
+    .walk-screen.active { transform: translateX(0); }
+
+    .walk-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(19, 26, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2A3442;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+
+    .walk-back {
+      background: none;
+      border: none;
+      color: #A29BFE;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+
+    .walk-back:active { background: rgba(108, 92, 231, 0.15); }
+
+    .walk-logo {
+      font-size: 17px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .walk-avatar {
+      width: 36px;
+      height: 36px;
+      background: #6C5CE7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .walk-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .walk-avatar:active { transform: scale(0.9); }
+
+    .walk-map-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #walkMap {
+      width: 100%;
+      height: 100%;
+      background: #0B0E14;
+    }
+
+    .walk-slider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45vh;
+      background: #131A23;
+      border-radius: 28px 28px 0 0;
+      border-top: 1px solid #2A3442;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+      transition: height 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .walk-slider.expanded { height: 55vh; }
+
+    .slider-handle {
+      width: 40px;
+      height: 4px;
+      background: #2A3442;
+      border-radius: 4px;
+      margin: 10px auto 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: 0.2s;
+    }
+
+    .slider-handle:hover { background: #6C5CE7; }
+
+    .slider-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 8px 16px 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .slider-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 0 12px;
+      border-bottom: 1px solid #2A3442;
+    }
+
+    .stat-row {
+      font-size: 14px;
+      color: #8B95A9;
+    }
+
+    .stat-row b { color: #fff; font-weight: 600; }
+
+    .carousel-title {
+      text-align: center;
+      font-size: 12px;
+      color: #8B95A9;
+      margin: 14px 0 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .carousel {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 4px 0;
+    }
+
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .carousel-track {
+      display: flex;
+      gap: 12px;
+      padding: 0 calc(50% - 32.5%);
+    }
+
+    .carousel-card {
+      flex: 0 0 65%;
+      scroll-snap-align: center;
+      background: #0B0E14;
+      border: 1.5px solid #2A3442;
+      border-radius: 20px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .carousel-card.centered {
+      border-color: #6C5CE7;
+      background: rgba(108, 92, 231, 0.08);
+      transform: scale(1.02);
+    }
+
+    .card-avatar {
+      width: 52px;
+      height: 52px;
+      background: #6C5CE7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      overflow: hidden;
+    }
+
+    .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .card-name { font-size: 15px; font-weight: 600; color: #fff; }
+    .card-age { font-size: 12px; color: #8B95A9; }
+    .card-dist { font-size: 13px; font-weight: 600; color: #A29BFE; margin-top: 2px; }
+    .card-status { font-size: 12px; }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2A3442;
+      transition: 0.3s;
+    }
+
+    .dot.active {
+      background: #6C5CE7;
+      width: 18px;
+      border-radius: 3px;
+    }
+
+    .selected-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0 16px;
+      border-bottom: 1px solid #2A3442;
+      position: relative;
+    }
+
+    .selected-avatar {
+      width: 56px;
+      height: 56px;
+      background: #6C5CE7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .selected-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .selected-info { flex: 1; min-width: 0; }
+
+    .selected-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .selected-nick { font-size: 13px; color: #8B95A9; }
+
+    .selected-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: none;
+      border: none;
+      color: #8B95A9;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .selected-close:active { background: #2A3442; color: #fff; }
+
+    .selected-details {
+      padding: 14px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .detail-row { font-size: 14px; color: #8B95A9; }
+
+    .selected-actions { display: flex; gap: 10px; margin-top: 8px; }
+
+    .btn-action {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-chat {
+      background: transparent;
+      border: 1.5px solid #2A3442;
+      color: #fff;
+    }
+
+    .btn-chat:active { background: #2A3442; }
+
+    .btn-join { background: #6C5CE7; color: #fff; }
+    .btn-join:active { transform: scale(0.96); }
+
+    .empty-state { text-align: center; padding: 30px 10px; }
+    .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-text { font-size: 15px; color: #8B95A9; margin-bottom: 20px; }
+
+    .btn-expand {
+      padding: 14px 24px;
+      background: #6C5CE7;
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-expand:active { transform: scale(0.96); }
+
+    @media (max-width: 400px) {
+      .carousel-card { flex: 0 0 70%; min-height: 140px; }
+      .carousel-track { padding: 0 calc(50% - 35%); }
+      .card-avatar { width: 46px; height: 46px; font-size: 20px; }
+      .card-name { font-size: 14px; }
+    }
   </style>
 </head>
 <body>
@@ -654,29 +980,55 @@
 
       <div class="card" data-card="walk">
         <div class="card-icon">🚶</div>
-        <h3>Прогуляться</h3>
-        <p>Найди попутчика</p>
+        <div class="card-text">
+          <h3>Прогуляться</h3>
+          <p>Найди попутчика</p>
+        </div>
         <span class="card-badge">Активно</span>
       </div>
 
       <div class="card" data-card="dog">
         <div class="card-icon">🐕</div>
-        <h3>Выгул собак</h3>
-        <p>Друзья для питомца</p>
+        <div class="card-text">
+          <h3>Выгул собак</h3>
+          <p>Друзья для питомца</p>
+        </div>
         <span class="card-badge">Скоро</span>
       </div>
 
       <div class="card" data-card="chat">
         <div class="card-icon">💬</div>
-        <h3>Разговоры по душам</h3>
-        <p>Анонимное общение</p>
+        <div class="card-text">
+          <h3>Разговоры по душам</h3>
+          <p>Анонимное общение</p>
+        </div>
+        <span class="card-badge">Скоро</span>
+      </div>
+
+      <div class="card" data-card="lunch">
+        <div class="card-icon">🍔</div>
+        <div class="card-text">
+          <h3>Обед / Кофе</h3>
+          <p>Составь компанию</p>
+        </div>
+        <span class="card-badge">Скоро</span>
+      </div>
+
+      <div class="card" data-card="ride">
+        <div class="card-icon">🚗</div>
+        <div class="card-text">
+          <h3>Попутчики</h3>
+          <p>Найди попутчика</p>
+        </div>
         <span class="card-badge">Скоро</span>
       </div>
 
       <div class="card" data-card="random">
         <div class="card-icon">🎲</div>
-        <h3>Случайная встреча</h3>
-        <p>По интересам</p>
+        <div class="card-text">
+          <h3>Случайная встреча</h3>
+          <p>По интересам</p>
+        </div>
         <span class="card-badge">Новое</span>
       </div>
 
@@ -689,9 +1041,522 @@
 </div>
 
 <script>
-  (function() {
-    "use strict";
+  "use strict";
 
+  // ============================================================
+  // МОДУЛЬ "ПРОГУЛЯТЬСЯ"
+  // ============================================================
+  const walkState = {
+    map: null,
+    userMarker: null,
+    otherMarkers: {},
+    routeLine: null,
+    currentUser: null,
+    onClose: null,
+    nearbyUsers: [],
+    selectedUserId: null,
+    currentIndex: 0,
+    userLat: null,
+    userLng: null,
+    watchId: null,
+    sliderState: 'medium',
+  };
+
+  const MOCK_NAMES = ['Алексей', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Ольга', 'Иван', 'Екатерина', 'Максим', 'Юлия'];
+  const MOCK_AGES = [22, 25, 28, 30, 32, 27, 35, 24, 29, 31];
+  const MOCK_STATUSES = ['online', 'online', 'recent', 'old', 'online'];
+
+  function generateMockUsers(lat, lng) {
+    const users = [];
+    const count = 6 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = 0.002 + Math.random() * 0.008;
+      users.push({
+        id: 'user_' + i,
+        name: MOCK_NAMES[i % MOCK_NAMES.length],
+        age: MOCK_AGES[i % MOCK_AGES.length],
+        lat: lat + Math.cos(angle) * distance,
+        lng: lng + Math.sin(angle) * distance,
+        status: MOCK_STATUSES[i % MOCK_STATUSES.length],
+      });
+    }
+    return users;
+  }
+
+  function calcDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const toRad = (deg) => deg * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function formatDistance(m) {
+    if (m < 1000) return Math.round(m) + ' м';
+    return (m / 1000).toFixed(1) + ' км';
+  }
+
+  function formatTime(m) {
+    const min = Math.max(1, Math.round(m / 80));
+    return '~' + min + ' мин пешком';
+  }
+
+  function statusIcon(s) {
+    if (s === 'online') return '🟢';
+    if (s === 'recent') return '🟡';
+    return '⚪';
+  }
+
+  function getSortedUsers() {
+    return walkState.nearbyUsers.slice().sort((a, b) => {
+      return calcDistance(walkState.userLat, walkState.userLng, a.lat, a.lng)
+           - calcDistance(walkState.userLat, walkState.userLng, b.lat, b.lng);
+    });
+  }
+
+  function createWalkScreen() {
+    const el = document.createElement('div');
+    el.className = 'walk-screen';
+    el.id = 'walkScreen';
+    el.innerHTML = `
+      <div class="walk-header">
+        <button class="walk-back" id="walkBack">← Назад</button>
+        <span class="walk-logo">📍 ВСТРЕЧА</span>
+        <div class="walk-avatar" id="walkAvatar"></div>
+      </div>
+
+      <div class="walk-map-wrapper">
+        <div id="walkMap"></div>
+      </div>
+
+      <div class="walk-slider" id="walkSlider">
+        <div class="slider-handle" id="sliderHandle"></div>
+        <div class="slider-body" id="sliderBody"></div>
+      </div>
+    `;
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function renderSlider() {
+    const body = document.getElementById('sliderBody');
+    const slider = document.getElementById('walkSlider');
+    if (!body || !slider) return;
+
+    slider.classList.remove('expanded');
+
+    if (walkState.selectedUserId) {
+      renderSelectedUser();
+      return;
+    }
+
+    const sorted = getSortedUsers();
+
+    if (sorted.length === 0) {
+      body.innerHTML = `
+        <div class="slider-stats">
+          <div class="stat-row"><span>👥 Рядом никого нет</span></div>
+          <div class="stat-row"><span>☀️ Погода: +18°C, ясно</span></div>
+        </div>
+        <div class="empty-state">
+          <div class="empty-icon">😔</div>
+          <div class="empty-text">Пока никого нет рядом</div>
+          <button class="btn-expand" id="btnExpandRadius">🔍 Расширить радиус поиска</button>
+        </div>
+      `;
+      const b = document.getElementById('btnExpandRadius');
+      if (b) b.addEventListener('click', expandRadius);
+      return;
+    }
+
+    const avgDist = sorted.reduce((sum, u) =>
+      sum + calcDistance(walkState.userLat, walkState.userLng, u.lat, u.lng), 0) / sorted.length;
+
+    let cardsHtml = '';
+    sorted.forEach((u, i) => {
+      const d = calcDistance(walkState.userLat, walkState.userLng, u.lat, u.lng);
+      cardsHtml += `
+        <div class="carousel-card ${i === walkState.currentIndex ? 'centered' : ''}" data-idx="${i}" data-id="${u.id}">
+          <div class="card-avatar">${u.name.charAt(0)}</div>
+          <div class="card-name">${u.name}</div>
+          <div class="card-age">${u.age} лет</div>
+          <div class="card-dist">${formatDistance(d)}</div>
+          <div class="card-status">${statusIcon(u.status)}</div>
+        </div>
+      `;
+    });
+
+    let dotsHtml = '';
+    sorted.forEach((_, i) => {
+      dotsHtml += `<span class="dot ${i === walkState.currentIndex ? 'active' : ''}"></span>`;
+    });
+
+    body.innerHTML = `
+      <div class="slider-stats">
+        <div class="stat-row"><span>👥 Рядом гуляют: <b>${sorted.length}</b></span></div>
+        <div class="stat-row"><span>☀️ Погода: +18°C, ясно</span></div>
+        <div class="stat-row"><span>📏 Средняя дистанция: <b>${formatDistance(avgDist)}</b></span></div>
+      </div>
+
+      <div class="carousel-title">─── Кто рядом ───</div>
+
+      <div class="carousel" id="carousel">
+        <div class="carousel-track" id="carouselTrack">
+          ${cardsHtml}
+        </div>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+        ${dotsHtml}
+      </div>
+    `;
+
+    setupCarousel();
+  }
+
+  function setupCarousel() {
+    const carousel = document.getElementById('carousel');
+    const track = document.getElementById('carouselTrack');
+    if (!carousel || !track) return;
+
+    const sorted = getSortedUsers();
+
+    requestAnimationFrame(() => {
+      scrollToIndex(walkState.currentIndex, false);
+    });
+
+    carousel.addEventListener('scroll', () => {
+      const cardWidth = carousel.clientWidth * 0.65 + 12;
+      const idx = Math.round(carousel.scrollLeft / cardWidth);
+      if (idx !== walkState.currentIndex && idx >= 0 && idx < sorted.length) {
+        walkState.currentIndex = idx;
+        updateDots();
+        const user = sorted[idx];
+        if (user) centerMapOn(user.lat, user.lng, false);
+      }
+    });
+
+    track.querySelectorAll('.carousel-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const idx = parseInt(card.dataset.idx);
+        const user = sorted[idx];
+        if (!user) return;
+
+        if (walkState.currentIndex === idx && card.classList.contains('centered')) {
+          walkState.selectedUserId = user.id;
+          renderSlider();
+        } else {
+          scrollToIndex(idx, true);
+        }
+      });
+    });
+  }
+
+  function scrollToIndex(idx, smooth) {
+    const carousel = document.getElementById('carousel');
+    const track = document.getElementById('carouselTrack');
+    if (!carousel || !track) return;
+    const cards = track.querySelectorAll('.carousel-card');
+    if (!cards[idx]) return;
+    const cardWidth = carousel.clientWidth * 0.65 + 12;
+    carousel.scrollTo({ left: idx * cardWidth, behavior: smooth ? 'smooth' : 'auto' });
+
+    cards.forEach((c, i) => c.classList.toggle('centered', i === idx));
+    walkState.currentIndex = idx;
+    updateDots();
+  }
+
+  function updateDots() {
+    const dots = document.querySelectorAll('#carouselDots .dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === walkState.currentIndex));
+  }
+
+  function renderSelectedUser() {
+    const body = document.getElementById('sliderBody');
+    const slider = document.getElementById('walkSlider');
+    const user = walkState.nearbyUsers.find(u => u.id === walkState.selectedUserId);
+    if (!user || !body || !slider) return;
+
+    const d = calcDistance(walkState.userLat, walkState.userLng, user.lat, user.lng);
+
+    slider.classList.add('expanded');
+
+    body.innerHTML = `
+      <div class="selected-user">
+        <div class="selected-avatar">${user.name.charAt(0)}</div>
+        <div class="selected-info">
+          <div class="selected-name">${user.name}, ${user.age} лет</div>
+          <div class="selected-nick">@${user.name.toLowerCase()}_${user.age}</div>
+        </div>
+        <button class="selected-close" id="selectedClose">✕</button>
+      </div>
+
+      <div class="selected-details">
+        <div class="detail-row">📏 ${formatDistance(d)} от тебя · ${formatTime(d)}</div>
+        <div class="detail-row">🚶 Идёт гулять</div>
+        <div class="detail-row">☀️ +18°C, ясно</div>
+      </div>
+
+      <div class="selected-actions">
+        <button class="btn-action btn-chat" id="btnChat">💬 Написать</button>
+        <button class="btn-action btn-join" id="btnJoin">👟 Присоединиться</button>
+      </div>
+    `;
+
+    document.getElementById('selectedClose').addEventListener('click', resetSelection);
+    document.getElementById('btnChat').addEventListener('click', () => {
+      alert(`💬 Чат с ${user.name} — в разработке`);
+    });
+    document.getElementById('btnJoin').addEventListener('click', () => {
+      alert(`👟 Присоединяемся к ${user.name} — в разработке`);
+    });
+  }
+
+  function resetSelection() {
+    walkState.selectedUserId = null;
+    walkState.currentIndex = 0;
+
+    if (walkState.routeLine && walkState.map) {
+      walkState.map.removeLayer(walkState.routeLine);
+      walkState.routeLine = null;
+    }
+
+    renderSlider();
+  }
+
+  function initMap(lat, lng) {
+    if (walkState.map) return;
+
+    walkState.map = L.map('walkMap', {
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([lat, lng], 16);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 20,
+      subdomains: 'abcd',
+    }).addTo(walkState.map);
+
+    walkState.userMarker = L.circleMarker([lat, lng], {
+      radius: 9,
+      fillColor: '#4D6CFF',
+      color: '#fff',
+      weight: 3,
+      fillOpacity: 1,
+    }).addTo(walkState.map);
+
+    walkState.nearbyUsers.forEach(u => addMarkerFor(u));
+
+    walkState.map.on('click', () => {
+      if (walkState.selectedUserId) resetSelection();
+    });
+  }
+
+  function addMarkerFor(u) {
+    const marker = L.circleMarker([u.lat, u.lng], {
+      radius: 7,
+      fillColor: '#FF6B35',
+      color: '#fff',
+      weight: 2,
+      fillOpacity: 0.9,
+    }).addTo(walkState.map);
+
+    marker.on('click', (e) => {
+      L.DomEvent.stopPropagation(e);
+      walkState.selectedUserId = u.id;
+      centerMapOn(u.lat, u.lng, true);
+      renderSlider();
+    });
+
+    walkState.otherMarkers[u.id] = marker;
+  }
+
+  function centerMapOn(lat, lng, zoomIn) {
+    if (!walkState.map) return;
+    walkState.map.setView([lat, lng], zoomIn ? 17 : 16, { animate: true });
+
+    if (walkState.routeLine) {
+      walkState.map.removeLayer(walkState.routeLine);
+      walkState.routeLine = null;
+    }
+
+    if (walkState.userLat && walkState.selectedUserId) {
+      walkState.routeLine = L.polyline(
+        [[walkState.userLat, walkState.userLng], [lat, lng]],
+        { color: '#6C5CE7', weight: 3, dashArray: '8,8', opacity: 0.7 }
+      ).addTo(walkState.map);
+    }
+  }
+
+  function startGeolocation() {
+    if (!navigator.geolocation) {
+      alert('❌ Браузер не поддерживает геолокацию');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        walkState.userLat = pos.coords.latitude;
+        walkState.userLng = pos.coords.longitude;
+
+        walkState.nearbyUsers = generateMockUsers(walkState.userLat, walkState.userLng);
+        initMap(walkState.userLat, walkState.userLng);
+        renderSlider();
+
+        walkState.watchId = navigator.geolocation.watchPosition(
+          (p) => {
+            walkState.userLat = p.coords.latitude;
+            walkState.userLng = p.coords.longitude;
+            if (walkState.userMarker) {
+              walkState.userMarker.setLatLng([walkState.userLat, walkState.userLng]);
+            }
+          },
+          () => {},
+          { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+        );
+      },
+      (err) => {
+        alert('⚠️ Не удалось получить геолокацию: ' + err.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  }
+
+  function expandRadius() {
+    if (!walkState.userLat) return;
+
+    const extra = [];
+    for (let i = 0; i < 5; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = 0.01 + Math.random() * 0.03;
+      extra.push({
+        id: 'extra_' + i + '_' + Date.now(),
+        name: MOCK_NAMES[(i + 3) % MOCK_NAMES.length],
+        age: MOCK_AGES[(i + 3) % MOCK_AGES.length],
+        lat: walkState.userLat + Math.cos(angle) * distance,
+        lng: walkState.userLng + Math.sin(angle) * distance,
+        status: 'online',
+      });
+    }
+
+    walkState.nearbyUsers = walkState.nearbyUsers.concat(extra);
+    extra.forEach(u => addMarkerFor(u));
+    renderSlider();
+  }
+
+  function setupSliderGestures() {
+    const slider = document.getElementById('walkSlider');
+    const handle = document.getElementById('sliderHandle');
+    if (!slider || !handle) return;
+
+    let startY = 0;
+    let startState = null;
+
+    const heights = { collapsed: '60px', medium: '45vh' };
+
+    function setState(s) {
+      walkState.sliderState = s;
+      slider.style.height = heights[s];
+    }
+
+    setState('medium');
+
+    handle.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startState = walkState.sliderState;
+    }, { passive: true });
+
+    handle.addEventListener('touchmove', (e) => {
+      const diff = startY - e.touches[0].clientY;
+      if (startState === 'medium' && diff < -60) setState('collapsed');
+      else if (startState === 'collapsed' && diff > 60) setState('medium');
+    }, { passive: true });
+
+    handle.addEventListener('click', () => {
+      if (walkState.sliderState === 'medium') setState('collapsed');
+      else setState('medium');
+    });
+  }
+
+  function openWalkScreen(user, onClose) {
+    walkState.currentUser = user;
+    walkState.onClose = onClose || null;
+
+    const el = createWalkScreen();
+    requestAnimationFrame(() => el.classList.add('active'));
+
+    const av = document.getElementById('walkAvatar');
+    if (av) {
+      if (user && user.avatar) {
+        av.innerHTML = `<img src="${user.avatar}" alt="">`;
+      } else if (user && user.name) {
+        av.textContent = user.name.charAt(0).toUpperCase();
+      } else {
+        av.textContent = '?';
+      }
+    }
+
+    const back = document.getElementById('walkBack');
+    if (back) back.addEventListener('click', closeWalkScreen);
+
+    if (av) {
+      av.addEventListener('click', () => {
+        alert('👤 Профиль — в разработке');
+      });
+    }
+
+    startGeolocation();
+    setupSliderGestures();
+
+    document.addEventListener('keydown', escHandler);
+  }
+
+  function escHandler(e) {
+    if (e.key === 'Escape') closeWalkScreen();
+  }
+
+  function closeWalkScreen() {
+    const el = document.getElementById('walkScreen');
+    if (!el) return;
+
+    if (walkState.watchId) {
+      navigator.geolocation.clearWatch(walkState.watchId);
+      walkState.watchId = null;
+    }
+
+    if (walkState.map) {
+      walkState.map.remove();
+      walkState.map = null;
+      walkState.userMarker = null;
+      walkState.otherMarkers = {};
+      walkState.routeLine = null;
+    }
+
+    walkState.currentUser = null;
+    walkState.nearbyUsers = [];
+    walkState.selectedUserId = null;
+    walkState.currentIndex = 0;
+    walkState.userLat = null;
+    walkState.userLng = null;
+    walkState.sliderState = 'medium';
+
+    el.classList.remove('active');
+    setTimeout(() => el.remove(), 350);
+
+    document.removeEventListener('keydown', escHandler);
+
+    if (walkState.onClose) {
+      walkState.onClose();
+      walkState.onClose = null;
+    }
+  }
+
+  // ============================================================
+  // ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ
+  // ============================================================
+  (function() {
     const overlay = document.getElementById('overlay');
     const overlayContent = document.getElementById('overlayContent');
     const loginBtn = document.getElementById('loginBtn');
@@ -700,7 +1565,6 @@
     let isLoggedIn = false;
     let currentUser = null;
 
-    // --- ЗАГРУЗКА ---
     function loadState() {
       const saved = localStorage.getItem('meet_user');
       if (saved) {
@@ -736,7 +1600,6 @@
       }
     }
 
-    // --- УТИЛИТЫ ---
     function generateNickname(name, surname, birthDate) {
       const translit = {
         'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
@@ -781,7 +1644,6 @@
       overlayContent.innerHTML = '';
     }
 
-    // --- ПРЕДУПРЕЖДЕНИЕ ---
     function showWarning(callback) {
       overlayContent.innerHTML = `
         <div class="warning-screen">
@@ -809,7 +1671,6 @@
       document.getElementById('warningCancel').addEventListener('click', closeOverlay);
     }
 
-    // --- ФОРМА ВХОДА ---
     function showLoginForm(callback, editMode = false) {
       const user = editMode && currentUser ? currentUser : {};
 
@@ -824,8 +1685,8 @@
 
           <div class="avatar-upload">
             <div class="avatar-circle" id="avatarCircle">
-              ${user.avatar 
-                ? `<img src="${user.avatar}" alt="">` 
+              ${user.avatar
+                ? `<img src="${user.avatar}" alt="">`
                 : (user.name ? user.name.charAt(0).toUpperCase() : '👤')}
             </div>
             <div class="avatar-hint">Нажмите, чтобы загрузить фото</div>
@@ -861,8 +1722,8 @@
 
           <div class="form-actions">
             <button class="btn-primary" id="btnSave" disabled>${editMode ? 'Сохранить' : 'Войти'}</button>
-            ${editMode 
-              ? `<button class="btn-secondary" id="btnCancel">Отмена</button>` 
+            ${editMode
+              ? `<button class="btn-secondary" id="btnCancel">Отмена</button>`
               : `<button class="btn-secondary" id="btnLater">Позже</button>`}
           </div>
         </div>
@@ -899,8 +1760,8 @@
       inputPhone.addEventListener('input', validate);
 
       function validate() {
-        const ok = inputName.value.trim().length > 0 
-                && inputSurname.value.trim().length > 0 
+        const ok = inputName.value.trim().length > 0
+                && inputSurname.value.trim().length > 0
                 && inputNick.value.trim().length > 0;
         btnSave.disabled = !ok;
       }
@@ -940,23 +1801,22 @@
       if (btnLater) btnLater.addEventListener('click', closeOverlay);
     }
 
-    // --- ПРОФИЛЬ ---
     function showProfile() {
       if (!currentUser) return;
 
       const age = calculateAge(currentUser.birth);
-      const birthDisplay = currentUser.birth 
-        ? `${formatDate(currentUser.birth)}${age !== null ? ` (${age} лет)` : ''}` 
+      const birthDisplay = currentUser.birth
+        ? `${formatDate(currentUser.birth)}${age !== null ? ` (${age} лет)` : ''}`
         : null;
 
       overlayContent.innerHTML = `
         <div class="profile-screen">
           <button class="login-close" id="profileClose">✕</button>
-          
+
           <div class="profile-header">
             <div class="profile-avatar">
-              ${currentUser.avatar 
-                ? `<img src="${currentUser.avatar}" alt="">` 
+              ${currentUser.avatar
+                ? `<img src="${currentUser.avatar}" alt="">`
                 : (currentUser.name || '?').charAt(0).toUpperCase()}
             </div>
             <div class="profile-name">${currentUser.name} ${currentUser.surname}</div>
@@ -966,20 +1826,20 @@
           <div class="profile-info">
             <div class="info-row">
               <span class="label">📅 Дата рождения</span>
-              ${birthDisplay 
-                ? `<span class="value">${birthDisplay}</span>` 
+              ${birthDisplay
+                ? `<span class="value">${birthDisplay}</span>`
                 : `<span class="link" id="addBirth">Указать</span>`}
             </div>
             <div class="info-row">
               <span class="label">📱 Телефон</span>
-              ${currentUser.phone 
-                ? `<span class="value">${currentUser.phone}</span>` 
+              ${currentUser.phone
+                ? `<span class="value">${currentUser.phone}</span>`
                 : `<span class="link" id="addPhone">Указать</span>`}
             </div>
             <div class="info-row">
               <span class="label">🖼️ Аватар</span>
-              ${currentUser.avatar 
-                ? `<span class="value">Загружен</span>` 
+              ${currentUser.avatar
+                ? `<span class="value">Загружен</span>`
                 : `<span class="link" id="addAvatar">Загрузить</span>`}
             </div>
           </div>
@@ -1017,7 +1877,6 @@
       });
     }
 
-    // --- ОТКРЫТИЕ КАРТОЧКИ ---
     function openCard(type) {
       if (!isLoggedIn) {
         showWarning(() => {
@@ -1026,33 +1885,13 @@
         return;
       }
 
+      // Прогулка
       if (type === 'walk') {
-        overlayContent.innerHTML = `
-          <div class="expanded-card">
-            <button class="expanded-close" id="closeExpanded">✕</button>
-            <div class="expanded-icon">🚶</div>
-            <div class="expanded-title">Прогуляться</div>
-            <div class="expanded-desc">Найди компанию для пешей прогулки.</div>
-            <button class="expanded-action" id="actionBtn">👟 Начать прогулку</button>
-            <div class="card-tools">
-              <h4>📊 Инструменты</h4>
-              <div class="tool-row"><span class="label">☀️ Погода</span><span class="value">+18°C, ясно</span></div>
-              <div class="tool-row"><span class="label">👥 Людей рядом</span><span class="value">8 человек</span></div>
-              <div class="tool-row"><span class="label">📏 Дистанция</span><span class="value">3.5 км</span></div>
-            </div>
-          </div>
-        `;
-
-        overlay.classList.add('active');
-
-        document.getElementById('closeExpanded').addEventListener('click', closeOverlay);
-        document.getElementById('actionBtn').addEventListener('click', () => {
-          alert(`🚀 Запускаем прогулку, ${currentUser.name}!`);
-        });
-
+        openWalkScreen(currentUser);
         return;
       }
 
+      // Остальные — заглушка
       overlayContent.innerHTML = `
         <div class="expanded-card">
           <button class="expanded-close" id="closeExpanded">✕</button>
@@ -1071,7 +1910,6 @@
       document.getElementById('closePlaceholder').addEventListener('click', closeOverlay);
     }
 
-    // --- СОБЫТИЯ ---
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('click', () => {
         const type = card.getAttribute('data-card');
@@ -1088,14 +1926,11 @@
       if (e.key === 'Escape') closeOverlay();
     });
 
-    // --- ГЛОБАЛЬНЫЙ ТАП ПО ФОНУ (закрывает любое окно) ---
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeOverlay();
     });
 
-    // --- СТАРТ ---
     loadState();
-
   })();
 </script>
 </body>
