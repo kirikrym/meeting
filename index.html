@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Встреча</title>
 
-  <!-- Leaflet (карта) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    /* ============================================================
-       ОБЩИЕ СТИЛИ
-       ============================================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -25,6 +21,7 @@
       --text-muted: #8B95A9;
       --radius: 28px;
       --danger: #FF4D6D;
+      --success: #10b981;
     }
 
     html, body {
@@ -186,7 +183,6 @@
     }
 
     .card:active { transform: scale(0.98); }
-
     .card-icon { font-size: 32px; flex-shrink: 0; line-height: 1; }
 
     .card-text {
@@ -257,7 +253,6 @@
       100% { opacity: 1; }
     }
 
-    /* --- РАСКРЫТАЯ КАРТОЧКА --- */
     .expanded-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -308,32 +303,10 @@
 
     .expanded-action:active { transform: scale(0.96); }
 
-    .card-tools {
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .card-tools h4 {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .tool-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 15px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .tool-row:last-child { border-bottom: none; }
-    .tool-row .label { color: var(--text-muted); }
-    .tool-row .value { font-weight: 500; }
+    .placeholder-content { text-align: center; padding: 20px 0; }
+    .placeholder-content .big-icon { font-size: 64px; margin-bottom: 16px; }
+    .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
+    .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
 
     /* --- ОКНО-ПРЕДУПРЕЖДЕНИЕ --- */
     .warning-screen {
@@ -424,7 +397,6 @@
     .avatar-circle img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
     .avatar-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
 
-    /* --- ФОРМА --- */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -575,12 +547,6 @@
 
     .info-row .link:active { opacity: 0.7; }
 
-    /* --- ЗАГЛУШКА --- */
-    .placeholder-content { text-align: center; padding: 20px 0; }
-    .placeholder-content .big-icon { font-size: 64px; margin-bottom: 16px; }
-    .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
-    .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
-
     /* --- АДАПТИВ --- */
     @media (orientation: landscape) and (min-width: 560px) {
       .form-grid { grid-template-columns: 1fr 1fr; }
@@ -727,7 +693,6 @@
 
     .walk-slider.expanded { height: 55vh; }
 
-    /* --- ВЕРХНЯЯ ЧАСТЬ СЛАЙДЕРА (жест + статистика) --- */
     .slider-header {
       flex-shrink: 0;
       cursor: pointer;
@@ -747,11 +712,8 @@
       transition: 0.2s;
     }
 
-    .slider-header:hover .slider-handle {
-      background: #6C5CE7;
-    }
+    .slider-header:hover .slider-handle { background: #6C5CE7; }
 
-    /* --- СТАТИСТИКА В СТРОКУ --- */
     .slider-stats {
       display: flex;
       align-items: center;
@@ -763,22 +725,10 @@
       overflow: hidden;
     }
 
-    .stat-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .stat-item { display: inline-flex; align-items: center; gap: 4px; }
+    .stat-item b { color: #fff; font-weight: 600; }
+    .stat-sep { color: #4A5568; }
 
-    .stat-item b {
-      color: #fff;
-      font-weight: 600;
-    }
-
-    .stat-sep {
-      color: #4A5568;
-    }
-
-    /* --- ТЕЛО СЛАЙДЕРА (контент) --- */
     .slider-body {
       flex: 1;
       overflow-y: auto;
@@ -795,7 +745,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* --- КАРУСЕЛЬ --- */
     .carousel {
       overflow-x: auto;
       overflow-y: hidden;
@@ -986,6 +935,210 @@
 
     .btn-expand:active { transform: scale(0.96); }
 
+    /* --- ОЖИДАНИЕ ОТВЕТА --- */
+    .waiting-state {
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .waiting-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      animation: pulse-wait 2s infinite;
+    }
+
+    @keyframes pulse-wait {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+
+    .waiting-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .waiting-sub {
+      font-size: 14px;
+      color: #8B95A9;
+      margin-bottom: 16px;
+    }
+
+    .waiting-timer {
+      font-size: 32px;
+      font-weight: 700;
+      color: #6C5CE7;
+      margin-bottom: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn-cancel {
+      padding: 14px 24px;
+      background: transparent;
+      border: 1.5px solid #2A3442;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .btn-cancel:active { background: #2A3442; }
+
+    /* --- РЕЗУЛЬТАТ --- */
+    .result-state {
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .result-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+
+    .result-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .result-sub {
+      font-size: 14px;
+      color: #8B95A9;
+      margin-bottom: 20px;
+    }
+
+    .result-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* --- БАННЕР УВЕДОМЛЕНИЯ --- */
+    .notif-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: 12px;
+      background: #1E2633;
+      border: 1px solid #2A3442;
+      border-radius: 20px;
+      padding: 16px;
+      z-index: 1500;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transform: translateY(-150%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .notif-banner.active { transform: translateY(0); }
+    .notif-banner.swiping { transition: none; }
+
+    .notif-banner-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .notif-banner-icon {
+      font-size: 22px;
+    }
+
+    .notif-banner-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .notif-banner-body {
+      font-size: 14px;
+      color: #8B95A9;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .notif-banner-timer {
+      font-size: 13px;
+      color: #6C5CE7;
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .notif-banner-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .notif-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .notif-btn.accept { background: #10b981; color: #fff; }
+    .notif-btn.accept:active { transform: scale(0.96); }
+
+    .notif-btn.decline {
+      background: transparent;
+      border: 1.5px solid #2A3442;
+      color: #fff;
+    }
+
+    .notif-btn.decline:active { background: #2A3442; }
+
+    /* --- МИНИ-ПОЛОСКА (после свайпа) --- */
+    .notif-mini {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: 12px;
+      background: #1E2633;
+      border: 1px solid #2A3442;
+      border-radius: 30px;
+      padding: 8px 16px;
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      transform: translateY(-150%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    .notif-mini.active { transform: translateY(0); }
+
+    .notif-mini-icon { font-size: 16px; }
+    .notif-mini-text {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 600;
+    }
+    .notif-mini-timer {
+      font-size: 13px;
+      color: #6C5CE7;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
     @media (max-width: 400px) {
       .carousel-card { flex: 0 0 70%; min-height: 140px; }
       .carousel-track { padding: 0 calc(50% - 35%); }
@@ -1018,55 +1171,37 @@
 
       <div class="card" data-card="walk">
         <div class="card-icon">🚶</div>
-        <div class="card-text">
-          <h3>Прогуляться</h3>
-          <p>Найди попутчика</p>
-        </div>
+        <div class="card-text"><h3>Прогуляться</h3><p>Найди попутчика</p></div>
         <span class="card-badge">Активно</span>
       </div>
 
       <div class="card" data-card="dog">
         <div class="card-icon">🐕</div>
-        <div class="card-text">
-          <h3>Выгул собак</h3>
-          <p>Друзья для питомца</p>
-        </div>
+        <div class="card-text"><h3>Выгул собак</h3><p>Друзья для питомца</p></div>
         <span class="card-badge">Скоро</span>
       </div>
 
       <div class="card" data-card="chat">
         <div class="card-icon">💬</div>
-        <div class="card-text">
-          <h3>Разговоры по душам</h3>
-          <p>Анонимное общение</p>
-        </div>
+        <div class="card-text"><h3>Разговоры по душам</h3><p>Анонимное общение</p></div>
         <span class="card-badge">Скоро</span>
       </div>
 
       <div class="card" data-card="lunch">
         <div class="card-icon">🍔</div>
-        <div class="card-text">
-          <h3>Обед / Кофе</h3>
-          <p>Составь компанию</p>
-        </div>
+        <div class="card-text"><h3>Обед / Кофе</h3><p>Составь компанию</p></div>
         <span class="card-badge">Скоро</span>
       </div>
 
       <div class="card" data-card="ride">
         <div class="card-icon">🚗</div>
-        <div class="card-text">
-          <h3>Попутчики</h3>
-          <p>Найди попутчика</p>
-        </div>
+        <div class="card-text"><h3>Попутчики</h3><p>Найди попутчика</p></div>
         <span class="card-badge">Скоро</span>
       </div>
 
       <div class="card" data-card="random">
         <div class="card-icon">🎲</div>
-        <div class="card-text">
-          <h3>Случайная встреча</h3>
-          <p>По интересам</p>
-        </div>
+        <div class="card-text"><h3>Случайная встреча</h3><p>По интересам</p></div>
         <span class="card-badge">Новое</span>
       </div>
 
@@ -1080,6 +1215,39 @@
 
 <script>
   "use strict";
+
+  // ============================================================
+  // ЗВУК (Web Audio API)
+  // ============================================================
+  function playNotificationSound() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+
+      // Два тона — приятный "дзынь"
+      [880, 1320].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, now + i * 0.12);
+        gain.gain.linearRampToValueAtTime(0.15, now + i * 0.12 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.12);
+        osc.stop(now + i * 0.12 + 0.4);
+      });
+    } catch (e) {
+      console.warn('Звук не сработал:', e);
+    }
+  }
+
+  function vibrate() {
+    if (navigator.vibrate) {
+      try { navigator.vibrate(200); } catch (e) {}
+    }
+  }
 
   // ============================================================
   // МОДУЛЬ "ПРОГУЛЯТЬСЯ"
@@ -1098,6 +1266,17 @@
     userLng: null,
     watchId: null,
     sliderState: 'medium',
+    // Запрос
+    requestTimer: null,
+    requestTimeout: null,
+    requestSecondsLeft: 60,
+    requestTarget: null,
+    requestCancelled: false,
+    // Баннер
+    bannerTimer: null,
+    bannerSecondsLeft: 60,
+    bannerUser: null,
+    bannerCollapsed: false,
   };
 
   const MOCK_NAMES = ['Алексей', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Ольга', 'Иван', 'Екатерина', 'Максим', 'Юлия'];
@@ -1165,7 +1344,7 @@
         <div class="walk-avatar" id="walkAvatar"></div>
       </div>
 
-      <div class="walk-map-wrapper">
+      <div class="walk-map-wrapper" id="walkMapWrapper">
         <div id="walkMap"></div>
       </div>
 
@@ -1197,9 +1376,7 @@
     const sorted = getSortedUsers();
 
     if (sorted.length === 0) {
-      stats.innerHTML = `
-        <span class="stat-item">👥 Никого рядом</span>
-      `;
+      stats.innerHTML = `<span class="stat-item">👥 Никого рядом</span>`;
       body.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">😔</div>
@@ -1215,7 +1392,6 @@
     const avgDist = sorted.reduce((sum, u) =>
       sum + calcDistance(walkState.userLat, walkState.userLng, u.lat, u.lng), 0) / sorted.length;
 
-    // Статистика в одну строку
     stats.innerHTML = `
       <span class="stat-item">👥 <b>${sorted.length}</b></span>
       <span class="stat-sep">·</span>
@@ -1246,13 +1422,9 @@
     body.innerHTML = `
       <div class="carousel-title">─── Кто рядом ───</div>
       <div class="carousel" id="carousel">
-        <div class="carousel-track" id="carouselTrack">
-          ${cardsHtml}
-        </div>
+        <div class="carousel-track" id="carouselTrack">${cardsHtml}</div>
       </div>
-      <div class="carousel-dots" id="carouselDots">
-        ${dotsHtml}
-      </div>
+      <div class="carousel-dots" id="carouselDots">${dotsHtml}</div>
     `;
 
     setupCarousel();
@@ -1265,9 +1437,7 @@
 
     const sorted = getSortedUsers();
 
-    requestAnimationFrame(() => {
-      scrollToIndex(walkState.currentIndex, false);
-    });
+    requestAnimationFrame(() => scrollToIndex(walkState.currentIndex, false));
 
     carousel.addEventListener('scroll', () => {
       const cardWidth = carousel.clientWidth * 0.65 + 12;
@@ -1304,7 +1474,6 @@
     if (!cards[idx]) return;
     const cardWidth = carousel.clientWidth * 0.65 + 12;
     carousel.scrollTo({ left: idx * cardWidth, behavior: smooth ? 'smooth' : 'auto' });
-
     cards.forEach((c, i) => c.classList.toggle('centered', i === idx));
     walkState.currentIndex = idx;
     updateDots();
@@ -1326,7 +1495,6 @@
 
     slider.classList.add('expanded');
 
-    // Статистика выбранного тоже в строку
     stats.innerHTML = `
       <span class="stat-item">📏 <b>${formatDistance(d)}</b></span>
       <span class="stat-sep">·</span>
@@ -1356,8 +1524,310 @@
       alert(`💬 Чат с ${user.name} — в разработке`);
     });
     document.getElementById('btnJoin').addEventListener('click', () => {
-      alert(`👟 Присоединяемся к ${user.name} — в разработке`);
+      sendJoinRequest(user);
     });
+  }
+
+  // --- ОТПРАВКА ЗАПРОСА ---
+  function sendJoinRequest(user) {
+    if (walkState.requestTimer) return;
+
+    walkState.requestTarget = user;
+    walkState.requestSecondsLeft = 60;
+    walkState.requestCancelled = false;
+
+    const stats = document.getElementById('sliderStats');
+    const body = document.getElementById('sliderBody');
+
+    stats.innerHTML = `
+      <span class="stat-item">⏳ <b>Ожидаем ответа</b></span>
+    `;
+
+    function renderWaiting() {
+      body.innerHTML = `
+        <div class="waiting-state">
+          <div class="waiting-icon">⏳</div>
+          <div class="waiting-title">Ожидаем ответа...</div>
+          <div class="waiting-sub">${user.name} получил приглашение</div>
+          <div class="waiting-timer" id="waitingTimer">${walkState.requestSecondsLeft} сек</div>
+          <button class="btn-cancel" id="btnCancelRequest">❌ Отменить</button>
+        </div>
+      `;
+      document.getElementById('btnCancelRequest').addEventListener('click', cancelJoinRequest);
+    }
+
+    renderWaiting();
+
+    // Таймер
+    walkState.requestTimer = setInterval(() => {
+      walkState.requestSecondsLeft--;
+      const t = document.getElementById('waitingTimer');
+      if (t) t.textContent = walkState.requestSecondsLeft + ' сек';
+
+      if (walkState.requestSecondsLeft <= 0) {
+        clearInterval(walkState.requestTimer);
+        walkState.requestTimer = null;
+        showTimeout(user);
+      }
+    }, 1000);
+
+    // Симуляция ответа 5-10 сек
+    const delay = 5000 + Math.random() * 5000;
+    walkState.requestTimeout = setTimeout(() => {
+      if (walkState.requestCancelled) return;
+      if (walkState.requestTimer) {
+        clearInterval(walkState.requestTimer);
+        walkState.requestTimer = null;
+      }
+
+      const accepted = Math.random() < 0.7;
+      if (accepted) {
+        showAccepted(user);
+      } else {
+        showDeclined(user);
+      }
+    }, delay);
+  }
+
+  function cancelJoinRequest() {
+    walkState.requestCancelled = true;
+    if (walkState.requestTimer) {
+      clearInterval(walkState.requestTimer);
+      walkState.requestTimer = null;
+    }
+    if (walkState.requestTimeout) {
+      clearTimeout(walkState.requestTimeout);
+      walkState.requestTimeout = null;
+    }
+    walkState.requestTarget = null;
+    renderSlider();
+  }
+
+  function showTimeout(user) {
+    const body = document.getElementById('sliderBody');
+    body.innerHTML = `
+      <div class="result-state">
+        <div class="result-icon">⏰</div>
+        <div class="result-title">Время вышло</div>
+        <div class="result-sub">${user.name} не ответил</div>
+        <div class="result-actions">
+          <button class="btn-cancel" id="btnBackToList">← Назад к списку</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('btnBackToList').addEventListener('click', () => {
+      resetSelection();
+    });
+  }
+
+  function showAccepted(user) {
+    const body = document.getElementById('sliderBody');
+    const stats = document.getElementById('sliderStats');
+    stats.innerHTML = `<span class="stat-item">✅ <b>Принято</b></span>`;
+    body.innerHTML = `
+      <div class="result-state">
+        <div class="result-icon">✅</div>
+        <div class="result-title">${user.name} принял!</div>
+        <div class="result-sub">Можно начинать прогулку</div>
+        <div class="result-actions">
+          <button class="btn-cancel" id="btnOpenChat" style="background:#6C5CE7;border:none;color:#fff;">💬 Открыть чат</button>
+          <button class="btn-cancel" id="btnBackToList2">← Назад к списку</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('btnOpenChat').addEventListener('click', () => {
+      alert('💬 Чат — в разработке');
+    });
+    document.getElementById('btnBackToList2').addEventListener('click', resetSelection);
+  }
+
+  function showDeclined(user) {
+    const body = document.getElementById('sliderBody');
+    const stats = document.getElementById('sliderStats');
+    stats.innerHTML = `<span class="stat-item">❌ <b>Отклонено</b></span>`;
+    body.innerHTML = `
+      <div class="result-state">
+        <div class="result-icon">❌</div>
+        <div class="result-title">${user.name} не может сейчас</div>
+        <div class="result-sub">Попробуй другого человека</div>
+        <div class="result-actions">
+          <button class="btn-cancel" id="btnBackToList3">← Назад к списку</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('btnBackToList3').addEventListener('click', resetSelection);
+  }
+
+  // --- БАННЕР ПОЛУЧАТЕЛЯ (тест) ---
+  function showTestBanner() {
+    // Берём случайного мока
+    if (!walkState.nearbyUsers.length) {
+      if (walkState.userLat) {
+        walkState.nearbyUsers = generateMockUsers(walkState.userLat, walkState.userLng);
+      } else {
+        alert('Сначала открой карту прогулки, чтобы сгенерировать людей');
+        return;
+      }
+    }
+
+    const user = walkState.nearbyUsers[Math.floor(Math.random() * walkState.nearbyUsers.length)];
+    showIncomingBanner(user);
+  }
+
+  function showIncomingBanner(fromUser) {
+    // Убираем предыдущий, если есть
+    removeBanner();
+
+    const wrapper = document.getElementById('walkMapWrapper');
+    if (!wrapper) return;
+
+    const banner = document.createElement('div');
+    banner.className = 'notif-banner';
+    banner.id = 'notifBanner';
+    banner.innerHTML = `
+      <div class="notif-banner-header">
+        <div class="notif-banner-icon">🚶</div>
+        <div class="notif-banner-title">Приглашение на прогулку</div>
+      </div>
+      <div class="notif-banner-body">
+        ${fromUser.name} хочет присоединиться<br>
+        📏 ${formatDistance(calcDistance(walkState.userLat, walkState.userLng, fromUser.lat, fromUser.lng))} от вас
+      </div>
+      <div class="notif-banner-timer" id="bannerTimer">⏱ Осталось: 60 сек</div>
+      <div class="notif-banner-actions">
+        <button class="notif-btn accept" id="bannerAccept">✅ Принять</button>
+        <button class="notif-btn decline" id="bannerDecline">❌ Отклонить</button>
+      </div>
+    `;
+    wrapper.appendChild(banner);
+    requestAnimationFrame(() => banner.classList.add('active'));
+
+    // Звук + вибрация
+    playNotificationSound();
+    vibrate();
+
+    walkState.bannerUser = fromUser;
+    walkState.bannerSecondsLeft = 60;
+    walkState.bannerCollapsed = false;
+
+    // Таймер
+    walkState.bannerTimer = setInterval(() => {
+      walkState.bannerSecondsLeft--;
+      const t = document.getElementById('bannerTimer');
+      const miniT = document.getElementById('miniTimer');
+      if (t) t.textContent = '⏱ Осталось: ' + walkState.bannerSecondsLeft + ' сек';
+      if (miniT) miniT.textContent = walkState.bannerSecondsLeft + ' сек';
+
+      if (walkState.bannerSecondsLeft <= 0) {
+        endBanner();
+      }
+    }, 1000);
+
+    // Обработчики
+    document.getElementById('bannerAccept').addEventListener('click', () => {
+      playNotificationSound();
+      alert(`✅ Вы приняли приглашение от ${fromUser.name}`);
+      endBanner();
+    });
+
+    document.getElementById('bannerDecline').addEventListener('click', () => {
+      alert(`❌ Вы отклонили приглашение от ${fromUser.name}`);
+      endBanner();
+    });
+
+    // Свайп вверх
+    setupBannerSwipe(banner);
+  }
+
+  function setupBannerSwipe(banner) {
+    let startY = 0;
+    let currentY = 0;
+    let isSwiping = false;
+
+    banner.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      currentY = startY;
+      isSwiping = true;
+      banner.classList.add('swiping');
+    }, { passive: true });
+
+    banner.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      currentY = e.touches[0].clientY;
+      const diff = startY - currentY;
+      if (diff > 0) {
+        banner.style.transform = `translateY(-${Math.min(diff, 150)}px)`;
+      }
+    }, { passive: true });
+
+    banner.addEventListener('touchend', () => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      banner.classList.remove('swiping');
+
+      const diff = startY - currentY;
+      if (diff > 40) {
+        // Свайп — сворачиваем в мини-полоску
+        collapseBanner();
+      } else {
+        banner.style.transform = '';
+      }
+    });
+  }
+
+  function collapseBanner() {
+    const banner = document.getElementById('notifBanner');
+    if (banner) {
+      banner.classList.remove('active');
+      setTimeout(() => banner.remove(), 350);
+    }
+
+    walkState.bannerCollapsed = true;
+
+    // Создаём мини-полоску
+    const wrapper = document.getElementById('walkMapWrapper');
+    if (!wrapper) return;
+
+    const mini = document.createElement('div');
+    mini.className = 'notif-mini';
+    mini.id = 'notifMini';
+    mini.innerHTML = `
+      <span class="notif-mini-icon">🚶</span>
+      <span class="notif-mini-text">Приглашение от ${walkState.bannerUser.name}</span>
+      <span class="notif-mini-timer" id="miniTimer">${walkState.bannerSecondsLeft} сек</span>
+    `;
+    wrapper.appendChild(mini);
+    requestAnimationFrame(() => mini.classList.add('active'));
+
+    // Тап — вернуть баннер
+    mini.addEventListener('click', () => {
+      mini.classList.remove('active');
+      setTimeout(() => mini.remove(), 350);
+      showIncomingBanner(walkState.bannerUser);
+    });
+  }
+
+  function endBanner() {
+    if (walkState.bannerTimer) {
+      clearInterval(walkState.bannerTimer);
+      walkState.bannerTimer = null;
+    }
+    removeBanner();
+    walkState.bannerUser = null;
+    walkState.bannerCollapsed = false;
+  }
+
+  function removeBanner() {
+    const banner = document.getElementById('notifBanner');
+    if (banner) {
+      banner.classList.remove('active');
+      setTimeout(() => banner.remove(), 350);
+    }
+    const mini = document.getElementById('notifMini');
+    if (mini) {
+      mini.classList.remove('active');
+      setTimeout(() => mini.remove(), 350);
+    }
   }
 
   function resetSelection() {
@@ -1369,9 +1839,22 @@
       walkState.routeLine = null;
     }
 
+    // Сброс запроса
+    if (walkState.requestTimer) {
+      clearInterval(walkState.requestTimer);
+      walkState.requestTimer = null;
+    }
+    if (walkState.requestTimeout) {
+      clearTimeout(walkState.requestTimeout);
+      walkState.requestTimeout = null;
+    }
+    walkState.requestCancelled = false;
+    walkState.requestTarget = null;
+
     renderSlider();
   }
 
+  // --- КАРТА ---
   function initMap(lat, lng) {
     if (walkState.map) return;
 
@@ -1471,7 +1954,6 @@
 
   function expandRadius() {
     if (!walkState.userLat) return;
-
     const extra = [];
     for (let i = 0; i < 5; i++) {
       const angle = Math.random() * 2 * Math.PI;
@@ -1485,13 +1967,11 @@
         status: 'online',
       });
     }
-
     walkState.nearbyUsers = walkState.nearbyUsers.concat(extra);
     extra.forEach(u => addMarkerFor(u));
     renderSlider();
   }
 
-  // --- ЖЕСТЫ СЛАЙДЕРА (теперь на всю верхнюю часть) ---
   function setupSliderGestures() {
     const slider = document.getElementById('walkSlider');
     const header = document.getElementById('sliderHeader');
@@ -1519,15 +1999,10 @@
     header.addEventListener('touchmove', (e) => {
       const diff = startY - e.touches[0].clientY;
       if (Math.abs(diff) > 20) moved = true;
-
-      if (startState === 'medium' && diff < -40) {
-        setState('collapsed');
-      } else if (startState === 'collapsed' && diff > 40) {
-        setState('medium');
-      }
+      if (startState === 'medium' && diff < -40) setState('collapsed');
+      else if (startState === 'collapsed' && diff > 40) setState('medium');
     }, { passive: true });
 
-    // Тап по header — переключение (если не было свайпа)
     header.addEventListener('click', () => {
       if (moved) return;
       if (walkState.sliderState === 'medium') setState('collapsed');
@@ -1544,27 +2019,20 @@
 
     const av = document.getElementById('walkAvatar');
     if (av) {
-      if (user && user.avatar) {
-        av.innerHTML = `<img src="${user.avatar}" alt="">`;
-      } else if (user && user.name) {
-        av.textContent = user.name.charAt(0).toUpperCase();
-      } else {
-        av.textContent = '?';
-      }
+      if (user && user.avatar) av.innerHTML = `<img src="${user.avatar}" alt="">`;
+      else if (user && user.name) av.textContent = user.name.charAt(0).toUpperCase();
+      else av.textContent = '?';
     }
 
     const back = document.getElementById('walkBack');
     if (back) back.addEventListener('click', closeWalkScreen);
 
     if (av) {
-      av.addEventListener('click', () => {
-        alert('👤 Профиль — в разработке');
-      });
+      av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
     }
 
     startGeolocation();
     setupSliderGestures();
-
     document.addEventListener('keydown', escHandler);
   }
 
@@ -1575,6 +2043,11 @@
   function closeWalkScreen() {
     const el = document.getElementById('walkScreen');
     if (!el) return;
+
+    // Чистим таймеры
+    if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
+    if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
+    if (walkState.bannerTimer) { clearInterval(walkState.bannerTimer); walkState.bannerTimer = null; }
 
     if (walkState.watchId) {
       navigator.geolocation.clearWatch(walkState.watchId);
@@ -1596,6 +2069,8 @@
     walkState.userLat = null;
     walkState.userLng = null;
     walkState.sliderState = 'medium';
+    walkState.bannerUser = null;
+    walkState.bannerCollapsed = false;
 
     el.classList.remove('active');
     setTimeout(() => el.remove(), 350);
@@ -1644,11 +2119,8 @@
       if (isLoggedIn && currentUser) {
         loginBtn.classList.add('hidden');
         avatar.classList.remove('hidden');
-        if (currentUser.avatar) {
-          avatar.innerHTML = `<img src="${currentUser.avatar}" alt="">`;
-        } else {
-          avatar.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
-        }
+        if (currentUser.avatar) avatar.innerHTML = `<img src="${currentUser.avatar}" alt="">`;
+        else avatar.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
       } else {
         loginBtn.classList.remove('hidden');
         avatar.classList.add('hidden');
@@ -1740,9 +2212,7 @@
 
           <div class="avatar-upload">
             <div class="avatar-circle" id="avatarCircle">
-              ${user.avatar
-                ? `<img src="${user.avatar}" alt="">`
-                : (user.name ? user.name.charAt(0).toUpperCase() : '👤')}
+              ${user.avatar ? `<img src="${user.avatar}" alt="">` : (user.name ? user.name.charAt(0).toUpperCase() : '👤')}
             </div>
             <div class="avatar-hint">Нажмите, чтобы загрузить фото</div>
             <input type="file" id="avatarInput" accept="image/*" style="display:none;">
@@ -1803,9 +2273,7 @@
         if (inputNick.dataset.manual === 'true') return;
         const name = inputName.value.trim();
         const surname = inputSurname.value.trim();
-        if (name && surname) {
-          inputNick.value = generateNickname(name, surname, inputBirth.value);
-        }
+        if (name && surname) inputNick.value = generateNickname(name, surname, inputBirth.value);
       }
 
       inputName.addEventListener('input', () => { validate(); if (!editMode && !inputNick.value.trim()) autoNick(); });
@@ -1815,9 +2283,7 @@
       inputPhone.addEventListener('input', validate);
 
       function validate() {
-        const ok = inputName.value.trim().length > 0
-                && inputSurname.value.trim().length > 0
-                && inputNick.value.trim().length > 0;
+        const ok = inputName.value.trim().length > 0 && inputSurname.value.trim().length > 0 && inputNick.value.trim().length > 0;
         btnSave.disabled = !ok;
       }
       validate();
@@ -1858,7 +2324,6 @@
 
     function showProfile() {
       if (!currentUser) return;
-
       const age = calculateAge(currentUser.birth);
       const birthDisplay = currentUser.birth
         ? `${formatDate(currentUser.birth)}${age !== null ? ` (${age} лет)` : ''}`
@@ -1870,9 +2335,7 @@
 
           <div class="profile-header">
             <div class="profile-avatar">
-              ${currentUser.avatar
-                ? `<img src="${currentUser.avatar}" alt="">`
-                : (currentUser.name || '?').charAt(0).toUpperCase()}
+              ${currentUser.avatar ? `<img src="${currentUser.avatar}" alt="">` : (currentUser.name || '?').charAt(0).toUpperCase()}
             </div>
             <div class="profile-name">${currentUser.name} ${currentUser.surname}</div>
             <div class="profile-nick">@${currentUser.nick}</div>
@@ -1881,27 +2344,22 @@
           <div class="profile-info">
             <div class="info-row">
               <span class="label">📅 Дата рождения</span>
-              ${birthDisplay
-                ? `<span class="value">${birthDisplay}</span>`
-                : `<span class="link" id="addBirth">Указать</span>`}
+              ${birthDisplay ? `<span class="value">${birthDisplay}</span>` : `<span class="link" id="addBirth">Указать</span>`}
             </div>
             <div class="info-row">
               <span class="label">📱 Телефон</span>
-              ${currentUser.phone
-                ? `<span class="value">${currentUser.phone}</span>`
-                : `<span class="link" id="addPhone">Указать</span>`}
+              ${currentUser.phone ? `<span class="value">${currentUser.phone}</span>` : `<span class="link" id="addPhone">Указать</span>`}
             </div>
             <div class="info-row">
               <span class="label">🖼️ Аватар</span>
-              ${currentUser.avatar
-                ? `<span class="value">Загружен</span>`
-                : `<span class="link" id="addAvatar">Загрузить</span>`}
+              ${currentUser.avatar ? `<span class="value">Загружен</span>` : `<span class="link" id="addAvatar">Загрузить</span>`}
             </div>
           </div>
 
           <div class="form-actions">
             <button class="btn-primary" id="btnEdit">✏️ Редактировать профиль</button>
             <button class="btn-secondary" id="btnLogout">🚪 Выйти из профиля</button>
+            <button class="btn-secondary" id="btnTestNotif" style="border-color:#6C5CE7;color:#A29BFE;">🔔 Тест уведомления</button>
           </div>
         </div>
       `;
@@ -1923,6 +2381,24 @@
         }
       });
 
+      document.getElementById('btnTestNotif').addEventListener('click', () => {
+        closeOverlay();
+        // Открываем карту прогулки и там показываем баннер
+        setTimeout(() => {
+          openWalkScreen(currentUser);
+          // Ждём, пока карта загрузится
+          let attempts = 0;
+          const checkInterval = setInterval(() => {
+            attempts++;
+            if (walkState.userLat && walkState.nearbyUsers.length > 0) {
+              clearInterval(checkInterval);
+              showTestBanner();
+            }
+            if (attempts > 30) clearInterval(checkInterval);
+          }, 300);
+        }, 200);
+      });
+
       ['addBirth', 'addPhone', 'addAvatar'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('click', () => {
@@ -1934,9 +2410,7 @@
 
     function openCard(type) {
       if (!isLoggedIn) {
-        showWarning(() => {
-          showLoginForm(() => openCard(type));
-        });
+        showWarning(() => showLoginForm(() => openCard(type)));
         return;
       }
 
