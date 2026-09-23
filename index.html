@@ -144,7 +144,6 @@
     }
     .section-title span { color: var(--text-muted); font-weight: 400; font-size: 15px; }
 
-    /* --- СЕТКА КАРТОЧЕК --- */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -164,7 +163,6 @@
       .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
     }
 
-    /* --- КАРТОЧКА --- */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -547,7 +545,6 @@
 
     .info-row .link:active { opacity: 0.7; }
 
-    /* --- АДАПТИВ --- */
     @media (orientation: landscape) and (min-width: 560px) {
       .form-grid { grid-template-columns: 1fr 1fr; }
       .form-group.full { grid-column: 1 / -1; }
@@ -577,7 +574,7 @@
     .hidden { display: none !important; }
 
     /* ============================================================
-       СТИЛИ ЭКРАНА "ПРОГУЛЯТЬСЯ"
+       ЭКРАН "ПРОГУЛЯТЬСЯ"
        ============================================================ */
 
     .walk-screen {
@@ -673,7 +670,6 @@
     #walkMap .leaflet-top,
     #walkMap .leaflet-bottom { z-index: 2 !important; }
 
-    /* --- СЛАЙДЕР --- */
     .walk-slider {
       position: absolute;
       bottom: 0;
@@ -829,7 +825,6 @@
       border-radius: 3px;
     }
 
-    /* --- ВЫБРАННЫЙ --- */
     .selected-user {
       display: flex;
       align-items: center;
@@ -885,15 +880,6 @@
 
     .selected-close:active { background: #2A3442; color: #fff; }
 
-    .selected-details {
-      padding: 14px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .detail-row { font-size: 14px; color: #8B95A9; }
-
     .selected-actions { display: flex; gap: 10px; margin-top: 8px; }
 
     .btn-action {
@@ -935,11 +921,7 @@
 
     .btn-expand:active { transform: scale(0.96); }
 
-    /* --- ОЖИДАНИЕ ОТВЕТА --- */
-    .waiting-state {
-      text-align: center;
-      padding: 20px 10px;
-    }
+    .waiting-state { text-align: center; padding: 20px 10px; }
 
     .waiting-icon {
       font-size: 48px;
@@ -952,18 +934,8 @@
       50% { opacity: 0.5; transform: scale(1.1); }
     }
 
-    .waiting-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .waiting-sub {
-      font-size: 14px;
-      color: #8B95A9;
-      margin-bottom: 16px;
-    }
+    .waiting-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .waiting-sub { font-size: 14px; color: #8B95A9; margin-bottom: 16px; }
 
     .waiting-timer {
       font-size: 32px;
@@ -988,29 +960,10 @@
 
     .btn-cancel:active { background: #2A3442; }
 
-    /* --- РЕЗУЛЬТАТ --- */
-    .result-state {
-      text-align: center;
-      padding: 20px 10px;
-    }
-
-    .result-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
-
-    .result-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .result-sub {
-      font-size: 14px;
-      color: #8B95A9;
-      margin-bottom: 20px;
-    }
+    .result-state { text-align: center; padding: 20px 10px; }
+    .result-icon { font-size: 56px; margin-bottom: 12px; }
+    .result-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .result-sub { font-size: 14px; color: #8B95A9; margin-bottom: 20px; }
 
     .result-actions {
       display: flex;
@@ -1020,7 +973,7 @@
       margin: 0 auto;
     }
 
-    /* --- БАННЕР УВЕДОМЛЕНИЯ --- */
+    /* --- БАННЕР --- */
     .notif-banner {
       position: absolute;
       top: 0;
@@ -1050,15 +1003,8 @@
       margin-bottom: 8px;
     }
 
-    .notif-banner-icon {
-      font-size: 22px;
-    }
-
-    .notif-banner-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-    }
+    .notif-banner-icon { font-size: 22px; }
+    .notif-banner-title { font-size: 14px; font-weight: 700; color: #fff; }
 
     .notif-banner-body {
       font-size: 14px;
@@ -1075,10 +1021,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .notif-banner-actions {
-      display: flex;
-      gap: 8px;
-    }
+    .notif-banner-actions { display: flex; gap: 8px; }
 
     .notif-btn {
       flex: 1;
@@ -1102,7 +1045,7 @@
 
     .notif-btn.decline:active { background: #2A3442; }
 
-    /* --- МИНИ-ПОЛОСКА (после свайпа) --- */
+    /* --- МИНИ-ПОЛОСКА --- */
     .notif-mini {
       position: absolute;
       top: 0;
@@ -1127,17 +1070,201 @@
     .notif-mini.active { transform: translateY(0); }
 
     .notif-mini-icon { font-size: 16px; }
-    .notif-mini-text {
-      font-size: 13px;
-      color: #fff;
-      font-weight: 600;
-    }
+    .notif-mini-text { font-size: 13px; color: #fff; font-weight: 600; }
+
     .notif-mini-timer {
       font-size: 13px;
       color: #6C5CE7;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
+
+    /* ============================================================
+       ЭКРАН ЧАТА
+       ============================================================ */
+    .chat-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: #0B0E14;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      overflow: hidden;
+    }
+
+    .chat-screen.active { transform: translateY(0); }
+
+    .chat-top-area {
+      height: 60px;
+      flex-shrink: 0;
+      background: rgba(11, 14, 20, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2A3442;
+      cursor: pointer;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #131A23;
+      border-bottom: 1px solid #2A3442;
+      flex-shrink: 0;
+    }
+
+    .chat-back {
+      background: none;
+      border: none;
+      color: #A29BFE;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .chat-back:active { background: rgba(108, 92, 231, 0.15); }
+
+    .chat-header-avatar {
+      width: 40px;
+      height: 40px;
+      background: #6C5CE7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .chat-header-info { flex: 1; min-width: 0; }
+
+    .chat-header-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-header-status { font-size: 12px; color: #8B95A9; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #2A3442; border-radius: 4px; }
+
+    .chat-empty {
+      text-align: center;
+      color: #8B95A9;
+      font-size: 14px;
+      margin-top: 40px;
+    }
+
+    .msg {
+      max-width: 78%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      animation: msgFade 0.25s ease;
+    }
+
+    @keyframes msgFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.me {
+      align-self: flex-end;
+      background: #6C5CE7;
+      color: #fff;
+      border-bottom-right-radius: 6px;
+    }
+
+    .msg.them {
+      align-self: flex-start;
+      background: #1E2633;
+      color: #fff;
+      border-bottom-left-radius: 6px;
+    }
+
+    .msg-time {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .chat-input-area {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px 20px;
+      background: #131A23;
+      border-top: 1px solid #2A3442;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: #0B0E14;
+      border: 1.5px solid #2A3442;
+      border-radius: 24px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      min-width: 0;
+    }
+
+    .chat-input:focus { border-color: #6C5CE7; }
+    .chat-input::placeholder { color: #8B95A9; opacity: 0.5; }
+
+    .chat-send {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      background: #6C5CE7;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chat-send:active { transform: scale(0.9); }
+    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
     @media (max-width: 400px) {
       .carousel-card { flex: 0 0 70%; min-height: 140px; }
@@ -1217,14 +1344,12 @@
   "use strict";
 
   // ============================================================
-  // ЗВУК (Web Audio API)
+  // ЗВУК + ВИБРАЦИЯ
   // ============================================================
   function playNotificationSound() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const now = ctx.currentTime;
-
-      // Два тона — приятный "дзынь"
       [880, 1320].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -1238,9 +1363,7 @@
         osc.start(now + i * 0.12);
         osc.stop(now + i * 0.12 + 0.4);
       });
-    } catch (e) {
-      console.warn('Звук не сработал:', e);
-    }
+    } catch (e) {}
   }
 
   function vibrate() {
@@ -1266,13 +1389,11 @@
     userLng: null,
     watchId: null,
     sliderState: 'medium',
-    // Запрос
     requestTimer: null,
     requestTimeout: null,
     requestSecondsLeft: 60,
     requestTarget: null,
     requestCancelled: false,
-    // Баннер
     bannerTimer: null,
     bannerSecondsLeft: 60,
     bannerUser: null,
@@ -1521,14 +1642,13 @@
 
     document.getElementById('selectedClose').addEventListener('click', resetSelection);
     document.getElementById('btnChat').addEventListener('click', () => {
-      alert(`💬 Чат с ${user.name} — в разработке`);
+      openChat(user);
     });
     document.getElementById('btnJoin').addEventListener('click', () => {
       sendJoinRequest(user);
     });
   }
 
-  // --- ОТПРАВКА ЗАПРОСА ---
   function sendJoinRequest(user) {
     if (walkState.requestTimer) return;
 
@@ -1539,9 +1659,7 @@
     const stats = document.getElementById('sliderStats');
     const body = document.getElementById('sliderBody');
 
-    stats.innerHTML = `
-      <span class="stat-item">⏳ <b>Ожидаем ответа</b></span>
-    `;
+    stats.innerHTML = `<span class="stat-item">⏳ <b>Ожидаем ответа</b></span>`;
 
     function renderWaiting() {
       body.innerHTML = `
@@ -1558,7 +1676,6 @@
 
     renderWaiting();
 
-    // Таймер
     walkState.requestTimer = setInterval(() => {
       walkState.requestSecondsLeft--;
       const t = document.getElementById('waitingTimer');
@@ -1571,7 +1688,6 @@
       }
     }, 1000);
 
-    // Симуляция ответа 5-10 сек
     const delay = 5000 + Math.random() * 5000;
     walkState.requestTimeout = setTimeout(() => {
       if (walkState.requestCancelled) return;
@@ -1581,24 +1697,15 @@
       }
 
       const accepted = Math.random() < 0.7;
-      if (accepted) {
-        showAccepted(user);
-      } else {
-        showDeclined(user);
-      }
+      if (accepted) showAccepted(user);
+      else showDeclined(user);
     }, delay);
   }
 
   function cancelJoinRequest() {
     walkState.requestCancelled = true;
-    if (walkState.requestTimer) {
-      clearInterval(walkState.requestTimer);
-      walkState.requestTimer = null;
-    }
-    if (walkState.requestTimeout) {
-      clearTimeout(walkState.requestTimeout);
-      walkState.requestTimeout = null;
-    }
+    if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
+    if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
     walkState.requestTarget = null;
     renderSlider();
   }
@@ -1615,9 +1722,7 @@
         </div>
       </div>
     `;
-    document.getElementById('btnBackToList').addEventListener('click', () => {
-      resetSelection();
-    });
+    document.getElementById('btnBackToList').addEventListener('click', () => resetSelection());
   }
 
   function showAccepted(user) {
@@ -1635,9 +1740,7 @@
         </div>
       </div>
     `;
-    document.getElementById('btnOpenChat').addEventListener('click', () => {
-      alert('💬 Чат — в разработке');
-    });
+    document.getElementById('btnOpenChat').addEventListener('click', () => openChat(user));
     document.getElementById('btnBackToList2').addEventListener('click', resetSelection);
   }
 
@@ -1658,9 +1761,8 @@
     document.getElementById('btnBackToList3').addEventListener('click', resetSelection);
   }
 
-  // --- БАННЕР ПОЛУЧАТЕЛЯ (тест) ---
+  // --- БАННЕР ---
   function showTestBanner() {
-    // Берём случайного мока
     if (!walkState.nearbyUsers.length) {
       if (walkState.userLat) {
         walkState.nearbyUsers = generateMockUsers(walkState.userLat, walkState.userLng);
@@ -1669,13 +1771,11 @@
         return;
       }
     }
-
     const user = walkState.nearbyUsers[Math.floor(Math.random() * walkState.nearbyUsers.length)];
     showIncomingBanner(user);
   }
 
   function showIncomingBanner(fromUser) {
-    // Убираем предыдущий, если есть
     removeBanner();
 
     const wrapper = document.getElementById('walkMapWrapper');
@@ -1702,7 +1802,6 @@
     wrapper.appendChild(banner);
     requestAnimationFrame(() => banner.classList.add('active'));
 
-    // Звук + вибрация
     playNotificationSound();
     vibrate();
 
@@ -1710,7 +1809,6 @@
     walkState.bannerSecondsLeft = 60;
     walkState.bannerCollapsed = false;
 
-    // Таймер
     walkState.bannerTimer = setInterval(() => {
       walkState.bannerSecondsLeft--;
       const t = document.getElementById('bannerTimer');
@@ -1718,12 +1816,9 @@
       if (t) t.textContent = '⏱ Осталось: ' + walkState.bannerSecondsLeft + ' сек';
       if (miniT) miniT.textContent = walkState.bannerSecondsLeft + ' сек';
 
-      if (walkState.bannerSecondsLeft <= 0) {
-        endBanner();
-      }
+      if (walkState.bannerSecondsLeft <= 0) endBanner();
     }, 1000);
 
-    // Обработчики
     document.getElementById('bannerAccept').addEventListener('click', () => {
       playNotificationSound();
       alert(`✅ Вы приняли приглашение от ${fromUser.name}`);
@@ -1735,7 +1830,6 @@
       endBanner();
     });
 
-    // Свайп вверх
     setupBannerSwipe(banner);
   }
 
@@ -1755,9 +1849,7 @@
       if (!isSwiping) return;
       currentY = e.touches[0].clientY;
       const diff = startY - currentY;
-      if (diff > 0) {
-        banner.style.transform = `translateY(-${Math.min(diff, 150)}px)`;
-      }
+      if (diff > 0) banner.style.transform = `translateY(-${Math.min(diff, 150)}px)`;
     }, { passive: true });
 
     banner.addEventListener('touchend', () => {
@@ -1766,12 +1858,8 @@
       banner.classList.remove('swiping');
 
       const diff = startY - currentY;
-      if (diff > 40) {
-        // Свайп — сворачиваем в мини-полоску
-        collapseBanner();
-      } else {
-        banner.style.transform = '';
-      }
+      if (diff > 40) collapseBanner();
+      else banner.style.transform = '';
     });
   }
 
@@ -1784,7 +1872,6 @@
 
     walkState.bannerCollapsed = true;
 
-    // Создаём мини-полоску
     const wrapper = document.getElementById('walkMapWrapper');
     if (!wrapper) return;
 
@@ -1799,7 +1886,6 @@
     wrapper.appendChild(mini);
     requestAnimationFrame(() => mini.classList.add('active'));
 
-    // Тап — вернуть баннер
     mini.addEventListener('click', () => {
       mini.classList.remove('active');
       setTimeout(() => mini.remove(), 350);
@@ -1839,22 +1925,14 @@
       walkState.routeLine = null;
     }
 
-    // Сброс запроса
-    if (walkState.requestTimer) {
-      clearInterval(walkState.requestTimer);
-      walkState.requestTimer = null;
-    }
-    if (walkState.requestTimeout) {
-      clearTimeout(walkState.requestTimeout);
-      walkState.requestTimeout = null;
-    }
+    if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
+    if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
     walkState.requestCancelled = false;
     walkState.requestTarget = null;
 
     renderSlider();
   }
 
-  // --- КАРТА ---
   function initMap(lat, lng) {
     if (walkState.map) return;
 
@@ -2010,6 +2088,170 @@
     });
   }
 
+  // ============================================================
+  // ЧАТ
+  // ============================================================
+  const chatState = {
+    screen: null,
+    user: null,
+    messages: [],
+    swipeStartY: 0,
+    swipeCurrentY: 0,
+  };
+
+  function openChat(user) {
+    if (!user) return;
+
+    if (chatState.screen) closeChat();
+
+    chatState.user = user;
+    chatState.messages = [];
+
+    const el = document.createElement('div');
+    el.className = 'chat-screen';
+    el.id = 'chatScreen';
+    el.innerHTML = `
+      <div class="chat-top-area" id="chatTopArea"></div>
+
+      <div class="chat-header">
+        <button class="chat-back" id="chatBack">←</button>
+        <div class="chat-header-avatar">${user.name.charAt(0)}</div>
+        <div class="chat-header-info">
+          <div class="chat-header-name">${user.name}, ${user.age}</div>
+          <div class="chat-header-status">🟢 Онлайн</div>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-empty">Начни разговор первым 👋</div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Сообщение..." maxlength="500">
+        <button class="chat-send" id="chatSend">➤</button>
+      </div>
+    `;
+
+    document.body.appendChild(el);
+    chatState.screen = el;
+
+    requestAnimationFrame(() => el.classList.add('active'));
+
+    document.getElementById('chatBack').addEventListener('click', () => closeChat());
+    document.getElementById('chatTopArea').addEventListener('click', () => closeChat());
+
+    const input = document.getElementById('chatInput');
+    const send = document.getElementById('chatSend');
+
+    function trySend() {
+      const text = input.value.trim();
+      if (!text) return;
+      sendMessage(text);
+      input.value = '';
+      send.disabled = true;
+    }
+
+    input.addEventListener('input', () => {
+      send.disabled = input.value.trim().length === 0;
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') trySend();
+    });
+
+    send.addEventListener('click', trySend);
+    send.disabled = true;
+
+    setupChatSwipe(el);
+
+    setTimeout(() => input.focus(), 300);
+  }
+
+  function setupChatSwipe(el) {
+    const topArea = document.getElementById('chatTopArea');
+    if (!topArea) return;
+
+    topArea.addEventListener('touchstart', (e) => {
+      chatState.swipeStartY = e.touches[0].clientY;
+      chatState.swipeCurrentY = chatState.swipeStartY;
+    }, { passive: true });
+
+    topArea.addEventListener('touchmove', (e) => {
+      chatState.swipeCurrentY = e.touches[0].clientY;
+      const diff = chatState.swipeCurrentY - chatState.swipeStartY;
+      if (diff > 0 && el) {
+        el.style.transform = `translateY(${Math.min(diff, 200)}px)`;
+      }
+    }, { passive: true });
+
+    topArea.addEventListener('touchend', () => {
+      const diff = chatState.swipeCurrentY - chatState.swipeStartY;
+      if (diff > 60) closeChat();
+      else if (el) el.style.transform = '';
+    });
+  }
+
+  function sendMessage(text) {
+    const messages = document.getElementById('chatMessages');
+    if (!messages) return;
+
+    const empty = messages.querySelector('.chat-empty');
+    if (empty) empty.remove();
+
+    const mine = document.createElement('div');
+    mine.className = 'msg me';
+    mine.innerHTML = `${escapeHtml(text)}<div class="msg-time">${getTime()}</div>`;
+    messages.appendChild(mine);
+
+    chatState.messages.push({ from: 'me', text });
+    messages.scrollTop = messages.scrollHeight;
+
+    setTimeout(() => {
+      if (!chatState.screen) return;
+      const reply = 'Привет! Я скоро буду 👍';
+
+      const theirs = document.createElement('div');
+      theirs.className = 'msg them';
+      theirs.innerHTML = `${escapeHtml(reply)}<div class="msg-time">${getTime()}</div>`;
+      messages.appendChild(theirs);
+
+      chatState.messages.push({ from: 'them', text: reply });
+      messages.scrollTop = messages.scrollHeight;
+
+      playNotificationSound();
+    }, 1500);
+  }
+
+  function getTime() {
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, (ch) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  function closeChat() {
+    const el = chatState.screen;
+    if (!el) return;
+
+    el.classList.remove('active');
+    setTimeout(() => el.remove(), 350);
+
+    chatState.screen = null;
+    chatState.user = null;
+    chatState.messages = [];
+    chatState.swipeStartY = 0;
+    chatState.swipeCurrentY = 0;
+  }
+
+  // ============================================================
+  // ОТКРЫТИЕ/ЗАКРЫТИЕ ЭКРАНА ПРОГУЛКИ
+  // ============================================================
   function openWalkScreen(user, onClose) {
     walkState.currentUser = user;
     walkState.onClose = onClose || null;
@@ -2027,9 +2269,7 @@
     const back = document.getElementById('walkBack');
     if (back) back.addEventListener('click', closeWalkScreen);
 
-    if (av) {
-      av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
-    }
+    if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
 
     startGeolocation();
     setupSliderGestures();
@@ -2044,7 +2284,6 @@
     const el = document.getElementById('walkScreen');
     if (!el) return;
 
-    // Чистим таймеры
     if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
     if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
     if (walkState.bannerTimer) { clearInterval(walkState.bannerTimer); walkState.bannerTimer = null; }
@@ -2383,10 +2622,8 @@
 
       document.getElementById('btnTestNotif').addEventListener('click', () => {
         closeOverlay();
-        // Открываем карту прогулки и там показываем баннер
         setTimeout(() => {
           openWalkScreen(currentUser);
-          // Ждём, пока карта загрузится
           let attempts = 0;
           const checkInterval = setInterval(() => {
             attempts++;
