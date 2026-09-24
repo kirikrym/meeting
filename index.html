@@ -23,6 +23,7 @@
       --danger: #FF4D6D;
       --success: #10b981;
       --orange: #FF9F43;
+      --soul: #A29BFE;
     }
 
     html, body {
@@ -966,7 +967,6 @@
       margin: 0 auto;
     }
 
-    /* --- БАННЕР --- */
     .notif-banner {
       position: absolute;
       top: 0;
@@ -1354,7 +1354,6 @@
     #lunchMap .leaflet-top,
     #lunchMap .leaflet-bottom { z-index: 2 !important; }
 
-    /* --- КАСТОМНЫЕ ИКОНКИ КАФЕ --- */
     .cafe-marker {
       background: transparent;
       border: none;
@@ -1373,14 +1372,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
-    .cafe-marker.highlight .cafe-marker-inner {
-      background: #FF9F43;
-      color: #fff;
-      transform: scale(1.15);
-      box-shadow: 0 0 20px rgba(255, 159, 67, 0.8);
-    }
-
-    /* --- СЛАЙДЕР --- */
     .lunch-slider {
       position: absolute;
       bottom: 0;
@@ -1460,7 +1451,6 @@
 
     .create-lunch-btn:active { transform: scale(0.97); }
 
-    /* Карточка обеда */
     .lunch-card {
       flex: 0 0 65%;
       scroll-snap-align: center;
@@ -1517,7 +1507,6 @@
       margin-top: auto;
     }
 
-    /* Загрузка */
     .lunch-loading {
       text-align: center;
       padding: 40px 20px;
@@ -1539,34 +1528,369 @@
       color: #8B95A9;
     }
 
-    /* Детали кафе */
-    .cafe-detail-title {
-      font-size: 18px;
+    /* ============================================================
+       ЭКРАН "РАЗГОВОРЫ ПО ДУШАМ"
+       ============================================================ */
+    .soul-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: #0B0E14;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      overflow: hidden;
+    }
+
+    .soul-screen.active { transform: translateX(0); }
+
+    .soul-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(19, 26, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2A3442;
+      z-index: 1200;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .soul-back {
+      background: none;
+      border: none;
+      color: #A29BFE;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+
+    .soul-back:active { background: rgba(108, 92, 231, 0.15); }
+
+    .soul-logo {
+      font-size: 17px;
       font-weight: 700;
+      background: linear-gradient(135deg, #A29BFE, #DFE6E9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .soul-avatar {
+      width: 36px;
+      height: 36px;
+      background: #A29BFE;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .soul-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .soul-avatar:active { transform: scale(0.9); }
+
+    .soul-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px 20px 40px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .soul-intro {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .soul-intro-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+
+    .soul-intro-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .soul-intro-text {
+      font-size: 14px;
+      color: #8B95A9;
+      line-height: 1.5;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .soul-themes-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8B95A9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .soul-theme {
+      background: #131A23;
+      border: 1.5px solid #2A3442;
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .soul-theme:active {
+      transform: scale(0.98);
+      border-color: #A29BFE;
+    }
+
+    .soul-theme-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .soul-theme-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .soul-theme-name {
+      font-size: 16px;
+      font-weight: 600;
       color: #fff;
       margin-bottom: 4px;
     }
 
-    .cafe-detail-type {
+    .soul-theme-online {
       font-size: 12px;
-      color: #FF9F43;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
+      color: #8B95A9;
     }
 
-    .cafe-detail-info {
-      font-size: 14px;
+    .soul-theme-arrow {
       color: #8B95A9;
-      line-height: 1.6;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* --- Поиск собеседника --- */
+    .soul-search {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .soul-search-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      animation: pulse-wait 2s infinite;
+    }
+
+    .soul-search-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .soul-search-sub {
+      font-size: 15px;
+      color: #8B95A9;
+      margin-bottom: 32px;
+    }
+
+    .soul-search-theme {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(162, 155, 254, 0.1);
+      border: 1px solid #A29BFE;
+      border-radius: 30px;
+      color: #A29BFE;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .soul-search-cancel {
+      padding: 14px 32px;
+      background: transparent;
+      border: 1.5px solid #2A3442;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .soul-search-cancel:active { background: #2A3442; }
+
+    /* --- Чат --- */
+    .soul-chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #131A23;
+      border-bottom: 1px solid #2A3442;
+      flex-shrink: 0;
+    }
+
+    .soul-chat-theme {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #A29BFE;
+      font-weight: 600;
+    }
+
+    .soul-chat-finish {
+      padding: 6px 14px;
+      background: transparent;
+      border: 1.5px solid #2A3442;
+      border-radius: 30px;
+      color: #FF4D6D;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .soul-chat-finish:active { background: rgba(255, 77, 109, 0.1); }
+
+    .soul-partner-name {
+      font-size: 14px;
+      color: #A29BFE;
+      font-weight: 600;
+      text-align: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(42, 52, 66, 0.5);
+    }
+
+    /* --- Финал --- */
+    .soul-final {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .soul-final-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .soul-final-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .soul-final-sub {
+      font-size: 15px;
+      color: #8B95A9;
+      margin-bottom: 32px;
+    }
+
+    .soul-final-question {
+      font-size: 15px;
+      color: #8B95A9;
       margin-bottom: 16px;
     }
 
-    .cafe-detail-actions {
+    .soul-rate-buttons {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .soul-rate-btn {
+      width: 64px;
+      height: 64px;
+      background: #131A23;
+      border: 1.5px solid #2A3442;
+      border-radius: 50%;
+      font-size: 28px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .soul-rate-btn:active {
+      transform: scale(0.9);
+      border-color: #A29BFE;
+      background: rgba(162, 155, 254, 0.1);
+    }
+
+    .soul-rate-btn.selected {
+      border-color: #A29BFE;
+      background: rgba(162, 155, 254, 0.2);
+      transform: scale(1.05);
+    }
+
+    .soul-final-back {
+      padding: 14px 32px;
+      background: transparent;
+      border: 1.5px solid #2A3442;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .soul-final-back:active { background: #2A3442; }
+
+    .soul-final-back:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .msg.anon {
+      align-self: flex-start;
+      background: #1E2633;
+      color: #fff;
+      border-bottom-left-radius: 6px;
+    }
+
+    .msg.me {
+      align-self: flex-end;
+      background: #A29BFE;
+      color: #0B0E14;
+      border-bottom-right-radius: 6px;
     }
 
     @media (max-width: 400px) {
@@ -1612,10 +1936,10 @@
         <span class="card-badge">Активно</span>
       </div>
 
-      <div class="card" data-card="chat">
+      <div class="card" data-card="soul">
         <div class="card-icon">💬</div>
         <div class="card-text"><h3>Разговоры по душам</h3><p>Анонимное общение</p></div>
-        <span class="card-badge">Скоро</span>
+        <span class="card-badge">Активно</span>
       </div>
 
       <div class="card" data-card="ride">
@@ -1690,6 +2014,31 @@
   function formatTime(m) {
     const min = Math.max(1, Math.round(m / 80));
     return '~' + min + ' мин';
+  }
+
+  function getTime() {
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, (ch) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  // ============================================================
+  // ГЕНЕРАТОР АНОНИМНЫХ НИКНЕЙМОВ
+  // ============================================================
+  const NICK_ADJ = ['Тихий', 'Ночной', 'Добрый', 'Светлый', 'Тёплый', 'Мягкий', 'Ясный', 'Звёздный', 'Лунный', 'Вольный', 'Спокойный', 'Загадочный'];
+  const NICK_NOUN = ['Ветер', 'Кот', 'Дракон', 'Лис', 'Сова', 'Волк', 'Ёж', 'Мишка', 'Заяц', 'Пингвин', 'Тигр', 'Олень'];
+
+  function generateAnonNick() {
+    const adj = NICK_ADJ[Math.floor(Math.random() * NICK_ADJ.length)];
+    const noun = NICK_NOUN[Math.floor(Math.random() * NICK_NOUN.length)];
+    return adj + ' ' + noun;
   }
 
   // ============================================================
@@ -1858,7 +2207,6 @@
     if (!carousel || !track) return;
 
     const sorted = getSortedWalkUsers();
-
     requestAnimationFrame(() => scrollWalkToIndex(walkState.currentIndex, false));
 
     carousel.addEventListener('scroll', () => {
@@ -2072,7 +2420,6 @@
 
   function showWalkIncomingBanner(fromUser) {
     removeWalkBanner();
-
     const wrapper = document.getElementById('walkMapWrapper');
     if (!wrapper) return;
 
@@ -2110,7 +2457,6 @@
       const miniT = document.getElementById('miniTimer');
       if (t) t.textContent = '⏱ Осталось: ' + walkState.bannerSecondsLeft + ' сек';
       if (miniT) miniT.textContent = walkState.bannerSecondsLeft + ' сек';
-
       if (walkState.bannerSecondsLeft <= 0) endWalkBanner();
     }, 1000);
 
@@ -2458,7 +2804,6 @@
     map: null,
     userMarker: null,
     cafeMarkers: [],
-    lunchMarkers: [],
     currentUser: null,
     onClose: null,
     cafes: [],
@@ -2470,7 +2815,6 @@
     watchId: null,
     sliderState: 'medium',
     radius: 3000,
-    loading: false,
   };
 
   const OVERPASS_URLS = [
@@ -2619,19 +2963,9 @@
 
     slider.classList.remove('expanded');
 
-    // Если выбрано кафе — показываем детали
-    if (lunchState.selectedCafe) {
-      renderCafeDetails();
-      return;
-    }
+    if (lunchState.selectedCafe) { renderCafeDetails(); return; }
+    if (lunchState.selectedLunch) { renderLunchDetails(); return; }
 
-    // Если выбран обед — показываем детали
-    if (lunchState.selectedLunch) {
-      renderLunchDetails();
-      return;
-    }
-
-    // Основной список
     if (lunchState.cafes.length === 0) {
       stats.innerHTML = `<span class="stat-item">🍔 Кафе не найдено</span>`;
       body.innerHTML = `
@@ -2654,7 +2988,6 @@
 
     let cardsHtml = '';
     lunchState.lunches.forEach((lunch, i) => {
-      const d = calcDistance(lunchState.userLat, lunchState.userLng, lunch.cafe.lat, lunch.cafe.lng);
       const typeInfo = CAFE_TYPES[lunch.cafe.type] || CAFE_TYPES.cafe;
       cardsHtml += `
         <div class="lunch-card ${i === 0 ? 'centered' : ''}" data-lunch-id="${lunch.id}">
@@ -2778,11 +3111,11 @@
         <button class="selected-close" id="cafeClose">✕</button>
       </div>
 
-      <div class="cafe-detail-info">
+      <div style="padding: 12px 0; color: #8B95A9; font-size: 14px;">
         📍 ${cafe.address || 'Адрес не указан'}
       </div>
 
-      <div class="cafe-detail-actions">
+      <div class="selected-actions">
         <button class="btn-action btn-join" id="cafeCreate" style="background:#FF9F43;">➕ Создать обед здесь</button>
       </div>
     `;
@@ -2818,21 +3151,13 @@
     }).addTo(lunchState.map);
 
     lunchState.map.on('click', () => {
-      if (lunchState.selectedCafe) {
-        lunchState.selectedCafe = null;
-        renderLunchSlider();
-      }
-      if (lunchState.selectedLunch) {
-        lunchState.selectedLunch = null;
-        renderLunchSlider();
-      }
+      if (lunchState.selectedCafe) { lunchState.selectedCafe = null; renderLunchSlider(); }
+      if (lunchState.selectedLunch) { lunchState.selectedLunch = null; renderLunchSlider(); }
     });
   }
 
   function addCafeMarkers() {
     if (!lunchState.map) return;
-
-    // Удаляем старые
     lunchState.cafeMarkers.forEach(m => lunchState.map.removeLayer(m));
     lunchState.cafeMarkers = [];
 
@@ -2846,14 +3171,12 @@
       });
 
       const marker = L.marker([cafe.lat, cafe.lng], { icon }).addTo(lunchState.map);
-
       marker.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
         lunchState.selectedCafe = cafe;
         centerLunchMapOn(cafe.lat, cafe.lng, true);
         renderLunchSlider();
       });
-
       lunchState.cafeMarkers.push(marker);
     });
   }
@@ -2878,16 +3201,13 @@
 
         initLunchMap(lunchState.userLat, lunchState.userLng);
 
-        // Загружаем кафе
-        lunchState.loading = true;
         let cafes = await fetchCafes(lunchState.userLat, lunchState.userLng, lunchState.radius);
         if (!cafes || cafes.length === 0) {
-          console.warn('Overpass вернул пусто, используем мок-данные');
+          console.warn('Overpass пусто, используем мок');
           cafes = generateMockCafes(lunchState.userLat, lunchState.userLng);
         }
         lunchState.cafes = cafes;
         lunchState.lunches = generateMockLunches(cafes);
-        lunchState.loading = false;
 
         addCafeMarkers();
         renderLunchSlider();
@@ -2915,7 +3235,6 @@
     if (!lunchState.userLat) return;
     lunchState.radius = lunchState.radius === 3000 ? 5000 : 10000;
     alert(`🔍 Расширяем радиус до ${lunchState.radius / 1000} км...`);
-    // Перезагружаем
     const screen = document.getElementById('lunchScreen');
     if (screen) {
       screen.remove();
@@ -3009,7 +3328,6 @@
       lunchState.map = null;
       lunchState.userMarker = null;
       lunchState.cafeMarkers = [];
-      lunchState.lunchMarkers = [];
     }
 
     lunchState.currentUser = null;
@@ -3034,7 +3352,332 @@
   }
 
   // ============================================================
-  // ЧАТ
+  // МОДУЛЬ "РАЗГОВОРЫ ПО ДУШАМ"
+  // ============================================================
+  const soulState = {
+    screen: null,
+    currentUser: null,
+    onClose: null,
+    selectedTheme: null,
+    myNick: null,
+    partnerNick: null,
+    searchTimer: null,
+    partnerReplyTimer: null,
+    messages: [],
+  };
+
+  const SOUL_THEMES = [
+    { id: 'complain', icon: '😔', name: 'Пожаловаться на день', online: 4 },
+    { id: 'brag', icon: '🎉', name: 'Похвастаться успехом', online: 2 },
+    { id: 'advice', icon: '🤔', name: 'Нужен совет', online: 6 },
+    { id: 'chat', icon: '💭', name: 'Просто поболтать', online: 12 },
+    { id: 'night', icon: '🌙', name: 'Не могу уснуть', online: 3 },
+  ];
+
+  function createSoulScreen() {
+    const el = document.createElement('div');
+    el.className = 'soul-screen';
+    el.id = 'soulScreen';
+    el.innerHTML = `
+      <div class="soul-header">
+        <button class="soul-back" id="soulBack">← Назад</button>
+        <span class="soul-logo">💬 ПО ДУШАМ</span>
+        <div class="soul-avatar" id="soulAvatar"></div>
+      </div>
+      <div class="soul-body" id="soulBody"></div>
+    `;
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function renderSoulThemes() {
+    const body = document.getElementById('soulBody');
+    if (!body) return;
+
+    let themesHtml = '';
+    SOUL_THEMES.forEach(theme => {
+      themesHtml += `
+        <div class="soul-theme" data-theme="${theme.id}">
+          <div class="soul-theme-icon">${theme.icon}</div>
+          <div class="soul-theme-info">
+            <div class="soul-theme-name">${theme.name}</div>
+            <div class="soul-theme-online">${theme.online} человек онлайн</div>
+          </div>
+          <div class="soul-theme-arrow">›</div>
+        </div>
+      `;
+    });
+
+    body.innerHTML = `
+      <div class="soul-intro">
+        <div class="soul-intro-icon">💙</div>
+        <div class="soul-intro-title">Поговорим по душам?</div>
+        <div class="soul-intro-text">Здесь ты можешь анонимно выговориться или выслушать кого-то. Никто не осудит.</div>
+      </div>
+
+      <div class="soul-themes-title">Выбери тему</div>
+
+      ${themesHtml}
+    `;
+
+    document.querySelectorAll('.soul-theme').forEach(el => {
+      el.addEventListener('click', () => {
+        const themeId = el.dataset.theme;
+        const theme = SOUL_THEMES.find(t => t.id === themeId);
+        if (theme) startSoulSearch(theme);
+      });
+    });
+  }
+
+  function startSoulSearch(theme) {
+    soulState.selectedTheme = theme;
+    soulState.myNick = generateAnonNick();
+
+    const body = document.getElementById('soulBody');
+    if (!body) return;
+
+    body.innerHTML = `
+      <div class="soul-search">
+        <div class="soul-search-icon">🔍</div>
+        <div class="soul-search-title">Ищем собеседника...</div>
+        <div class="soul-search-sub">Обычно это занимает 3–5 секунд</div>
+        <div class="soul-search-theme">
+          <span>${theme.icon}</span>
+          <span>${theme.name}</span>
+        </div>
+        <button class="soul-search-cancel" id="soulSearchCancel">❌ Отменить</button>
+      </div>
+    `;
+
+    document.getElementById('soulSearchCancel').addEventListener('click', () => {
+      if (soulState.searchTimer) {
+        clearTimeout(soulState.searchTimer);
+        soulState.searchTimer = null;
+      }
+      renderSoulThemes();
+    });
+
+    // Мок: находим собеседника через 3-5 сек
+    const delay = 3000 + Math.random() * 2000;
+    soulState.searchTimer = setTimeout(() => {
+      soulState.partnerNick = generateAnonNick();
+      openSoulChat();
+    }, delay);
+  }
+
+  function openSoulChat() {
+    const body = document.getElementById('soulBody');
+    if (!body) return;
+
+    const theme = soulState.selectedTheme;
+    soulState.messages = [];
+
+    body.innerHTML = `
+      <div class="soul-chat-header">
+        <div class="soul-chat-theme">
+          <span>${theme.icon}</span>
+          <span>${theme.name}</span>
+        </div>
+        <button class="soul-chat-finish" id="soulFinish">🚪 Завершить</button>
+      </div>
+
+      <div class="soul-partner-name">Собеседник: ${soulState.partnerNick}</div>
+
+      <div class="chat-messages" id="soulMessages">
+        <div class="chat-empty">Начни разговор первым 👋</div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="soulInput" placeholder="Сообщение..." maxlength="500">
+        <button class="chat-send" id="soulSend">➤</button>
+      </div>
+    `;
+
+    // Меняем body на flex column
+    body.style.display = 'flex';
+    body.style.flexDirection = 'column';
+    body.style.padding = '0';
+    body.style.overflow = 'hidden';
+
+    const messages = document.getElementById('soulMessages');
+    messages.style.flex = '1';
+    messages.style.overflowY = 'auto';
+
+    const input = document.getElementById('soulInput');
+    const send = document.getElementById('soulSend');
+
+    function trySend() {
+      const text = input.value.trim();
+      if (!text) return;
+      sendSoulMessage(text);
+      input.value = '';
+      send.disabled = true;
+    }
+
+    input.addEventListener('input', () => {
+      send.disabled = input.value.trim().length === 0;
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') trySend();
+    });
+
+    send.addEventListener('click', trySend);
+    send.disabled = true;
+
+    document.getElementById('soulFinish').addEventListener('click', finishSoulChat);
+
+    setTimeout(() => input.focus(), 300);
+  }
+
+  function sendSoulMessage(text) {
+    const messages = document.getElementById('soulMessages');
+    if (!messages) return;
+
+    const empty = messages.querySelector('.chat-empty');
+    if (empty) empty.remove();
+
+    const mine = document.createElement('div');
+    mine.className = 'msg me';
+    mine.innerHTML = `${escapeHtml(text)}<div class="msg-time">${getTime()}</div>`;
+    messages.appendChild(mine);
+    messages.scrollTop = messages.scrollHeight;
+
+    soulState.messages.push({ from: 'me', text });
+
+    // Мок-ответ через 1.5-3 сек
+    const delay = 1500 + Math.random() * 1500;
+    soulState.partnerReplyTimer = setTimeout(() => {
+      const replies = [
+        'Понимаю тебя...',
+        'Расскажи подробнее',
+        'А что случилось?',
+        'Слушаю тебя внимательно',
+        'Это действительно непросто...',
+        'Я здесь, чтобы выслушать',
+      ];
+      const reply = replies[Math.floor(Math.random() * replies.length)];
+
+      const theirs = document.createElement('div');
+      theirs.className = 'msg anon';
+      theirs.innerHTML = `${escapeHtml(reply)}<div class="msg-time">${getTime()}</div>`;
+      messages.appendChild(theirs);
+      messages.scrollTop = messages.scrollHeight;
+
+      soulState.messages.push({ from: 'partner', text: reply });
+      playNotificationSound();
+    }, delay);
+  }
+
+  function finishSoulChat() {
+    if (soulState.partnerReplyTimer) {
+      clearTimeout(soulState.partnerReplyTimer);
+      soulState.partnerReplyTimer = null;
+    }
+
+    const body = document.getElementById('soulBody');
+    if (!body) return;
+
+    body.style.display = 'block';
+    body.style.flexDirection = '';
+    body.style.padding = '24px 20px 40px';
+    body.style.overflowY = 'auto';
+
+    body.innerHTML = `
+      <div class="soul-final">
+        <div class="soul-final-icon">💙</div>
+        <div class="soul-final-title">Спасибо за разговор</div>
+        <div class="soul-final-sub">Ты помог человеку</div>
+
+        <div class="soul-final-question">Как тебе собеседник?</div>
+
+        <div class="soul-rate-buttons" id="soulRateButtons">
+          <button class="soul-rate-btn" data-rate="like">👍</button>
+          <button class="soul-rate-btn" data-rate="love">❤️</button>
+          <button class="soul-rate-btn" data-rate="thanks">🤝</button>
+        </div>
+
+        <button class="soul-final-back" id="soulFinalBack" disabled>← Вернуться к темам</button>
+      </div>
+    `;
+
+    let rated = false;
+
+    document.querySelectorAll('.soul-rate-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (rated) return;
+        rated = true;
+        btn.classList.add('selected');
+        playNotificationSound();
+
+        setTimeout(() => {
+          document.getElementById('soulFinalBack').disabled = false;
+        }, 400);
+      });
+    });
+
+    document.getElementById('soulFinalBack').addEventListener('click', () => {
+      soulState.selectedTheme = null;
+      soulState.myNick = null;
+      soulState.partnerNick = null;
+      soulState.messages = [];
+      renderSoulThemes();
+    });
+  }
+
+  function openSoulScreen(user, onClose) {
+    soulState.currentUser = user;
+    soulState.onClose = onClose || null;
+
+    const el = createSoulScreen();
+    requestAnimationFrame(() => el.classList.add('active'));
+
+    const av = document.getElementById('soulAvatar');
+    if (av) {
+      if (user && user.avatar) av.innerHTML = `<img src="${user.avatar}" alt="">`;
+      else if (user && user.name) av.textContent = user.name.charAt(0).toUpperCase();
+      else av.textContent = '?';
+    }
+
+    const back = document.getElementById('soulBack');
+    if (back) back.addEventListener('click', closeSoulScreen);
+
+    if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
+
+    renderSoulThemes();
+    document.addEventListener('keydown', soulEscHandler);
+  }
+
+  function soulEscHandler(e) {
+    if (e.key === 'Escape') closeSoulScreen();
+  }
+
+  function closeSoulScreen() {
+    const el = document.getElementById('soulScreen');
+    if (!el) return;
+
+    if (soulState.searchTimer) { clearTimeout(soulState.searchTimer); soulState.searchTimer = null; }
+    if (soulState.partnerReplyTimer) { clearTimeout(soulState.partnerReplyTimer); soulState.partnerReplyTimer = null; }
+
+    soulState.currentUser = null;
+    soulState.selectedTheme = null;
+    soulState.myNick = null;
+    soulState.partnerNick = null;
+    soulState.messages = [];
+
+    el.classList.remove('active');
+    setTimeout(() => el.remove(), 350);
+
+    document.removeEventListener('keydown', soulEscHandler);
+
+    if (soulState.onClose) {
+      soulState.onClose();
+      soulState.onClose = null;
+    }
+  }
+
+  // ============================================================
+  // ЧАТ (общий для прогулки и обеда)
   // ============================================================
   const chatState = {
     screen: null,
@@ -3090,7 +3733,7 @@
     function trySend() {
       const text = input.value.trim();
       if (!text) return;
-      sendMessage(text);
+      sendChatMessage(text);
       input.value = '';
       send.disabled = true;
     }
@@ -3134,7 +3777,7 @@
     });
   }
 
-  function sendMessage(text) {
+  function sendChatMessage(text) {
     const messages = document.getElementById('chatMessages');
     if (!messages) return;
 
@@ -3145,9 +3788,9 @@
     mine.className = 'msg me';
     mine.innerHTML = `${escapeHtml(text)}<div class="msg-time">${getTime()}</div>`;
     messages.appendChild(mine);
+    messages.scrollTop = messages.scrollHeight;
 
     chatState.messages.push({ from: 'me', text });
-    messages.scrollTop = messages.scrollHeight;
 
     setTimeout(() => {
       if (!chatState.screen) return;
@@ -3157,25 +3800,11 @@
       theirs.className = 'msg them';
       theirs.innerHTML = `${escapeHtml(reply)}<div class="msg-time">${getTime()}</div>`;
       messages.appendChild(theirs);
-
-      chatState.messages.push({ from: 'them', text: reply });
       messages.scrollTop = messages.scrollHeight;
 
+      chatState.messages.push({ from: 'them', text: reply });
       playNotificationSound();
     }, 1500);
-  }
-
-  function getTime() {
-    const d = new Date();
-    const h = String(d.getHours()).padStart(2, '0');
-    const m = String(d.getMinutes()).padStart(2, '0');
-    return `${h}:${m}`;
-  }
-
-  function escapeHtml(str) {
-    return str.replace(/[&<>"']/g, (ch) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[ch]));
   }
 
   function closeChat() {
@@ -3521,15 +4150,9 @@
         return;
       }
 
-      if (type === 'walk') {
-        openWalkScreen(currentUser);
-        return;
-      }
-
-      if (type === 'lunch') {
-        openLunchScreen(currentUser);
-        return;
-      }
+      if (type === 'walk') { openWalkScreen(currentUser); return; }
+      if (type === 'lunch') { openLunchScreen(currentUser); return; }
+      if (type === 'soul') { openSoulScreen(currentUser); return; }
 
       overlayContent.innerHTML = `
         <div class="expanded-card">
