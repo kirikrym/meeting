@@ -22,6 +22,7 @@
       --radius: 28px;
       --danger: #FF4D6D;
       --success: #10b981;
+      --orange: #FF9F43;
     }
 
     html, body {
@@ -306,7 +307,6 @@
     .placeholder-content h2 { font-size: 24px; margin-bottom: 8px; }
     .placeholder-content p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
 
-    /* --- ОКНО-ПРЕДУПРЕЖДЕНИЕ --- */
     .warning-screen {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -328,7 +328,6 @@
     .warning-text { font-size: 15px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px; }
     .warning-actions { display: flex; flex-direction: column; gap: 10px; }
 
-    /* --- ФОРМА ВХОДА --- */
     .login-screen {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -478,7 +477,6 @@
 
     .btn-secondary:active { background: var(--border); }
 
-    /* --- ПРОФИЛЬ --- */
     .profile-screen {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -576,7 +574,6 @@
     /* ============================================================
        ЭКРАН "ПРОГУЛЯТЬСЯ"
        ============================================================ */
-
     .walk-screen {
       position: fixed;
       top: 0;
@@ -797,8 +794,6 @@
       overflow: hidden;
     }
 
-    .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
     .card-name { font-size: 15px; font-weight: 600; color: #fff; }
     .card-age { font-size: 12px; color: #8B95A9; }
     .card-dist { font-size: 13px; font-weight: 600; color: #A29BFE; margin-top: 2px; }
@@ -848,8 +843,6 @@
       flex-shrink: 0;
       overflow: hidden;
     }
-
-    .selected-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .selected-info { flex: 1; min-width: 0; }
 
@@ -1045,7 +1038,6 @@
 
     .notif-btn.decline:active { background: #2A3442; }
 
-    /* --- МИНИ-ПОЛОСКА --- */
     .notif-mini {
       position: absolute;
       top: 0;
@@ -1266,11 +1258,323 @@
     .chat-send:active { transform: scale(0.9); }
     .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
+    /* ============================================================
+       ЭКРАН "ОБЕД / КОФЕ"
+       ============================================================ */
+    .lunch-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: #0B0E14;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      overflow: hidden;
+    }
+
+    .lunch-screen.active { transform: translateX(0); }
+
+    .lunch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(19, 26, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2A3442;
+      z-index: 1200;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .lunch-back {
+      background: none;
+      border: none;
+      color: #A29BFE;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+
+    .lunch-back:active { background: rgba(108, 92, 231, 0.15); }
+
+    .lunch-logo {
+      font-size: 17px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #FF9F43, #FFD93D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lunch-avatar {
+      width: 36px;
+      height: 36px;
+      background: #FF9F43;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .lunch-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .lunch-avatar:active { transform: scale(0.9); }
+
+    .lunch-map-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    #lunchMap {
+      width: 100%;
+      height: 100%;
+      background: #0B0E14;
+      z-index: 0 !important;
+    }
+
+    #lunchMap .leaflet-tile-pane {
+      filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.15) saturate(0.7);
+    }
+
+    #lunchMap .leaflet-pane { z-index: 1 !important; }
+    #lunchMap .leaflet-top,
+    #lunchMap .leaflet-bottom { z-index: 2 !important; }
+
+    /* --- КАСТОМНЫЕ ИКОНКИ КАФЕ --- */
+    .cafe-marker {
+      background: transparent;
+      border: none;
+    }
+
+    .cafe-marker-inner {
+      width: 36px;
+      height: 36px;
+      background: #1E2633;
+      border: 2px solid #FF9F43;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .cafe-marker.highlight .cafe-marker-inner {
+      background: #FF9F43;
+      color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 20px rgba(255, 159, 67, 0.8);
+    }
+
+    /* --- СЛАЙДЕР --- */
+    .lunch-slider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45vh;
+      background: #131A23;
+      border-radius: 28px 28px 0 0;
+      border-top: 1px solid #2A3442;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7);
+      transition: height 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .lunch-slider.expanded { height: 55vh; }
+
+    .lunch-slider-header {
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      padding: 10px 16px 14px;
+      border-bottom: 1px solid #2A3442;
+      touch-action: none;
+    }
+
+    .lunch-slider-handle {
+      width: 40px;
+      height: 4px;
+      background: #2A3442;
+      border-radius: 4px;
+      margin: 0 auto 12px;
+      transition: 0.2s;
+    }
+
+    .lunch-slider-header:hover .lunch-slider-handle { background: #FF9F43; }
+
+    .lunch-slider-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #8B95A9;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .lunch-slider-stats .stat-item { display: inline-flex; align-items: center; gap: 4px; }
+    .lunch-slider-stats .stat-item b { color: #fff; font-weight: 600; }
+    .lunch-slider-stats .stat-sep { color: #4A5568; }
+
+    .lunch-slider-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 16px 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .create-lunch-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #FF9F43, #FFD93D);
+      border: none;
+      border-radius: 16px;
+      color: #1a1a1a;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .create-lunch-btn:active { transform: scale(0.97); }
+
+    /* Карточка обеда */
+    .lunch-card {
+      flex: 0 0 65%;
+      scroll-snap-align: center;
+      background: #0B0E14;
+      border: 1.5px solid #2A3442;
+      border-radius: 20px;
+      padding: 16px 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.3s;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .lunch-card.centered {
+      border-color: #FF9F43;
+      background: rgba(255, 159, 67, 0.08);
+    }
+
+    .lunch-card-cafe {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lunch-card-type {
+      font-size: 11px;
+      color: #FF9F43;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lunch-card-time {
+      font-size: 13px;
+      color: #A29BFE;
+      font-weight: 600;
+    }
+
+    .lunch-card-host {
+      font-size: 12px;
+      color: #8B95A9;
+    }
+
+    .lunch-card-spots {
+      font-size: 13px;
+      color: #10b981;
+      font-weight: 600;
+      margin-top: auto;
+    }
+
+    /* Загрузка */
+    .lunch-loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .lunch-loading-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .lunch-loading-text {
+      font-size: 15px;
+      color: #8B95A9;
+    }
+
+    /* Детали кафе */
+    .cafe-detail-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .cafe-detail-type {
+      font-size: 12px;
+      color: #FF9F43;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .cafe-detail-info {
+      font-size: 14px;
+      color: #8B95A9;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .cafe-detail-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     @media (max-width: 400px) {
       .carousel-card { flex: 0 0 70%; min-height: 140px; }
       .carousel-track { padding: 0 calc(50% - 35%); }
       .card-avatar { width: 46px; height: 46px; font-size: 20px; }
       .card-name { font-size: 14px; }
+      .lunch-card { flex: 0 0 70%; min-height: 140px; }
     }
   </style>
 </head>
@@ -1302,21 +1606,15 @@
         <span class="card-badge">Активно</span>
       </div>
 
-      <div class="card" data-card="dog">
-        <div class="card-icon">🐕</div>
-        <div class="card-text"><h3>Выгул собак</h3><p>Друзья для питомца</p></div>
-        <span class="card-badge">Скоро</span>
+      <div class="card" data-card="lunch">
+        <div class="card-icon">🍔</div>
+        <div class="card-text"><h3>Обед / Кофе</h3><p>Составь компанию</p></div>
+        <span class="card-badge">Активно</span>
       </div>
 
       <div class="card" data-card="chat">
         <div class="card-icon">💬</div>
         <div class="card-text"><h3>Разговоры по душам</h3><p>Анонимное общение</p></div>
-        <span class="card-badge">Скоро</span>
-      </div>
-
-      <div class="card" data-card="lunch">
-        <div class="card-icon">🍔</div>
-        <div class="card-text"><h3>Обед / Кофе</h3><p>Составь компанию</p></div>
         <span class="card-badge">Скоро</span>
       </div>
 
@@ -1373,6 +1671,28 @@
   }
 
   // ============================================================
+  // ОБЩИЕ УТИЛИТЫ
+  // ============================================================
+  function calcDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const toRad = (deg) => deg * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function formatDistance(m) {
+    if (m < 1000) return Math.round(m) + ' м';
+    return (m / 1000).toFixed(1) + ' км';
+  }
+
+  function formatTime(m) {
+    const min = Math.max(1, Math.round(m / 80));
+    return '~' + min + ' мин';
+  }
+
+  // ============================================================
   // МОДУЛЬ "ПРОГУЛЯТЬСЯ"
   // ============================================================
   const walkState = {
@@ -1422,32 +1742,13 @@
     return users;
   }
 
-  function calcDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371000;
-    const toRad = (deg) => deg * Math.PI / 180;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  }
-
-  function formatDistance(m) {
-    if (m < 1000) return Math.round(m) + ' м';
-    return (m / 1000).toFixed(1) + ' км';
-  }
-
-  function formatTime(m) {
-    const min = Math.max(1, Math.round(m / 80));
-    return '~' + min + ' мин';
-  }
-
   function statusIcon(s) {
     if (s === 'online') return '🟢';
     if (s === 'recent') return '🟡';
     return '⚪';
   }
 
-  function getSortedUsers() {
+  function getSortedWalkUsers() {
     return walkState.nearbyUsers.slice().sort((a, b) => {
       return calcDistance(walkState.userLat, walkState.userLng, a.lat, a.lng)
            - calcDistance(walkState.userLat, walkState.userLng, b.lat, b.lng);
@@ -1461,7 +1762,7 @@
     el.innerHTML = `
       <div class="walk-header">
         <button class="walk-back" id="walkBack">← Назад</button>
-        <span class="walk-logo">📍 ВСТРЕЧА</span>
+        <span class="walk-logo">📍 ПРОГУЛЯТЬСЯ</span>
         <div class="walk-avatar" id="walkAvatar"></div>
       </div>
 
@@ -1481,7 +1782,7 @@
     return el;
   }
 
-  function renderSlider() {
+  function renderWalkSlider() {
     const stats = document.getElementById('sliderStats');
     const body = document.getElementById('sliderBody');
     const slider = document.getElementById('walkSlider');
@@ -1490,11 +1791,11 @@
     slider.classList.remove('expanded');
 
     if (walkState.selectedUserId) {
-      renderSelectedUser();
+      renderWalkSelectedUser();
       return;
     }
 
-    const sorted = getSortedUsers();
+    const sorted = getSortedWalkUsers();
 
     if (sorted.length === 0) {
       stats.innerHTML = `<span class="stat-item">👥 Никого рядом</span>`;
@@ -1506,7 +1807,7 @@
         </div>
       `;
       const b = document.getElementById('btnExpandRadius');
-      if (b) b.addEventListener('click', expandRadius);
+      if (b) b.addEventListener('click', expandWalkRadius);
       return;
     }
 
@@ -1548,26 +1849,26 @@
       <div class="carousel-dots" id="carouselDots">${dotsHtml}</div>
     `;
 
-    setupCarousel();
+    setupWalkCarousel();
   }
 
-  function setupCarousel() {
+  function setupWalkCarousel() {
     const carousel = document.getElementById('carousel');
     const track = document.getElementById('carouselTrack');
     if (!carousel || !track) return;
 
-    const sorted = getSortedUsers();
+    const sorted = getSortedWalkUsers();
 
-    requestAnimationFrame(() => scrollToIndex(walkState.currentIndex, false));
+    requestAnimationFrame(() => scrollWalkToIndex(walkState.currentIndex, false));
 
     carousel.addEventListener('scroll', () => {
       const cardWidth = carousel.clientWidth * 0.65 + 12;
       const idx = Math.round(carousel.scrollLeft / cardWidth);
       if (idx !== walkState.currentIndex && idx >= 0 && idx < sorted.length) {
         walkState.currentIndex = idx;
-        updateDots();
+        updateWalkDots();
         const user = sorted[idx];
-        if (user) centerMapOn(user.lat, user.lng, false);
+        if (user) centerWalkMapOn(user.lat, user.lng, false);
       }
     });
 
@@ -1579,15 +1880,15 @@
 
         if (walkState.currentIndex === idx && card.classList.contains('centered')) {
           walkState.selectedUserId = user.id;
-          renderSlider();
+          renderWalkSlider();
         } else {
-          scrollToIndex(idx, true);
+          scrollWalkToIndex(idx, true);
         }
       });
     });
   }
 
-  function scrollToIndex(idx, smooth) {
+  function scrollWalkToIndex(idx, smooth) {
     const carousel = document.getElementById('carousel');
     const track = document.getElementById('carouselTrack');
     if (!carousel || !track) return;
@@ -1597,15 +1898,15 @@
     carousel.scrollTo({ left: idx * cardWidth, behavior: smooth ? 'smooth' : 'auto' });
     cards.forEach((c, i) => c.classList.toggle('centered', i === idx));
     walkState.currentIndex = idx;
-    updateDots();
+    updateWalkDots();
   }
 
-  function updateDots() {
+  function updateWalkDots() {
     const dots = document.querySelectorAll('#carouselDots .dot');
     dots.forEach((d, i) => d.classList.toggle('active', i === walkState.currentIndex));
   }
 
-  function renderSelectedUser() {
+  function renderWalkSelectedUser() {
     const stats = document.getElementById('sliderStats');
     const body = document.getElementById('sliderBody');
     const slider = document.getElementById('walkSlider');
@@ -1640,16 +1941,12 @@
       </div>
     `;
 
-    document.getElementById('selectedClose').addEventListener('click', resetSelection);
-    document.getElementById('btnChat').addEventListener('click', () => {
-      openChat(user);
-    });
-    document.getElementById('btnJoin').addEventListener('click', () => {
-      sendJoinRequest(user);
-    });
+    document.getElementById('selectedClose').addEventListener('click', resetWalkSelection);
+    document.getElementById('btnChat').addEventListener('click', () => openChat(user));
+    document.getElementById('btnJoin').addEventListener('click', () => sendWalkJoinRequest(user));
   }
 
-  function sendJoinRequest(user) {
+  function sendWalkJoinRequest(user) {
     if (walkState.requestTimer) return;
 
     walkState.requestTarget = user;
@@ -1671,7 +1968,7 @@
           <button class="btn-cancel" id="btnCancelRequest">❌ Отменить</button>
         </div>
       `;
-      document.getElementById('btnCancelRequest').addEventListener('click', cancelJoinRequest);
+      document.getElementById('btnCancelRequest').addEventListener('click', cancelWalkJoinRequest);
     }
 
     renderWaiting();
@@ -1684,7 +1981,7 @@
       if (walkState.requestSecondsLeft <= 0) {
         clearInterval(walkState.requestTimer);
         walkState.requestTimer = null;
-        showTimeout(user);
+        showWalkTimeout(user);
       }
     }, 1000);
 
@@ -1695,22 +1992,21 @@
         clearInterval(walkState.requestTimer);
         walkState.requestTimer = null;
       }
-
       const accepted = Math.random() < 0.7;
-      if (accepted) showAccepted(user);
-      else showDeclined(user);
+      if (accepted) showWalkAccepted(user);
+      else showWalkDeclined(user);
     }, delay);
   }
 
-  function cancelJoinRequest() {
+  function cancelWalkJoinRequest() {
     walkState.requestCancelled = true;
     if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
     if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
     walkState.requestTarget = null;
-    renderSlider();
+    renderWalkSlider();
   }
 
-  function showTimeout(user) {
+  function showWalkTimeout(user) {
     const body = document.getElementById('sliderBody');
     body.innerHTML = `
       <div class="result-state">
@@ -1722,10 +2018,10 @@
         </div>
       </div>
     `;
-    document.getElementById('btnBackToList').addEventListener('click', () => resetSelection());
+    document.getElementById('btnBackToList').addEventListener('click', () => resetWalkSelection());
   }
 
-  function showAccepted(user) {
+  function showWalkAccepted(user) {
     const body = document.getElementById('sliderBody');
     const stats = document.getElementById('sliderStats');
     stats.innerHTML = `<span class="stat-item">✅ <b>Принято</b></span>`;
@@ -1741,10 +2037,10 @@
       </div>
     `;
     document.getElementById('btnOpenChat').addEventListener('click', () => openChat(user));
-    document.getElementById('btnBackToList2').addEventListener('click', resetSelection);
+    document.getElementById('btnBackToList2').addEventListener('click', resetWalkSelection);
   }
 
-  function showDeclined(user) {
+  function showWalkDeclined(user) {
     const body = document.getElementById('sliderBody');
     const stats = document.getElementById('sliderStats');
     stats.innerHTML = `<span class="stat-item">❌ <b>Отклонено</b></span>`;
@@ -1758,25 +2054,24 @@
         </div>
       </div>
     `;
-    document.getElementById('btnBackToList3').addEventListener('click', resetSelection);
+    document.getElementById('btnBackToList3').addEventListener('click', resetWalkSelection);
   }
 
-  // --- БАННЕР ---
-  function showTestBanner() {
+  function showWalkTestBanner() {
     if (!walkState.nearbyUsers.length) {
       if (walkState.userLat) {
         walkState.nearbyUsers = generateMockUsers(walkState.userLat, walkState.userLng);
       } else {
-        alert('Сначала открой карту прогулки, чтобы сгенерировать людей');
+        alert('Сначала открой карту прогулки');
         return;
       }
     }
     const user = walkState.nearbyUsers[Math.floor(Math.random() * walkState.nearbyUsers.length)];
-    showIncomingBanner(user);
+    showWalkIncomingBanner(user);
   }
 
-  function showIncomingBanner(fromUser) {
-    removeBanner();
+  function showWalkIncomingBanner(fromUser) {
+    removeWalkBanner();
 
     const wrapper = document.getElementById('walkMapWrapper');
     if (!wrapper) return;
@@ -1816,24 +2111,24 @@
       if (t) t.textContent = '⏱ Осталось: ' + walkState.bannerSecondsLeft + ' сек';
       if (miniT) miniT.textContent = walkState.bannerSecondsLeft + ' сек';
 
-      if (walkState.bannerSecondsLeft <= 0) endBanner();
+      if (walkState.bannerSecondsLeft <= 0) endWalkBanner();
     }, 1000);
 
     document.getElementById('bannerAccept').addEventListener('click', () => {
       playNotificationSound();
       alert(`✅ Вы приняли приглашение от ${fromUser.name}`);
-      endBanner();
+      endWalkBanner();
     });
 
     document.getElementById('bannerDecline').addEventListener('click', () => {
       alert(`❌ Вы отклонили приглашение от ${fromUser.name}`);
-      endBanner();
+      endWalkBanner();
     });
 
-    setupBannerSwipe(banner);
+    setupWalkBannerSwipe(banner);
   }
 
-  function setupBannerSwipe(banner) {
+  function setupWalkBannerSwipe(banner) {
     let startY = 0;
     let currentY = 0;
     let isSwiping = false;
@@ -1856,20 +2151,18 @@
       if (!isSwiping) return;
       isSwiping = false;
       banner.classList.remove('swiping');
-
       const diff = startY - currentY;
-      if (diff > 40) collapseBanner();
+      if (diff > 40) collapseWalkBanner();
       else banner.style.transform = '';
     });
   }
 
-  function collapseBanner() {
+  function collapseWalkBanner() {
     const banner = document.getElementById('notifBanner');
     if (banner) {
       banner.classList.remove('active');
       setTimeout(() => banner.remove(), 350);
     }
-
     walkState.bannerCollapsed = true;
 
     const wrapper = document.getElementById('walkMapWrapper');
@@ -1889,21 +2182,21 @@
     mini.addEventListener('click', () => {
       mini.classList.remove('active');
       setTimeout(() => mini.remove(), 350);
-      showIncomingBanner(walkState.bannerUser);
+      showWalkIncomingBanner(walkState.bannerUser);
     });
   }
 
-  function endBanner() {
+  function endWalkBanner() {
     if (walkState.bannerTimer) {
       clearInterval(walkState.bannerTimer);
       walkState.bannerTimer = null;
     }
-    removeBanner();
+    removeWalkBanner();
     walkState.bannerUser = null;
     walkState.bannerCollapsed = false;
   }
 
-  function removeBanner() {
+  function removeWalkBanner() {
     const banner = document.getElementById('notifBanner');
     if (banner) {
       banner.classList.remove('active');
@@ -1916,7 +2209,7 @@
     }
   }
 
-  function resetSelection() {
+  function resetWalkSelection() {
     walkState.selectedUserId = null;
     walkState.currentIndex = 0;
 
@@ -1930,10 +2223,10 @@
     walkState.requestCancelled = false;
     walkState.requestTarget = null;
 
-    renderSlider();
+    renderWalkSlider();
   }
 
-  function initMap(lat, lng) {
+  function initWalkMap(lat, lng) {
     if (walkState.map) return;
 
     walkState.map = L.map('walkMap', {
@@ -1953,14 +2246,14 @@
       fillOpacity: 1,
     }).addTo(walkState.map);
 
-    walkState.nearbyUsers.forEach(u => addMarkerFor(u));
+    walkState.nearbyUsers.forEach(u => addWalkMarkerFor(u));
 
     walkState.map.on('click', () => {
-      if (walkState.selectedUserId) resetSelection();
+      if (walkState.selectedUserId) resetWalkSelection();
     });
   }
 
-  function addMarkerFor(u) {
+  function addWalkMarkerFor(u) {
     const marker = L.circleMarker([u.lat, u.lng], {
       radius: 7,
       fillColor: '#FF6B35',
@@ -1972,14 +2265,14 @@
     marker.on('click', (e) => {
       L.DomEvent.stopPropagation(e);
       walkState.selectedUserId = u.id;
-      centerMapOn(u.lat, u.lng, true);
-      renderSlider();
+      centerWalkMapOn(u.lat, u.lng, true);
+      renderWalkSlider();
     });
 
     walkState.otherMarkers[u.id] = marker;
   }
 
-  function centerMapOn(lat, lng, zoomIn) {
+  function centerWalkMapOn(lat, lng, zoomIn) {
     if (!walkState.map) return;
     walkState.map.setView([lat, lng], zoomIn ? 18 : 17, { animate: true });
 
@@ -1996,7 +2289,7 @@
     }
   }
 
-  function startGeolocation() {
+  function startWalkGeolocation() {
     if (!navigator.geolocation) {
       alert('❌ Браузер не поддерживает геолокацию');
       return;
@@ -2008,8 +2301,8 @@
         walkState.userLng = pos.coords.longitude;
 
         walkState.nearbyUsers = generateMockUsers(walkState.userLat, walkState.userLng);
-        initMap(walkState.userLat, walkState.userLng);
-        renderSlider();
+        initWalkMap(walkState.userLat, walkState.userLng);
+        renderWalkSlider();
 
         walkState.watchId = navigator.geolocation.watchPosition(
           (p) => {
@@ -2030,7 +2323,7 @@
     );
   }
 
-  function expandRadius() {
+  function expandWalkRadius() {
     if (!walkState.userLat) return;
     const extra = [];
     for (let i = 0; i < 5; i++) {
@@ -2046,11 +2339,11 @@
       });
     }
     walkState.nearbyUsers = walkState.nearbyUsers.concat(extra);
-    extra.forEach(u => addMarkerFor(u));
-    renderSlider();
+    extra.forEach(u => addWalkMarkerFor(u));
+    renderWalkSlider();
   }
 
-  function setupSliderGestures() {
+  function setupWalkSliderGestures() {
     const slider = document.getElementById('walkSlider');
     const header = document.getElementById('sliderHeader');
     if (!slider || !header) return;
@@ -2088,6 +2381,658 @@
     });
   }
 
+  function openWalkScreen(user, onClose) {
+    walkState.currentUser = user;
+    walkState.onClose = onClose || null;
+
+    const el = createWalkScreen();
+    requestAnimationFrame(() => el.classList.add('active'));
+
+    const av = document.getElementById('walkAvatar');
+    if (av) {
+      if (user && user.avatar) av.innerHTML = `<img src="${user.avatar}" alt="">`;
+      else if (user && user.name) av.textContent = user.name.charAt(0).toUpperCase();
+      else av.textContent = '?';
+    }
+
+    const back = document.getElementById('walkBack');
+    if (back) back.addEventListener('click', closeWalkScreen);
+
+    if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
+
+    startWalkGeolocation();
+    setupWalkSliderGestures();
+    document.addEventListener('keydown', walkEscHandler);
+  }
+
+  function walkEscHandler(e) {
+    if (e.key === 'Escape') closeWalkScreen();
+  }
+
+  function closeWalkScreen() {
+    const el = document.getElementById('walkScreen');
+    if (!el) return;
+
+    if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
+    if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
+    if (walkState.bannerTimer) { clearInterval(walkState.bannerTimer); walkState.bannerTimer = null; }
+
+    if (walkState.watchId) {
+      navigator.geolocation.clearWatch(walkState.watchId);
+      walkState.watchId = null;
+    }
+
+    if (walkState.map) {
+      walkState.map.remove();
+      walkState.map = null;
+      walkState.userMarker = null;
+      walkState.otherMarkers = {};
+      walkState.routeLine = null;
+    }
+
+    walkState.currentUser = null;
+    walkState.nearbyUsers = [];
+    walkState.selectedUserId = null;
+    walkState.currentIndex = 0;
+    walkState.userLat = null;
+    walkState.userLng = null;
+    walkState.sliderState = 'medium';
+    walkState.bannerUser = null;
+    walkState.bannerCollapsed = false;
+
+    el.classList.remove('active');
+    setTimeout(() => el.remove(), 350);
+
+    document.removeEventListener('keydown', walkEscHandler);
+
+    if (walkState.onClose) {
+      walkState.onClose();
+      walkState.onClose = null;
+    }
+  }
+
+  // ============================================================
+  // МОДУЛЬ "ОБЕД / КОФЕ"
+  // ============================================================
+  const lunchState = {
+    map: null,
+    userMarker: null,
+    cafeMarkers: [],
+    lunchMarkers: [],
+    currentUser: null,
+    onClose: null,
+    cafes: [],
+    lunches: [],
+    selectedCafe: null,
+    selectedLunch: null,
+    userLat: null,
+    userLng: null,
+    watchId: null,
+    sliderState: 'medium',
+    radius: 3000,
+    loading: false,
+  };
+
+  const OVERPASS_URLS = [
+    'https://overpass.openstreetmap.ru/api/interpreter',
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+    'https://overpass-api.de/api/interpreter'
+  ];
+
+  const CAFE_TYPES = {
+    'cafe': { icon: '☕', label: 'Кофейня' },
+    'restaurant': { icon: '🍕', label: 'Ресторан' },
+    'fast_food': { icon: '🍔', label: 'Фастфуд' },
+    'bar': { icon: '🍺', label: 'Бар' },
+    'pub': { icon: '🍻', label: 'Паб' }
+  };
+
+  async function fetchCafes(lat, lng, radius) {
+    const query = `
+      [out:json][timeout:15];
+      (
+        node["amenity"~"cafe|restaurant|fast_food|bar|pub"](around:${radius},${lat},${lng});
+        way["amenity"~"cafe|restaurant|fast_food|bar|pub"](around:${radius},${lat},${lng});
+      );
+      out center 30;
+    `;
+
+    for (const url of OVERPASS_URLS) {
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          body: 'data=' + encodeURIComponent(query),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+        if (!resp.ok) continue;
+        const data = await resp.json();
+        if (data && data.elements) {
+          return data.elements.map(el => {
+            const lat = el.lat || (el.center && el.center.lat);
+            const lng = el.lon || (el.center && el.center.lon);
+            const tags = el.tags || {};
+            return {
+              id: 'cafe_' + el.id,
+              name: tags.name || 'Кафе',
+              type: tags.amenity || 'cafe',
+              lat: lat,
+              lng: lng,
+              address: [tags['addr:street'], tags['addr:housenumber']].filter(Boolean).join(', '),
+            };
+          }).filter(c => c.lat && c.lng);
+        }
+      } catch (e) {
+        console.warn('Overpass не ответил:', url, e);
+      }
+    }
+    return null;
+  }
+
+  function generateMockCafes(lat, lng) {
+    const names = ['Кофе Хауз', 'Шоколадница', 'Пушкин', 'Вареничная', 'Теремок', 'Столовая №1', 'Бургер Кинг', 'KFC', 'Додо Пицца', 'Суши Wok'];
+    const types = ['cafe', 'restaurant', 'fast_food'];
+    const cafes = [];
+    for (let i = 0; i < 8; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = 0.002 + Math.random() * 0.02;
+      cafes.push({
+        id: 'mock_cafe_' + i,
+        name: names[i % names.length],
+        type: types[i % types.length],
+        lat: lat + Math.cos(angle) * distance,
+        lng: lng + Math.sin(angle) * distance,
+        address: 'ул. Примерная, ' + (i + 1),
+      });
+    }
+    return cafes;
+  }
+
+  function generateMockLunches(cafes) {
+    const lunches = [];
+    const hosts = ['Алексей', 'Мария', 'Дмитрий', 'Анна', 'Сергей'];
+    const count = Math.min(4, cafes.length);
+    for (let i = 0; i < count; i++) {
+      const cafe = cafes[i];
+      const hour = 12 + Math.floor(Math.random() * 3);
+      const minute = Math.random() < 0.5 ? '00' : '30';
+      lunches.push({
+        id: 'lunch_' + i,
+        cafeId: cafe.id,
+        cafe: cafe,
+        host: hosts[i % hosts.length],
+        hostAge: 22 + Math.floor(Math.random() * 15),
+        time: `${hour}:${minute}`,
+        spots: 1 + Math.floor(Math.random() * 3),
+        totalSpots: 3,
+        payment: Math.random() < 0.5 ? 'split' : 'host',
+      });
+    }
+    return lunches;
+  }
+
+  function createLunchScreen() {
+    const el = document.createElement('div');
+    el.className = 'lunch-screen';
+    el.id = 'lunchScreen';
+    el.innerHTML = `
+      <div class="lunch-header">
+        <button class="lunch-back" id="lunchBack">← Назад</button>
+        <span class="lunch-logo">🍔 ОБЕД</span>
+        <div class="lunch-avatar" id="lunchAvatar"></div>
+      </div>
+
+      <div class="lunch-map-wrapper" id="lunchMapWrapper">
+        <div id="lunchMap"></div>
+      </div>
+
+      <div class="lunch-slider" id="lunchSlider">
+        <div class="lunch-slider-header" id="lunchSliderHeader">
+          <div class="lunch-slider-handle"></div>
+          <div class="lunch-slider-stats" id="lunchSliderStats"></div>
+        </div>
+        <div class="lunch-slider-body" id="lunchSliderBody"></div>
+      </div>
+    `;
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function renderLunchLoading() {
+    const stats = document.getElementById('lunchSliderStats');
+    const body = document.getElementById('lunchSliderBody');
+    if (!stats || !body) return;
+
+    stats.innerHTML = `<span class="stat-item">⏳ Ищем кафе...</span>`;
+    body.innerHTML = `
+      <div class="lunch-loading">
+        <div class="lunch-loading-icon">🍔</div>
+        <div class="lunch-loading-text">Загружаем кафе рядом с вами...</div>
+      </div>
+    `;
+  }
+
+  function renderLunchSlider() {
+    const stats = document.getElementById('lunchSliderStats');
+    const body = document.getElementById('lunchSliderBody');
+    const slider = document.getElementById('lunchSlider');
+    if (!stats || !body || !slider) return;
+
+    slider.classList.remove('expanded');
+
+    // Если выбрано кафе — показываем детали
+    if (lunchState.selectedCafe) {
+      renderCafeDetails();
+      return;
+    }
+
+    // Если выбран обед — показываем детали
+    if (lunchState.selectedLunch) {
+      renderLunchDetails();
+      return;
+    }
+
+    // Основной список
+    if (lunchState.cafes.length === 0) {
+      stats.innerHTML = `<span class="stat-item">🍔 Кафе не найдено</span>`;
+      body.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">😔</div>
+          <div class="empty-text">Рядом нет кафе</div>
+          <button class="btn-expand" id="btnExpandLunchRadius">🔍 Расширить радиус поиска</button>
+        </div>
+      `;
+      const b = document.getElementById('btnExpandLunchRadius');
+      if (b) b.addEventListener('click', expandLunchRadius);
+      return;
+    }
+
+    stats.innerHTML = `
+      <span class="stat-item">☕ <b>${lunchState.cafes.length}</b></span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">🍔 <b>${lunchState.lunches.length}</b> обедов</span>
+    `;
+
+    let cardsHtml = '';
+    lunchState.lunches.forEach((lunch, i) => {
+      const d = calcDistance(lunchState.userLat, lunchState.userLng, lunch.cafe.lat, lunch.cafe.lng);
+      const typeInfo = CAFE_TYPES[lunch.cafe.type] || CAFE_TYPES.cafe;
+      cardsHtml += `
+        <div class="lunch-card ${i === 0 ? 'centered' : ''}" data-lunch-id="${lunch.id}">
+          <div class="lunch-card-type">${typeInfo.icon} ${typeInfo.label}</div>
+          <div class="lunch-card-cafe">${lunch.cafe.name}</div>
+          <div class="lunch-card-time">⏰ ${lunch.time}</div>
+          <div class="lunch-card-host">👤 ${lunch.host}, ${lunch.hostAge}</div>
+          <div class="lunch-card-spots">✅ ${lunch.spots} из ${lunch.totalSpots} мест</div>
+        </div>
+      `;
+    });
+
+    body.innerHTML = `
+      <button class="create-lunch-btn" id="btnCreateLunch">➕ Создать обед</button>
+      <div class="carousel-title">─── Обеды рядом ───</div>
+      <div class="carousel" id="lunchCarousel">
+        <div class="carousel-track" id="lunchCarouselTrack">${cardsHtml}</div>
+      </div>
+    `;
+
+    document.getElementById('btnCreateLunch').addEventListener('click', () => {
+      alert('🚧 Создание обеда — в разработке');
+    });
+
+    document.querySelectorAll('.lunch-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.lunchId;
+        const lunch = lunchState.lunches.find(l => l.id === id);
+        if (lunch) {
+          lunchState.selectedLunch = lunch;
+          centerLunchMapOn(lunch.cafe.lat, lunch.cafe.lng, true);
+          renderLunchSlider();
+        }
+      });
+    });
+  }
+
+  function renderLunchDetails() {
+    const stats = document.getElementById('lunchSliderStats');
+    const body = document.getElementById('lunchSliderBody');
+    const slider = document.getElementById('lunchSlider');
+    const lunch = lunchState.selectedLunch;
+    if (!lunch || !stats || !body || !slider) return;
+
+    const d = calcDistance(lunchState.userLat, lunchState.userLng, lunch.cafe.lat, lunch.cafe.lng);
+    const typeInfo = CAFE_TYPES[lunch.cafe.type] || CAFE_TYPES.cafe;
+
+    slider.classList.add('expanded');
+
+    stats.innerHTML = `
+      <span class="stat-item">📏 <b>${formatDistance(d)}</b></span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">⏰ ${lunch.time}</span>
+    `;
+
+    body.innerHTML = `
+      <div class="selected-user">
+        <div class="selected-avatar" style="background:#FF9F43;">${typeInfo.icon}</div>
+        <div class="selected-info">
+          <div class="selected-name">${lunch.cafe.name}</div>
+          <div class="selected-nick">${typeInfo.label} · ${formatDistance(d)}</div>
+        </div>
+        <button class="selected-close" id="lunchClose">✕</button>
+      </div>
+
+      <div style="padding: 12px 0; color: #8B95A9; font-size: 14px; line-height: 1.6;">
+        <div>👤 Организатор: ${lunch.host}, ${lunch.hostAge}</div>
+        <div>⏰ Время: ${lunch.time}</div>
+        <div>👥 Свободно мест: ${lunch.spots} из ${lunch.totalSpots}</div>
+        <div>💰 ${lunch.payment === 'split' ? 'Счёт раздельно' : 'Платит организатор'}</div>
+      </div>
+
+      <div class="selected-actions">
+        <button class="btn-action btn-chat" id="lunchChat">💬 Написать</button>
+        <button class="btn-action btn-join" id="lunchJoin" style="background:#FF9F43;">✅ Присоединиться</button>
+      </div>
+    `;
+
+    document.getElementById('lunchClose').addEventListener('click', () => {
+      lunchState.selectedLunch = null;
+      renderLunchSlider();
+    });
+
+    document.getElementById('lunchChat').addEventListener('click', () => {
+      openChat({ name: lunch.host, age: lunch.hostAge });
+    });
+
+    document.getElementById('lunchJoin').addEventListener('click', () => {
+      playNotificationSound();
+      alert(`✅ Вы присоединились к обеду в ${lunch.cafe.name}!\n⏰ ${lunch.time}`);
+      lunchState.selectedLunch = null;
+      renderLunchSlider();
+    });
+  }
+
+  function renderCafeDetails() {
+    const stats = document.getElementById('lunchSliderStats');
+    const body = document.getElementById('lunchSliderBody');
+    const slider = document.getElementById('lunchSlider');
+    const cafe = lunchState.selectedCafe;
+    if (!cafe || !stats || !body || !slider) return;
+
+    const d = calcDistance(lunchState.userLat, lunchState.userLng, cafe.lat, cafe.lng);
+    const typeInfo = CAFE_TYPES[cafe.type] || CAFE_TYPES.cafe;
+
+    slider.classList.add('expanded');
+
+    stats.innerHTML = `
+      <span class="stat-item">📏 <b>${formatDistance(d)}</b></span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">${typeInfo.icon} ${typeInfo.label}</span>
+    `;
+
+    body.innerHTML = `
+      <div class="selected-user">
+        <div class="selected-avatar" style="background:#FF9F43;">${typeInfo.icon}</div>
+        <div class="selected-info">
+          <div class="selected-name">${cafe.name}</div>
+          <div class="selected-nick">${typeInfo.label} · ${formatDistance(d)}</div>
+        </div>
+        <button class="selected-close" id="cafeClose">✕</button>
+      </div>
+
+      <div class="cafe-detail-info">
+        📍 ${cafe.address || 'Адрес не указан'}
+      </div>
+
+      <div class="cafe-detail-actions">
+        <button class="btn-action btn-join" id="cafeCreate" style="background:#FF9F43;">➕ Создать обед здесь</button>
+      </div>
+    `;
+
+    document.getElementById('cafeClose').addEventListener('click', () => {
+      lunchState.selectedCafe = null;
+      renderLunchSlider();
+    });
+
+    document.getElementById('cafeCreate').addEventListener('click', () => {
+      alert(`🚧 Создание обеда в "${cafe.name}" — в разработке`);
+    });
+  }
+
+  function initLunchMap(lat, lng) {
+    if (lunchState.map) return;
+
+    lunchState.map = L.map('lunchMap', {
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([lat, lng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(lunchState.map);
+
+    lunchState.userMarker = L.circleMarker([lat, lng], {
+      radius: 9,
+      fillColor: '#4D6CFF',
+      color: '#fff',
+      weight: 3,
+      fillOpacity: 1,
+    }).addTo(lunchState.map);
+
+    lunchState.map.on('click', () => {
+      if (lunchState.selectedCafe) {
+        lunchState.selectedCafe = null;
+        renderLunchSlider();
+      }
+      if (lunchState.selectedLunch) {
+        lunchState.selectedLunch = null;
+        renderLunchSlider();
+      }
+    });
+  }
+
+  function addCafeMarkers() {
+    if (!lunchState.map) return;
+
+    // Удаляем старые
+    lunchState.cafeMarkers.forEach(m => lunchState.map.removeLayer(m));
+    lunchState.cafeMarkers = [];
+
+    lunchState.cafes.forEach(cafe => {
+      const typeInfo = CAFE_TYPES[cafe.type] || CAFE_TYPES.cafe;
+      const icon = L.divIcon({
+        className: 'cafe-marker',
+        html: `<div class="cafe-marker-inner">${typeInfo.icon}</div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
+
+      const marker = L.marker([cafe.lat, cafe.lng], { icon }).addTo(lunchState.map);
+
+      marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        lunchState.selectedCafe = cafe;
+        centerLunchMapOn(cafe.lat, cafe.lng, true);
+        renderLunchSlider();
+      });
+
+      lunchState.cafeMarkers.push(marker);
+    });
+  }
+
+  function centerLunchMapOn(lat, lng, zoomIn) {
+    if (!lunchState.map) return;
+    lunchState.map.setView([lat, lng], zoomIn ? 17 : 15, { animate: true });
+  }
+
+  async function startLunchGeolocation() {
+    if (!navigator.geolocation) {
+      alert('❌ Браузер не поддерживает геолокацию');
+      return;
+    }
+
+    renderLunchLoading();
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        lunchState.userLat = pos.coords.latitude;
+        lunchState.userLng = pos.coords.longitude;
+
+        initLunchMap(lunchState.userLat, lunchState.userLng);
+
+        // Загружаем кафе
+        lunchState.loading = true;
+        let cafes = await fetchCafes(lunchState.userLat, lunchState.userLng, lunchState.radius);
+        if (!cafes || cafes.length === 0) {
+          console.warn('Overpass вернул пусто, используем мок-данные');
+          cafes = generateMockCafes(lunchState.userLat, lunchState.userLng);
+        }
+        lunchState.cafes = cafes;
+        lunchState.lunches = generateMockLunches(cafes);
+        lunchState.loading = false;
+
+        addCafeMarkers();
+        renderLunchSlider();
+
+        lunchState.watchId = navigator.geolocation.watchPosition(
+          (p) => {
+            lunchState.userLat = p.coords.latitude;
+            lunchState.userLng = p.coords.longitude;
+            if (lunchState.userMarker) {
+              lunchState.userMarker.setLatLng([lunchState.userLat, lunchState.userLng]);
+            }
+          },
+          () => {},
+          { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+        );
+      },
+      (err) => {
+        alert('⚠️ Не удалось получить геолокацию: ' + err.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  }
+
+  function expandLunchRadius() {
+    if (!lunchState.userLat) return;
+    lunchState.radius = lunchState.radius === 3000 ? 5000 : 10000;
+    alert(`🔍 Расширяем радиус до ${lunchState.radius / 1000} км...`);
+    // Перезагружаем
+    const screen = document.getElementById('lunchScreen');
+    if (screen) {
+      screen.remove();
+      lunchState.map = null;
+      lunchState.cafeMarkers = [];
+      openLunchScreen(lunchState.currentUser);
+    }
+  }
+
+  function setupLunchSliderGestures() {
+    const slider = document.getElementById('lunchSlider');
+    const header = document.getElementById('lunchSliderHeader');
+    if (!slider || !header) return;
+
+    let startY = 0;
+    let startState = null;
+    let moved = false;
+
+    const heights = { collapsed: '85px', medium: '45vh' };
+
+    function setState(s) {
+      lunchState.sliderState = s;
+      slider.style.height = heights[s];
+    }
+
+    setState('medium');
+
+    header.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startState = lunchState.sliderState;
+      moved = false;
+    }, { passive: true });
+
+    header.addEventListener('touchmove', (e) => {
+      const diff = startY - e.touches[0].clientY;
+      if (Math.abs(diff) > 20) moved = true;
+      if (startState === 'medium' && diff < -40) setState('collapsed');
+      else if (startState === 'collapsed' && diff > 40) setState('medium');
+    }, { passive: true });
+
+    header.addEventListener('click', () => {
+      if (moved) return;
+      if (lunchState.sliderState === 'medium') setState('collapsed');
+      else setState('medium');
+    });
+  }
+
+  function openLunchScreen(user, onClose) {
+    lunchState.currentUser = user;
+    lunchState.onClose = onClose || null;
+    lunchState.cafes = [];
+    lunchState.lunches = [];
+    lunchState.selectedCafe = null;
+    lunchState.selectedLunch = null;
+
+    const el = createLunchScreen();
+    requestAnimationFrame(() => el.classList.add('active'));
+
+    const av = document.getElementById('lunchAvatar');
+    if (av) {
+      if (user && user.avatar) av.innerHTML = `<img src="${user.avatar}" alt="">`;
+      else if (user && user.name) av.textContent = user.name.charAt(0).toUpperCase();
+      else av.textContent = '?';
+    }
+
+    const back = document.getElementById('lunchBack');
+    if (back) back.addEventListener('click', closeLunchScreen);
+
+    if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
+
+    startLunchGeolocation();
+    setupLunchSliderGestures();
+    document.addEventListener('keydown', lunchEscHandler);
+  }
+
+  function lunchEscHandler(e) {
+    if (e.key === 'Escape') closeLunchScreen();
+  }
+
+  function closeLunchScreen() {
+    const el = document.getElementById('lunchScreen');
+    if (!el) return;
+
+    if (lunchState.watchId) {
+      navigator.geolocation.clearWatch(lunchState.watchId);
+      lunchState.watchId = null;
+    }
+
+    if (lunchState.map) {
+      lunchState.map.remove();
+      lunchState.map = null;
+      lunchState.userMarker = null;
+      lunchState.cafeMarkers = [];
+      lunchState.lunchMarkers = [];
+    }
+
+    lunchState.currentUser = null;
+    lunchState.cafes = [];
+    lunchState.lunches = [];
+    lunchState.selectedCafe = null;
+    lunchState.selectedLunch = null;
+    lunchState.userLat = null;
+    lunchState.userLng = null;
+    lunchState.sliderState = 'medium';
+    lunchState.radius = 3000;
+
+    el.classList.remove('active');
+    setTimeout(() => el.remove(), 350);
+
+    document.removeEventListener('keydown', lunchEscHandler);
+
+    if (lunchState.onClose) {
+      lunchState.onClose();
+      lunchState.onClose = null;
+    }
+  }
+
   // ============================================================
   // ЧАТ
   // ============================================================
@@ -2101,7 +3046,6 @@
 
   function openChat(user) {
     if (!user) return;
-
     if (chatState.screen) closeChat();
 
     chatState.user = user;
@@ -2117,7 +3061,7 @@
         <button class="chat-back" id="chatBack">←</button>
         <div class="chat-header-avatar">${user.name.charAt(0)}</div>
         <div class="chat-header-info">
-          <div class="chat-header-name">${user.name}, ${user.age}</div>
+          <div class="chat-header-name">${user.name}, ${user.age || 25}</div>
           <div class="chat-header-status">🟢 Онлайн</div>
         </div>
       </div>
@@ -2163,7 +3107,6 @@
     send.disabled = true;
 
     setupChatSwipe(el);
-
     setTimeout(() => input.focus(), 300);
   }
 
@@ -2247,79 +3190,6 @@
     chatState.messages = [];
     chatState.swipeStartY = 0;
     chatState.swipeCurrentY = 0;
-  }
-
-  // ============================================================
-  // ОТКРЫТИЕ/ЗАКРЫТИЕ ЭКРАНА ПРОГУЛКИ
-  // ============================================================
-  function openWalkScreen(user, onClose) {
-    walkState.currentUser = user;
-    walkState.onClose = onClose || null;
-
-    const el = createWalkScreen();
-    requestAnimationFrame(() => el.classList.add('active'));
-
-    const av = document.getElementById('walkAvatar');
-    if (av) {
-      if (user && user.avatar) av.innerHTML = `<img src="${user.avatar}" alt="">`;
-      else if (user && user.name) av.textContent = user.name.charAt(0).toUpperCase();
-      else av.textContent = '?';
-    }
-
-    const back = document.getElementById('walkBack');
-    if (back) back.addEventListener('click', closeWalkScreen);
-
-    if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
-
-    startGeolocation();
-    setupSliderGestures();
-    document.addEventListener('keydown', escHandler);
-  }
-
-  function escHandler(e) {
-    if (e.key === 'Escape') closeWalkScreen();
-  }
-
-  function closeWalkScreen() {
-    const el = document.getElementById('walkScreen');
-    if (!el) return;
-
-    if (walkState.requestTimer) { clearInterval(walkState.requestTimer); walkState.requestTimer = null; }
-    if (walkState.requestTimeout) { clearTimeout(walkState.requestTimeout); walkState.requestTimeout = null; }
-    if (walkState.bannerTimer) { clearInterval(walkState.bannerTimer); walkState.bannerTimer = null; }
-
-    if (walkState.watchId) {
-      navigator.geolocation.clearWatch(walkState.watchId);
-      walkState.watchId = null;
-    }
-
-    if (walkState.map) {
-      walkState.map.remove();
-      walkState.map = null;
-      walkState.userMarker = null;
-      walkState.otherMarkers = {};
-      walkState.routeLine = null;
-    }
-
-    walkState.currentUser = null;
-    walkState.nearbyUsers = [];
-    walkState.selectedUserId = null;
-    walkState.currentIndex = 0;
-    walkState.userLat = null;
-    walkState.userLng = null;
-    walkState.sliderState = 'medium';
-    walkState.bannerUser = null;
-    walkState.bannerCollapsed = false;
-
-    el.classList.remove('active');
-    setTimeout(() => el.remove(), 350);
-
-    document.removeEventListener('keydown', escHandler);
-
-    if (walkState.onClose) {
-      walkState.onClose();
-      walkState.onClose = null;
-    }
   }
 
   // ============================================================
@@ -2629,7 +3499,7 @@
             attempts++;
             if (walkState.userLat && walkState.nearbyUsers.length > 0) {
               clearInterval(checkInterval);
-              showTestBanner();
+              showWalkTestBanner();
             }
             if (attempts > 30) clearInterval(checkInterval);
           }, 300);
@@ -2653,6 +3523,11 @@
 
       if (type === 'walk') {
         openWalkScreen(currentUser);
+        return;
+      }
+
+      if (type === 'lunch') {
+        openLunchScreen(currentUser);
         return;
       }
 
