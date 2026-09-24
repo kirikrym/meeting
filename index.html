@@ -24,6 +24,7 @@
       --success: #10b981;
       --orange: #FF9F43;
       --soul: #A29BFE;
+      --ride: #4D6CFF;
     }
 
     html, body {
@@ -419,7 +420,8 @@
       opacity: 0.6;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 14px 18px;
       background: var(--bg);
@@ -436,11 +438,42 @@
       -webkit-appearance: none;
       appearance: none;
       min-width: 0;
+      font-family: inherit;
     }
 
-    .form-group input:focus { border-color: var(--accent); }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--accent); }
     .form-group input::placeholder { color: var(--text-muted); opacity: 0.5; }
-    .form-group input[type="date"] { min-height: 52px; }
+    .form-group input[type="date"],
+    .form-group input[type="time"] { min-height: 52px; }
+
+    /* Кнопки-переключатели */
+    .toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 12px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+
+    .toggle-btn.active {
+      background: rgba(108, 92, 231, 0.15);
+      border-color: var(--accent);
+      color: var(--accent-light);
+    }
+
+    .toggle-btn:active { transform: scale(0.97); }
 
     .form-actions {
       display: flex;
@@ -1692,7 +1725,6 @@
       flex-shrink: 0;
     }
 
-    /* --- Поиск собеседника --- */
     .soul-search {
       flex: 1;
       display: flex;
@@ -1750,7 +1782,6 @@
 
     .soul-search-cancel:active { background: #2A3442; }
 
-    /* --- Чат --- */
     .soul-chat-header {
       display: flex;
       align-items: center;
@@ -1793,7 +1824,6 @@
       border-bottom: 1px solid rgba(42, 52, 66, 0.5);
     }
 
-    /* --- Финал --- */
     .soul-final {
       flex: 1;
       display: flex;
@@ -1873,11 +1903,7 @@
     }
 
     .soul-final-back:active { background: #2A3442; }
-
-    .soul-final-back:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    .soul-final-back:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .msg.anon {
       align-self: flex-start;
@@ -1893,15 +1919,288 @@
       border-bottom-right-radius: 6px;
     }
 
-    @media (max-width: 400px) {
-      .carousel-card { flex: 0 0 70%; min-height: 140px; }
-      .carousel-track { padding: 0 calc(50% - 35%); }
-      .card-avatar { width: 46px; height: 46px; font-size: 20px; }
-      .card-name { font-size: 14px; }
-      .lunch-card { flex: 0 0 70%; min-height: 140px; }
+    /* ============================================================
+       ЭКРАН "ПОПУТЧИКИ"
+       ============================================================ */
+    .ride-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: #0B0E14;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      overflow: hidden;
+    }
+
+    .ride-screen.active { transform: translateX(0); }
+
+    .ride-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(19, 26, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2A3442;
+      z-index: 1200;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .ride-back {
+      background: none;
+      border: none;
+      color: #4D6CFF;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+
+    .ride-back:active { background: rgba(77, 108, 255, 0.15); }
+
+    .ride-logo {
+      font-size: 17px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4D6CFF, #A29BFE);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ride-avatar {
+      width: 36px;
+      height: 36px;
+      background: #4D6CFF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .ride-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .ride-avatar:active { transform: scale(0.9); }
+
+    .ride-map-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    #rideMap {
+      width: 100%;
+      height: 100%;
+      background: #0B0E14;
+      z-index: 0 !important;
+    }
+
+    #rideMap .leaflet-tile-pane {
+      filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.15) saturate(0.7);
+    }
+
+    #rideMap .leaflet-pane { z-index: 1 !important; }
+    #rideMap .leaflet-top,
+    #rideMap .leaflet-bottom { z-index: 2 !important; }
+
+    .ride-marker {
+      background: transparent;
+      border: none;
+    }
+
+    .ride-marker-inner {
+      width: 36px;
+      height: 36px;
+      background: #1E2633;
+      border: 2px solid #4D6CFF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .ride-slider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45vh;
+      background: #131A23;
+      border-radius: 28px 28px 0 0;
+      border-top: 1px solid #2A3442;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7);
+      transition: height 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ride-slider.expanded { height: 55vh; }
+
+    .ride-slider-header {
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      padding: 10px 16px 14px;
+      border-bottom: 1px solid #2A3442;
+      touch-action: none;
+    }
+
+    .ride-slider-handle {
+      width: 40px;
+      height: 4px;
+      background: #2A3442;
+      border-radius: 4px;
+      margin: 0 auto 12px;
+      transition: 0.2s;
+    }
+
+    .ride-slider-header:hover .ride-slider-handle { background: #4D6CFF; }
+
+    .ride-slider-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #8B95A9;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .ride-slider-stats .stat-item { display: inline-flex; align-items: center; gap: 4px; }
+    .ride-slider-stats .stat-item b { color: #fff; font-weight: 600; }
+    .ride-slider-stats .stat-sep { color: #4A5568; }
+
+    .ride-slider-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 16px 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .create-ride-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4D6CFF, #6C5CE7);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .create-ride-btn:active { transform: scale(0.97); }
+
+    .ride-card {
+      flex: 0 0 65%;
+      scroll-snap-align: center;
+      background: #0B0E14;
+      border: 1.5px solid #2A3442;
+      border-radius: 20px;
+      padding: 16px 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.3s;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ride-card.centered {
+      border-color: #4D6CFF;
+      background: rgba(77, 108, 255, 0.08);
+    }
+
+    .ride-card-route {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ride-card-time {
+      font-size: 13px;
+      color: #4D6CFF;
+      font-weight: 600;
+    }
+
+    .ride-card-host {
+      font-size: 12px;
+      color: #8B95A9;
+    }
+
+    .ride-card-spots {
+      font-size: 13px;
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .ride-card-price {
+      font-size: 14px;
+      color: #FF9F43;
+      font-weight: 700;
+      margin-top: auto;
+    }
+
+    .ride-loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .ride-loading-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      animation: spin 2s linear infinite;
+    }
+
+    .ride-loading-text {
+      font-size: 15px;
+      color: #8B95A9;
+    }
+
+    /* Форма создания поездки */
+    .ride-form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ride-form-row .form-group {
+      flex: 1;
+    }
+
+    .ride-options-title {
+      font-size: 13px;
+      color: #8B95A9;
+      margin: 16px 0 8px;
+      font-weight: 600;
     }
   </style>
 </head>
+<body>
 <body>
 
 <div class="app">
@@ -1945,13 +2244,13 @@
       <div class="card" data-card="ride">
         <div class="card-icon">🚗</div>
         <div class="card-text"><h3>Попутчики</h3><p>Найди попутчика</p></div>
-        <span class="card-badge">Скоро</span>
+        <span class="card-badge">Активно</span>
       </div>
 
       <div class="card" data-card="random">
         <div class="card-icon">🎲</div>
         <div class="card-text"><h3>Случайная встреча</h3><p>По интересам</p></div>
-        <span class="card-badge">Новое</span>
+        <span class="card-badge">Скоро</span>
       </div>
 
     </div>
@@ -2306,26 +2605,21 @@
 
     stats.innerHTML = `<span class="stat-item">⏳ <b>Ожидаем ответа</b></span>`;
 
-    function renderWaiting() {
-      body.innerHTML = `
-        <div class="waiting-state">
-          <div class="waiting-icon">⏳</div>
-          <div class="waiting-title">Ожидаем ответа...</div>
-          <div class="waiting-sub">${user.name} получил приглашение</div>
-          <div class="waiting-timer" id="waitingTimer">${walkState.requestSecondsLeft} сек</div>
-          <button class="btn-cancel" id="btnCancelRequest">❌ Отменить</button>
-        </div>
-      `;
-      document.getElementById('btnCancelRequest').addEventListener('click', cancelWalkJoinRequest);
-    }
-
-    renderWaiting();
+    body.innerHTML = `
+      <div class="waiting-state">
+        <div class="waiting-icon">⏳</div>
+        <div class="waiting-title">Ожидаем ответа...</div>
+        <div class="waiting-sub">${user.name} получил приглашение</div>
+        <div class="waiting-timer" id="waitingTimer">${walkState.requestSecondsLeft} сек</div>
+        <button class="btn-cancel" id="btnCancelRequest">❌ Отменить</button>
+      </div>
+    `;
+    document.getElementById('btnCancelRequest').addEventListener('click', cancelWalkJoinRequest);
 
     walkState.requestTimer = setInterval(() => {
       walkState.requestSecondsLeft--;
       const t = document.getElementById('waitingTimer');
       if (t) t.textContent = walkState.requestSecondsLeft + ' сек';
-
       if (walkState.requestSecondsLeft <= 0) {
         clearInterval(walkState.requestTimer);
         walkState.requestTimer = null;
@@ -3394,6 +3688,11 @@
     const body = document.getElementById('soulBody');
     if (!body) return;
 
+    body.style.display = 'block';
+    body.style.flexDirection = '';
+    body.style.padding = '24px 20px 40px';
+    body.style.overflowY = 'auto';
+
     let themesHtml = '';
     SOUL_THEMES.forEach(theme => {
       themesHtml += `
@@ -3436,6 +3735,11 @@
     const body = document.getElementById('soulBody');
     if (!body) return;
 
+    body.style.display = 'flex';
+    body.style.flexDirection = 'column';
+    body.style.padding = '0';
+    body.style.overflow = 'hidden';
+
     body.innerHTML = `
       <div class="soul-search">
         <div class="soul-search-icon">🔍</div>
@@ -3457,7 +3761,6 @@
       renderSoulThemes();
     });
 
-    // Мок: находим собеседника через 3-5 сек
     const delay = 3000 + Math.random() * 2000;
     soulState.searchTimer = setTimeout(() => {
       soulState.partnerNick = generateAnonNick();
@@ -3471,6 +3774,11 @@
 
     const theme = soulState.selectedTheme;
     soulState.messages = [];
+
+    body.style.display = 'flex';
+    body.style.flexDirection = 'column';
+    body.style.padding = '0';
+    body.style.overflow = 'hidden';
 
     body.innerHTML = `
       <div class="soul-chat-header">
@@ -3492,12 +3800,6 @@
         <button class="chat-send" id="soulSend">➤</button>
       </div>
     `;
-
-    // Меняем body на flex column
-    body.style.display = 'flex';
-    body.style.flexDirection = 'column';
-    body.style.padding = '0';
-    body.style.overflow = 'hidden';
 
     const messages = document.getElementById('soulMessages');
     messages.style.flex = '1';
@@ -3545,7 +3847,6 @@
 
     soulState.messages.push({ from: 'me', text });
 
-    // Мок-ответ через 1.5-3 сек
     const delay = 1500 + Math.random() * 1500;
     soulState.partnerReplyTimer = setTimeout(() => {
       const replies = [
@@ -3609,7 +3910,6 @@
         rated = true;
         btn.classList.add('selected');
         playNotificationSound();
-
         setTimeout(() => {
           document.getElementById('soulFinalBack').disabled = false;
         }, 400);
@@ -3677,7 +3977,684 @@
   }
 
   // ============================================================
-  // ЧАТ (общий для прогулки и обеда)
+  // МОДУЛЬ "ПОПУТЧИКИ"
+  // ============================================================
+  const rideState = {
+    map: null,
+    userMarker: null,
+    rideMarkers: [],
+    routeLines: [],
+    currentUser: null,
+    onClose: null,
+    rides: [],
+    selectedRide: null,
+    userLat: null,
+    userLng: null,
+    watchId: null,
+    sliderState: 'medium',
+    requestTimer: null,
+    requestTimeout: null,
+    requestSecondsLeft: 60,
+    requestTarget: null,
+    requestCancelled: false,
+  };
+
+  const MOCK_CITIES = ['Москва', 'Санкт-Петербург', 'Казань', 'Сочи', 'Краснодар', 'Екатеринбург', 'Новосибирск'];
+  const MOCK_CARS = ['Kia Rio, белая', 'Hyundai Solaris, чёрный', 'Lada Vesta, синяя', 'Toyota Camry, серая', 'Skoda Octavia, красная'];
+
+  function generateMockRides(lat, lng) {
+    const rides = [];
+    const count = 3 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = 0.005 + Math.random() * 0.02;
+      const fromCity = MOCK_CITIES[Math.floor(Math.random() * MOCK_CITIES.length)];
+      let toCity = MOCK_CITIES[Math.floor(Math.random() * MOCK_CITIES.length)];
+      while (toCity === fromCity) {
+        toCity = MOCK_CITIES[Math.floor(Math.random() * MOCK_CITIES.length)];
+      }
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + Math.floor(Math.random() * 3) + 1);
+      const hour = 7 + Math.floor(Math.random() * 12);
+      const minute = Math.random() < 0.5 ? '00' : '30';
+
+      rides.push({
+        id: 'ride_' + i,
+        from: fromCity,
+        to: toCity,
+        date: `${tomorrow.getDate()}.${String(tomorrow.getMonth() + 1).padStart(2, '0')}`,
+        time: `${String(hour).padStart(2, '0')}:${minute}`,
+        lat: lat + Math.cos(angle) * distance,
+        lng: lng + Math.sin(angle) * distance,
+        host: MOCK_NAMES[i % MOCK_NAMES.length],
+        hostAge: 22 + Math.floor(Math.random() * 15),
+        car: MOCK_CARS[i % MOCK_CARS.length],
+        spots: 1 + Math.floor(Math.random() * 3),
+        totalSpots: 3,
+        price: 300 + Math.floor(Math.random() * 700),
+        smoking: Math.random() < 0.3,
+        pets: Math.random() < 0.5,
+      });
+    }
+    return rides;
+  }
+
+  function createRideScreen() {
+    const el = document.createElement('div');
+    el.className = 'ride-screen';
+    el.id = 'rideScreen';
+    el.innerHTML = `
+      <div class="ride-header">
+        <button class="ride-back" id="rideBack">← Назад</button>
+        <span class="ride-logo">🚗 ПОПУТЧИКИ</span>
+        <div class="ride-avatar" id="rideAvatar"></div>
+      </div>
+
+      <div class="ride-map-wrapper" id="rideMapWrapper">
+        <div id="rideMap"></div>
+      </div>
+
+      <div class="ride-slider" id="rideSlider">
+        <div class="ride-slider-header" id="rideSliderHeader">
+          <div class="ride-slider-handle"></div>
+          <div class="ride-slider-stats" id="rideSliderStats"></div>
+        </div>
+        <div class="ride-slider-body" id="rideSliderBody"></div>
+      </div>
+    `;
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function renderRideSlider() {
+    const stats = document.getElementById('rideSliderStats');
+    const body = document.getElementById('rideSliderBody');
+    const slider = document.getElementById('rideSlider');
+    if (!stats || !body || !slider) return;
+
+    slider.classList.remove('expanded');
+
+    if (rideState.selectedRide) {
+      renderRideDetails();
+      return;
+    }
+
+    if (rideState.rides.length === 0) {
+      stats.innerHTML = `<span class="stat-item">🚗 Поездок нет</span>`;
+      body.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">😔</div>
+          <div class="empty-text">Пока нет поездок рядом</div>
+          <button class="btn-expand" id="btnCreateRideEmpty">➕ Создать поездку</button>
+        </div>
+      `;
+      document.getElementById('btnCreateRideEmpty').addEventListener('click', showCreateRideForm);
+      return;
+    }
+
+    stats.innerHTML = `
+      <span class="stat-item">🚗 <b>${rideState.rides.length}</b> поездок</span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">📍 Рядом</span>
+    `;
+
+    let cardsHtml = '';
+    rideState.rides.forEach((ride, i) => {
+      cardsHtml += `
+        <div class="ride-card ${i === 0 ? 'centered' : ''}" data-ride-id="${ride.id}">
+          <div class="ride-card-route">🚗 ${ride.from} → ${ride.to}</div>
+          <div class="ride-card-time">⏰ ${ride.date}, ${ride.time}</div>
+          <div class="ride-card-host">👤 ${ride.host}, ${ride.hostAge}</div>
+          <div class="ride-card-spots">👥 ${ride.spots} из ${ride.totalSpots} мест</div>
+          <div class="ride-card-price">💰 ${ride.price} ₽</div>
+        </div>
+      `;
+    });
+
+    body.innerHTML = `
+      <button class="create-ride-btn" id="btnCreateRide">➕ Создать поездку</button>
+      <div class="carousel-title">─── Поездки рядом ───</div>
+      <div class="carousel" id="rideCarousel">
+        <div class="carousel-track" id="rideCarouselTrack">${cardsHtml}</div>
+      </div>
+    `;
+
+    document.getElementById('btnCreateRide').addEventListener('click', showCreateRideForm);
+
+    document.querySelectorAll('.ride-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.rideId;
+        const ride = rideState.rides.find(r => r.id === id);
+        if (ride) {
+          rideState.selectedRide = ride;
+          centerRideMapOn(ride.lat, ride.lng, true);
+          renderRideSlider();
+        }
+      });
+    });
+  }
+
+  function renderRideDetails() {
+    const stats = document.getElementById('rideSliderStats');
+    const body = document.getElementById('rideSliderBody');
+    const slider = document.getElementById('rideSlider');
+    const ride = rideState.selectedRide;
+    if (!ride || !stats || !body || !slider) return;
+
+    slider.classList.add('expanded');
+
+    stats.innerHTML = `
+      <span class="stat-item">🚗 <b>${ride.from} → ${ride.to}</b></span>
+      <span class="stat-sep">·</span>
+      <span class="stat-item">⏰ ${ride.time}</span>
+    `;
+
+    body.innerHTML = `
+      <div class="selected-user">
+        <div class="selected-avatar" style="background:#4D6CFF;">🚗</div>
+        <div class="selected-info">
+          <div class="selected-name">${ride.from} → ${ride.to}</div>
+          <div class="selected-nick">${ride.date}, ${ride.time}</div>
+        </div>
+        <button class="selected-close" id="rideClose">✕</button>
+      </div>
+
+      <div style="padding: 12px 0; color: #8B95A9; font-size: 14px; line-height: 1.6;">
+        <div>👤 Водитель: ${ride.host}, ${ride.hostAge}</div>
+        <div>🚗 Машина: ${ride.car}</div>
+        <div>👥 Свободно мест: ${ride.spots} из ${ride.totalSpots}</div>
+        <div>💰 Цена: ${ride.price} ₽ с человека</div>
+        <div>🚭 Курить: ${ride.smoking ? 'да' : 'нет'}</div>
+        <div>🐾 Животные: ${ride.pets ? 'да' : 'нет'}</div>
+      </div>
+
+      <div class="selected-actions">
+        <button class="btn-action btn-chat" id="rideChat">💬 Написать</button>
+        <button class="btn-action btn-join" id="rideJoin" style="background:#4D6CFF;">✅ Присоединиться</button>
+      </div>
+    `;
+
+    document.getElementById('rideClose').addEventListener('click', () => {
+      rideState.selectedRide = null;
+      renderRideSlider();
+    });
+
+    document.getElementById('rideChat').addEventListener('click', () => {
+      openChat({ name: ride.host, age: ride.hostAge });
+    });
+
+    document.getElementById('rideJoin').addEventListener('click', () => {
+      sendRideJoinRequest(ride);
+    });
+  }
+
+  function sendRideJoinRequest(ride) {
+    if (rideState.requestTimer) return;
+
+    rideState.requestTarget = ride;
+    rideState.requestSecondsLeft = 60;
+    rideState.requestCancelled = false;
+
+    const stats = document.getElementById('rideSliderStats');
+    const body = document.getElementById('rideSliderBody');
+
+    stats.innerHTML = `<span class="stat-item">⏳ <b>Ожидаем ответа</b></span>`;
+
+    body.innerHTML = `
+      <div class="waiting-state">
+        <div class="waiting-icon">⏳</div>
+        <div class="waiting-title">Ожидаем ответа...</div>
+        <div class="waiting-sub">${ride.host} получил запрос</div>
+        <div class="waiting-timer" id="rideWaitingTimer">${rideState.requestSecondsLeft} сек</div>
+        <button class="btn-cancel" id="btnCancelRideRequest">❌ Отменить</button>
+      </div>
+    `;
+    document.getElementById('btnCancelRideRequest').addEventListener('click', cancelRideJoinRequest);
+
+    rideState.requestTimer = setInterval(() => {
+      rideState.requestSecondsLeft--;
+      const t = document.getElementById('rideWaitingTimer');
+      if (t) t.textContent = rideState.requestSecondsLeft + ' сек';
+      if (rideState.requestSecondsLeft <= 0) {
+        clearInterval(rideState.requestTimer);
+        rideState.requestTimer = null;
+        showRideTimeout(ride);
+      }
+    }, 1000);
+
+    const delay = 5000 + Math.random() * 5000;
+    rideState.requestTimeout = setTimeout(() => {
+      if (rideState.requestCancelled) return;
+      if (rideState.requestTimer) {
+        clearInterval(rideState.requestTimer);
+        rideState.requestTimer = null;
+      }
+      const accepted = Math.random() < 0.7;
+      if (accepted) showRideAccepted(ride);
+      else showRideDeclined(ride);
+    }, delay);
+  }
+
+  function cancelRideJoinRequest() {
+    rideState.requestCancelled = true;
+    if (rideState.requestTimer) { clearInterval(rideState.requestTimer); rideState.requestTimer = null; }
+    if (rideState.requestTimeout) { clearTimeout(rideState.requestTimeout); rideState.requestTimeout = null; }
+    rideState.requestTarget = null;
+    renderRideSlider();
+  }
+
+  function showRideTimeout(ride) {
+    const body = document.getElementById('rideSliderBody');
+    body.innerHTML = `
+      <div class="result-state">
+        <div class="result-icon">⏰</div>
+        <div class="result-title">Время вышло</div>
+        <div class="result-sub">${ride.host} не ответил</div>
+        <div class="result-actions">
+          <button class="btn-cancel" id="btnRideBackToList">← Назад к списку</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('btnRideBackToList').addEventListener('click', () => {
+      rideState.selectedRide = null;
+      renderRideSlider();
+    });
+  }
+
+  function showRideAccepted(ride) {
+    const body = document.getElementById('rideSliderBody');
+    const stats = document.getElementById('rideSliderStats');
+    stats.innerHTML = `<span class="stat-item">✅ <b>Принято</b></span>`;
+    body.innerHTML = `
+      <div class="result-state">
+        <div class="result-icon">✅</div>
+        <div class="result-title">${ride.host} принял!</div>
+        <div class="result-sub">Место забронировано</div>
+        <div class="result-actions">
+          <button class="btn-cancel" id="btnRideOpenChat" style="background:#4D6CFF;border:none;color:#fff;">💬 Открыть чат</button>
+          <button class="btn-cancel" id="btnRideBackToList2">← Назад к списку</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('btnRideOpenChat').addEventListener('click', () => {
+      openChat({ name: ride.host, age: ride.hostAge });
+    });
+    document.getElementById('btnRideBackToList2').addEventListener('click', () => {
+      rideState.selectedRide = null;
+      renderRideSlider();
+    });
+  }
+
+  function showRideDeclined(ride) {
+    const body = document.getElementById('rideSliderBody');
+    const stats = document.getElementById('rideSliderStats');
+    stats.innerHTML = `<span class="stat-item">❌ <b>Отклонено</b></span>`;
+    body.innerHTML = `
+      <div class="result-state">
+        <div class="result-icon">❌</div>
+        <div class="result-title">${ride.host} не может сейчас</div>
+        <div class="result-sub">Попробуй другую поездку</div>
+        <div class="result-actions">
+          <button class="btn-cancel" id="btnRideBackToList3">← Назад к списку</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('btnRideBackToList3').addEventListener('click', () => {
+      rideState.selectedRide = null;
+      renderRideSlider();
+    });
+  }
+
+  function showCreateRideForm() {
+    const body = document.getElementById('rideSliderBody');
+    const stats = document.getElementById('rideSliderStats');
+    const slider = document.getElementById('rideSlider');
+    if (!body || !stats || !slider) return;
+
+    slider.classList.add('expanded');
+    stats.innerHTML = `<span class="stat-item">➕ <b>Новая поездка</b></span>`;
+
+    body.innerHTML = `
+      <div class="form-grid">
+        <div class="form-group">
+          <label>📍 Откуда</label>
+          <input type="text" id="rideFrom" placeholder="Москва" maxlength="50">
+        </div>
+
+        <div class="form-group">
+          <label>📍 Куда</label>
+          <input type="text" id="rideTo" placeholder="Санкт-Петербург" maxlength="50">
+        </div>
+
+        <div class="form-group">
+          <label>📅 Дата</label>
+          <input type="date" id="rideDate">
+        </div>
+
+        <div class="form-group">
+          <label>⏰ Время</label>
+          <input type="time" id="rideTime" value="08:00">
+        </div>
+
+        <div class="form-group full">
+          <label>👥 Сколько мест?</label>
+          <div class="toggle-group" id="rideSpotsGroup">
+            <button class="toggle-btn active" data-spots="1">1</button>
+            <button class="toggle-btn" data-spots="2">2</button>
+            <button class="toggle-btn" data-spots="3">3</button>
+            <button class="toggle-btn" data-spots="4">4</button>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>💰 Цена с человека (₽)</label>
+          <input type="number" id="ridePrice" placeholder="500" min="0" max="10000" value="500">
+        </div>
+
+        <div class="form-group full">
+          <label>🚭 Можно курить?</label>
+          <div class="toggle-group" id="rideSmokingGroup">
+            <button class="toggle-btn" data-smoking="no">Нет</button>
+            <button class="toggle-btn active" data-smoking="yes">Да</button>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>🐾 Животные?</label>
+          <div class="toggle-group" id="ridePetsGroup">
+            <button class="toggle-btn active" data-pets="yes">Да</button>
+            <button class="toggle-btn" data-pets="no">Нет</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="btnSubmitRide" style="background:#4D6CFF;">🚀 Создать поездку</button>
+        <button class="btn-secondary" id="btnCancelRideForm">Отмена</button>
+      </div>
+    `;
+
+    // Установить дату на завтра
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('rideDate').value = tomorrow.toISOString().split('T')[0];
+
+    // Toggle-группы
+    setupToggleGroup('rideSpotsGroup', 'spots');
+    setupToggleGroup('rideSmokingGroup', 'smoking');
+    setupToggleGroup('ridePetsGroup', 'pets');
+
+    document.getElementById('btnSubmitRide').addEventListener('click', () => {
+      const from = document.getElementById('rideFrom').value.trim();
+      const to = document.getElementById('rideTo').value.trim();
+      const date = document.getElementById('rideDate').value;
+      const time = document.getElementById('rideTime').value;
+      const price = parseInt(document.getElementById('ridePrice').value) || 0;
+
+      if (!from || !to || !date || !time) {
+        alert('⚠️ Заполните все поля');
+        return;
+      }
+
+      if (from.toLowerCase() === to.toLowerCase()) {
+        alert('⚠️ Откуда и куда не могут совпадать');
+        return;
+      }
+
+      const spots = parseInt(document.querySelector('#rideSpotsGroup .active').dataset.spots);
+      const smoking = document.querySelector('#rideSmokingGroup .active').dataset.smoking === 'yes';
+      const pets = document.querySelector('#ridePetsGroup .active').dataset.pets === 'yes';
+
+      const d = new Date(date);
+      const dateStr = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+      const newRide = {
+        id: 'ride_own_' + Date.now(),
+        from: from,
+        to: to,
+        date: dateStr,
+        time: time,
+        lat: rideState.userLat || 55.7558,
+        lng: rideState.userLng || 37.6173,
+        host: rideState.currentUser?.name || 'Вы',
+        hostAge: 25,
+        car: 'Не указана',
+        spots: spots,
+        totalSpots: spots,
+        price: price,
+        smoking: smoking,
+        pets: pets,
+      };
+
+      rideState.rides.unshift(newRide);
+
+      playNotificationSound();
+      alert(`✅ Поездка создана!\n${from} → ${to}\n${dateStr}, ${time}`);
+
+      addRideMarkerFor(newRide);
+      renderRideSlider();
+    });
+
+    document.getElementById('btnCancelRideForm').addEventListener('click', () => {
+      renderRideSlider();
+    });
+  }
+
+  function setupToggleGroup(groupId, dataAttr) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  }
+
+  function initRideMap(lat, lng) {
+    if (rideState.map) return;
+
+    rideState.map = L.map('rideMap', {
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([lat, lng], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(rideState.map);
+
+    rideState.userMarker = L.circleMarker([lat, lng], {
+      radius: 9,
+      fillColor: '#4D6CFF',
+      color: '#fff',
+      weight: 3,
+      fillOpacity: 1,
+    }).addTo(rideState.map);
+
+    rideState.rides.forEach(r => addRideMarkerFor(r));
+
+    rideState.map.on('click', () => {
+      if (rideState.selectedRide) {
+        rideState.selectedRide = null;
+        renderRideSlider();
+      }
+    });
+  }
+
+  function addRideMarkerFor(ride) {
+    if (!rideState.map) return;
+    const icon = L.divIcon({
+      className: 'ride-marker',
+      html: `<div class="ride-marker-inner">🚗</div>`,
+      iconSize: [36, 36],
+      iconAnchor: [18, 18],
+    });
+
+    const marker = L.marker([ride.lat, ride.lng], { icon }).addTo(rideState.map);
+    marker.on('click', (e) => {
+      L.DomEvent.stopPropagation(e);
+      rideState.selectedRide = ride;
+      centerRideMapOn(ride.lat, ride.lng, true);
+      renderRideSlider();
+    });
+    rideState.rideMarkers.push(marker);
+
+    // Линия маршрута (мок: от текущей позиции к точке)
+    const line = L.polyline(
+      [[rideState.userLat || ride.lat, rideState.userLng || ride.lng], [ride.lat, ride.lng]],
+      { color: '#4D6CFF', weight: 2, dashArray: '6,6', opacity: 0.4 }
+    ).addTo(rideState.map);
+    rideState.routeLines.push(line);
+  }
+
+  function centerRideMapOn(lat, lng, zoomIn) {
+    if (!rideState.map) return;
+    rideState.map.setView([lat, lng], zoomIn ? 14 : 12, { animate: true });
+  }
+
+  function startRideGeolocation() {
+    if (!navigator.geolocation) {
+      alert('❌ Браузер не поддерживает геолокацию');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        rideState.userLat = pos.coords.latitude;
+        rideState.userLng = pos.coords.longitude;
+
+        rideState.rides = generateMockRides(rideState.userLat, rideState.userLng);
+        initRideMap(rideState.userLat, rideState.userLng);
+        renderRideSlider();
+
+        rideState.watchId = navigator.geolocation.watchPosition(
+          (p) => {
+            rideState.userLat = p.coords.latitude;
+            rideState.userLng = p.coords.longitude;
+            if (rideState.userMarker) {
+              rideState.userMarker.setLatLng([rideState.userLat, rideState.userLng]);
+            }
+          },
+          () => {},
+          { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+        );
+      },
+      (err) => {
+        alert('⚠️ Не удалось получить геолокацию: ' + err.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  }
+
+  function setupRideSliderGestures() {
+    const slider = document.getElementById('rideSlider');
+    const header = document.getElementById('rideSliderHeader');
+    if (!slider || !header) return;
+
+    let startY = 0;
+    let startState = null;
+    let moved = false;
+
+    const heights = { collapsed: '85px', medium: '45vh' };
+
+    function setState(s) {
+      rideState.sliderState = s;
+      slider.style.height = heights[s];
+    }
+
+    setState('medium');
+
+    header.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startState = rideState.sliderState;
+      moved = false;
+    }, { passive: true });
+
+    header.addEventListener('touchmove', (e) => {
+      const diff = startY - e.touches[0].clientY;
+      if (Math.abs(diff) > 20) moved = true;
+      if (startState === 'medium' && diff < -40) setState('collapsed');
+      else if (startState === 'collapsed' && diff > 40) setState('medium');
+    }, { passive: true });
+
+    header.addEventListener('click', () => {
+      if (moved) return;
+      if (rideState.sliderState === 'medium') setState('collapsed');
+      else setState('medium');
+    });
+  }
+
+  function openRideScreen(user, onClose) {
+    rideState.currentUser = user;
+    rideState.onClose = onClose || null;
+    rideState.rides = [];
+    rideState.selectedRide = null;
+
+    const el = createRideScreen();
+    requestAnimationFrame(() => el.classList.add('active'));
+
+    const av = document.getElementById('rideAvatar');
+    if (av) {
+      if (user && user.avatar) av.innerHTML = `<img src="${user.avatar}" alt="">`;
+      else if (user && user.name) av.textContent = user.name.charAt(0).toUpperCase();
+      else av.textContent = '?';
+    }
+
+    const back = document.getElementById('rideBack');
+    if (back) back.addEventListener('click', closeRideScreen);
+
+    if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
+
+    startRideGeolocation();
+    setupRideSliderGestures();
+    document.addEventListener('keydown', rideEscHandler);
+  }
+
+  function rideEscHandler(e) {
+    if (e.key === 'Escape') closeRideScreen();
+  }
+
+  function closeRideScreen() {
+    const el = document.getElementById('rideScreen');
+    if (!el) return;
+
+    if (rideState.requestTimer) { clearInterval(rideState.requestTimer); rideState.requestTimer = null; }
+    if (rideState.requestTimeout) { clearTimeout(rideState.requestTimeout); rideState.requestTimeout = null; }
+
+    if (rideState.watchId) {
+      navigator.geolocation.clearWatch(rideState.watchId);
+      rideState.watchId = null;
+    }
+
+    if (rideState.map) {
+      rideState.map.remove();
+      rideState.map = null;
+      rideState.userMarker = null;
+      rideState.rideMarkers = [];
+      rideState.routeLines = [];
+    }
+
+    rideState.currentUser = null;
+    rideState.rides = [];
+    rideState.selectedRide = null;
+    rideState.userLat = null;
+    rideState.userLng = null;
+    rideState.sliderState = 'medium';
+
+    el.classList.remove('active');
+    setTimeout(() => el.remove(), 350);
+
+    document.removeEventListener('keydown', rideEscHandler);
+
+    if (rideState.onClose) {
+      rideState.onClose();
+      rideState.onClose = null;
+    }
+  }
+
+  // ============================================================
+  // ЧАТ (общий)
   // ============================================================
   const chatState = {
     screen: null,
@@ -4153,6 +5130,7 @@
       if (type === 'walk') { openWalkScreen(currentUser); return; }
       if (type === 'lunch') { openLunchScreen(currentUser); return; }
       if (type === 'soul') { openSoulScreen(currentUser); return; }
+      if (type === 'ride') { openRideScreen(currentUser); return; }
 
       overlayContent.innerHTML = `
         <div class="expanded-card">
