@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Встреча</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="map.css">
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="modals.css">
+  <link rel="stylesheet" href="soul.css">
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <span class="logo">📍 ВСТРЕЧА</span>
+    <div class="header-right">
+      <div class="status-online">
+        <span class="dot-online"></span>
+        <span>Онлайн</span>
+      </div>
+      <div id="authContainer">
+        <button class="btn-login" id="loginBtn">🔑 Войти</button>
+        <div class="avatar hidden" id="avatar"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="section-title">Чем займёмся? <span>выбери активность</span></div>
+    <div class="grid">
+      <div class="card" data-card="walk">
+        <div class="card-icon">🚶</div>
+        <div class="card-text"><h3>Прогуляться</h3><p>Найди попутчика</p></div>
+        <span class="card-badge">Активно</span>
+      </div>
+      <div class="card" data-card="lunch">
+        <div class="card-icon">🍔</div>
+        <div class="card-text"><h3>Обед / Кофе</h3><p>Составь компанию</p></div>
+        <span class="card-badge">Скоро</span>
+      </div>
+      <div class="card" data-card="soul">
+        <div class="card-icon">💬</div>
+        <div class="card-text"><h3>Разговоры по душам</h3><p>Анонимное общение</p></div>
+        <span class="card-badge">Активно</span>
+      </div>
+      <div class="card" data-card="ride">
+        <div class="card-icon">🚗</div>
+        <div class="card-text"><h3>Попутчики</h3><p>Найди попутчика</p></div>
+        <span class="card-badge">Активно</span>
+      </div>
+      <div class="card" data-card="random">
+        <div class="card-icon">🎲</div>
+        <div class="card-text"><h3>Случайная встреча</h3><p>По интересам</p></div>
+        <span class="card-badge">Скоро</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="overlay" id="overlay">
+  <div id="overlayContent"></div>
+</div>
+
+<div class="lang-modal-overlay" id="langModal">
+  <div class="lang-modal">
+    <div class="lang-modal-title">🌐 Выберите язык</div>
+    <div class="lang-option" data-lang="ru">
+      <div class="lang-option-left">
+        <span class="lang-option-flag">🇷🇺</span>
+        <span class="lang-option-name">Русский</span>
+      </div>
+      <span class="lang-option-check">✓</span>
+    </div>
+    <div class="lang-option" data-lang="en">
+      <div class="lang-option-left">
+        <span class="lang-option-flag">🇬🇧</span>
+        <span class="lang-option-name">English</span>
+      </div>
+      <span class="lang-option-check">✓</span>
+    </div>
+    <button class="lang-modal-close" id="langModalClose">Отмена</button>
+  </div>
+</div>
+
+<div class="logout-modal-overlay" id="logoutModal">
+  <div class="logout-modal">
+    <div class="logout-modal-icon">🚪</div>
+    <div class="logout-modal-title">Выйти из профиля?</div>
+    <div class="logout-modal-sub">Что вы хотите сделать?</div>
+    <div class="logout-modal-actions">
+      <button class="logout-btn change" id="logoutChange">🔄 Сменить аккаунт</button>
+      <button class="logout-btn delete" id="logoutDelete">🗑️ Удалить аккаунт</button>
+      <button class="logout-btn cancel" id="logoutCancel">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="soul-how-modal-overlay" id="soulHowModal">
+  <div class="soul-how-modal">
+    <div class="soul-how-icon">❓</div>
+    <div class="soul-how-title">Как это работает?</div>
+    <div class="soul-how-steps">
+      <div class="soul-how-step"><span class="soul-how-step-num">1</span>Выбери тему</div>
+      <div class="soul-how-step"><span class="soul-how-step-num">2</span>Мы найдём собеседника</div>
+      <div class="soul-how-step"><span class="soul-how-step-num">3</span>Общайтесь анонимно</div>
+      <div class="soul-how-step"><span class="soul-how-step-num">4</span>После — всё исчезнет</div>
+    </div>
+    <div class="soul-how-badges">
+      <div class="soul-how-badge">🔒 Полная анонимность</div>
+      <div class="soul-how-badge">🚫 Без сохранения</div>
+      <div class="soul-how-badge">💙 Никто не осудит</div>
+    </div>
+    <div class="soul-how-actions">
+      <button class="soul-how-btn test" id="soulTestBtn">🧪 Тестировать</button>
+      <button class="soul-how-btn close" id="soulCloseHow">Понятно 🙌</button>
+    </div>
+  </div>
+</div>
+<script src="main.js"></script>
+<script src="config.js"></script>
+<script src="utils.js"></script>
+<script src="auth.js"></script>
+<script src="map-base.js"></script>
+<script src="walk.js"></script>
+<script src="ride.js"></script>
+<script src="soul.js"></script>
+</body>
+</html>

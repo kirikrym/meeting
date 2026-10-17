@@ -1,0 +1,221 @@
+/* ============================================================
+   МОДАЛКА ЯЗЫКА
+   ============================================================ */
+.lang-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--screen-overlay);
+  backdrop-filter: blur(6px);
+  z-index: 3000;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.lang-modal-overlay.active { display: flex; animation: overlayFade 0.3s ease; }
+
+.lang-modal {
+  background: var(--screen-card);
+  border: 1px solid var(--screen-border);
+  border-radius: 28px;
+  padding: 24px 20px 20px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.lang-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--screen-text);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--screen-bg);
+  border: 1.5px solid var(--screen-border);
+  border-radius: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.lang-option:active { transform: scale(0.98); }
+.lang-option.active { border-color: var(--accent); background: rgba(108, 92, 231, 0.08); }
+
+.lang-option-left { display: flex; align-items: center; gap: 12px; }
+.lang-option-flag { font-size: 24px; }
+.lang-option-name { font-size: 15px; font-weight: 600; color: var(--screen-text); }
+
+.lang-option-check { color: var(--accent); font-size: 20px; font-weight: 700; display: none; }
+.lang-option.active .lang-option-check { display: block; }
+
+.lang-modal-close {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1.5px solid var(--screen-border);
+  border-radius: 14px;
+  color: var(--screen-text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: 0.2s;
+  font-family: inherit;
+}
+
+.lang-modal-close:active { background: var(--screen-card-2); }
+
+/* ============================================================
+   МОДАЛКА ВЫХОДА
+   ============================================================ */
+.logout-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--screen-overlay);
+  backdrop-filter: blur(6px);
+  z-index: 4000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.logout-modal-overlay.active { display: flex; animation: overlayFade 0.3s ease; }
+
+.logout-modal {
+  background: var(--screen-card);
+  border: 1px solid var(--screen-border);
+  border-radius: 28px;
+  padding: 28px 24px 20px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logout-modal-overlay.active .logout-modal { transform: scale(1); }
+
+.logout-modal-icon { font-size: 48px; margin-bottom: 12px; }
+.logout-modal-title { font-size: 20px; font-weight: 700; color: var(--screen-text); margin-bottom: 6px; }
+.logout-modal-sub { font-size: 14px; color: var(--screen-text-muted); margin-bottom: 20px; }
+.logout-modal-actions { display: flex; flex-direction: column; gap: 10px; }
+
+.logout-btn {
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  font-family: inherit;
+}
+
+.logout-btn.change { background: var(--accent); color: #fff; }
+.logout-btn.delete { background: transparent; border: 1.5px solid #FF4D6D; color: #FF4D6D; }
+.logout-btn.cancel { background: transparent; border: 1.5px solid var(--screen-border); color: var(--screen-text); }
+.logout-btn:active { transform: scale(0.97); }
+
+/* ============================================================
+   МОДАЛКА "КАК ЭТО РАБОТАЕТ" (Души)
+   ============================================================ */
+.soul-how-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--screen-overlay);
+  backdrop-filter: blur(6px);
+  z-index: 3500;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.soul-how-modal-overlay.active { display: flex; animation: overlayFade 0.3s ease; }
+
+.soul-how-modal {
+  background: var(--screen-card);
+  border: 1px solid var(--screen-border);
+  border-radius: 28px;
+  padding: 28px 24px 20px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.soul-how-modal-overlay.active .soul-how-modal { transform: scale(1); }
+
+.soul-how-icon { font-size: 48px; margin-bottom: 12px; }
+.soul-how-title { font-size: 20px; font-weight: 700; color: var(--screen-text); margin-bottom: 20px; }
+
+.soul-how-steps { text-align: left; margin-bottom: 20px; }
+
+.soul-how-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--screen-text);
+}
+
+.soul-how-step-num {
+  width: 24px;
+  height: 24px;
+  background: rgba(162, 155, 254, 0.15);
+  border: 1px solid #A29BFE;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #A29BFE;
+  flex-shrink: 0;
+}
+
+.soul-how-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: var(--screen-bg);
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.soul-how-badge {
+  font-size: 13px;
+  color: var(--screen-text-muted);
+  text-align: left;
+}
+
+.soul-how-actions { display: flex; flex-direction: column; gap: 10px; }
+
+.soul-how-btn {
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.soul-how-btn.test { background: #A29BFE; color: #fff; }
+.soul-how-btn.close { background: transparent; border: 1.5px solid var(--screen-border); color: var(--screen-text); }
+.soul-how-btn:active { transform: scale(0.97); }
