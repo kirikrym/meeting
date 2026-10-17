@@ -394,24 +394,27 @@ function renderSettings() {
 
   document.getElementById('itemEditProfile').addEventListener('click', () => {
     const editFn = settingsOnEditProfile;
-    closeSettingsScreen();
+    closeSettingsScreen(true);
     setTimeout(() => { if (editFn) editFn(); }, 300);
   });
 
   document.getElementById('itemFriends').addEventListener('click', () => {
-    const overlay = document.getElementById('overlay');
-    const overlayContent = document.getElementById('overlayContent');
-    overlayContent.innerHTML = `
-      <div class="card-preview">
-        <button class="card-preview-close" id="friendsClose">✕</button>
-        <div class="card-preview-icon">👥</div>
-        <div class="card-preview-title">Мои друзья</div>
-        <div class="card-preview-desc">Пока нет друзей. Добавляй их после встреч!</div>
-      </div>
-    `;
-    overlay.classList.add('active');
-    document.getElementById('friendsClose').addEventListener('click', closeOverlayGlobal);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayGlobal(); }, { once: true });
+    closeSettingsScreen(true);
+    setTimeout(() => {
+      const overlay = document.getElementById('overlay');
+      const overlayContent = document.getElementById('overlayContent');
+      overlayContent.innerHTML = `
+        <div class="card-preview">
+          <button class="card-preview-close" id="friendsClose">✕</button>
+          <div class="card-preview-icon">👥</div>
+          <div class="card-preview-title">Мои друзья</div>
+          <div class="card-preview-desc">Пока нет друзей. Добавляй их после встреч!</div>
+        </div>
+      `;
+      overlay.classList.add('active');
+      document.getElementById('friendsClose').addEventListener('click', closeOverlayGlobal);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayGlobal(); }, { once: true });
+    }, 300);
   });
 
   document.getElementById('itemBirthDisplay').addEventListener('click', () => {
@@ -461,40 +464,46 @@ function renderSettings() {
   });
 
   document.getElementById('itemPrivacy').addEventListener('click', () => {
-    const overlay = document.getElementById('overlay');
-    const overlayContent = document.getElementById('overlayContent');
-    overlayContent.innerHTML = `
-      <div class="card-preview">
-        <button class="card-preview-close" id="privacyClose">✕</button>
-        <div class="card-preview-icon">📜</div>
-        <div class="card-preview-title">Политика конфиденциальности</div>
-        <div class="card-preview-desc">Скоро здесь появится текст политики конфиденциальности.</div>
-      </div>
-    `;
-    overlay.classList.add('active');
-    document.getElementById('privacyClose').addEventListener('click', closeOverlayGlobal);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayGlobal(); }, { once: true });
+    closeSettingsScreen(true);
+    setTimeout(() => {
+      const overlay = document.getElementById('overlay');
+      const overlayContent = document.getElementById('overlayContent');
+      overlayContent.innerHTML = `
+        <div class="card-preview">
+          <button class="card-preview-close" id="privacyClose">✕</button>
+          <div class="card-preview-icon">📜</div>
+          <div class="card-preview-title">Политика конфиденциальности</div>
+          <div class="card-preview-desc">Скоро здесь появится текст политики конфиденциальности.</div>
+        </div>
+      `;
+      overlay.classList.add('active');
+      document.getElementById('privacyClose').addEventListener('click', closeOverlayGlobal);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayGlobal(); }, { once: true });
+    }, 300);
   });
 
   document.getElementById('itemFeedback').addEventListener('click', () => {
-    const overlay = document.getElementById('overlay');
-    const overlayContent = document.getElementById('overlayContent');
-    overlayContent.innerHTML = `
-      <div class="card-preview">
-        <button class="card-preview-close" id="feedbackClose">✕</button>
-        <div class="card-preview-icon">✉️</div>
-        <div class="card-preview-title">Обратная связь</div>
-        <div class="card-preview-desc">Свяжись с нами удобным способом:</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
-          <a href="https://vk.com" target="_blank" style="padding:14px; background:#4C75A3; border-radius:14px; color:#fff; text-decoration:none; font-weight:600; font-size:15px;">💬 ВКонтакте</a>
-          <a href="https://t.me" target="_blank" style="padding:14px; background:#229ED9; border-radius:14px; color:#fff; text-decoration:none; font-weight:600; font-size:15px;">✈️ Telegram</a>
-          <a href="mailto:support@vstrecha.app" style="padding:14px; background:transparent; border:1.5px solid var(--screen-border); border-radius:14px; color:var(--screen-text); text-decoration:none; font-weight:600; font-size:15px;">✉️ support@vstrecha.app</a>
+    closeSettingsScreen(true);
+    setTimeout(() => {
+      const overlay = document.getElementById('overlay');
+      const overlayContent = document.getElementById('overlayContent');
+      overlayContent.innerHTML = `
+        <div class="card-preview">
+          <button class="card-preview-close" id="feedbackClose">✕</button>
+          <div class="card-preview-icon">✉️</div>
+          <div class="card-preview-title">Обратная связь</div>
+          <div class="card-preview-desc">Свяжись с нами удобным способом:</div>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+            <a href="https://vk.com" target="_blank" style="padding:14px; background:#4C75A3; border-radius:14px; color:#fff; text-decoration:none; font-weight:600; font-size:15px;">💬 ВКонтакте</a>
+            <a href="https://t.me" target="_blank" style="padding:14px; background:#229ED9; border-radius:14px; color:#fff; text-decoration:none; font-weight:600; font-size:15px;">✈️ Telegram</a>
+            <a href="mailto:support@vstrecha.app" style="padding:14px; background:transparent; border:1.5px solid var(--screen-border); border-radius:14px; color:var(--screen-text); text-decoration:none; font-weight:600; font-size:15px;">✉️ support@vstrecha.app</a>
+          </div>
         </div>
-      </div>
-    `;
-    overlay.classList.add('active');
-    document.getElementById('feedbackClose').addEventListener('click', closeOverlayGlobal);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayGlobal(); }, { once: true });
+      `;
+      overlay.classList.add('active');
+      document.getElementById('feedbackClose').addEventListener('click', closeOverlayGlobal);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayGlobal(); }, { once: true });
+    }, 300);
   });
 }
 
@@ -502,13 +511,13 @@ function settingsEscHandler(e) {
   if (e.key === 'Escape') closeSettingsScreen();
 }
 
-function closeSettingsScreen() {
+function closeSettingsScreen(skipOnClose) {
   const el = document.getElementById('settingsScreen');
   if (!el) return;
   el.classList.remove('active');
   setTimeout(() => el.remove(), 350);
   document.removeEventListener('keydown', settingsEscHandler);
-  if (settingsOnClose) { settingsOnClose(); settingsOnClose = null; }
+  if (!skipOnClose && settingsOnClose) { settingsOnClose(); settingsOnClose = null; }
 }
 
 function openLogoutModal() {

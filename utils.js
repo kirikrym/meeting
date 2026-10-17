@@ -178,3 +178,37 @@ function applyAppSettings() {
   if (appSettings.animations === 'off') document.body.classList.add('no-animations');
   else document.body.classList.remove('no-animations');
 }
+// ============================================================
+// КАРУСЕЛЬ — АКТИВАЦИЯ ЦЕНТРАЛЬНОЙ КАРТОЧКИ
+// ============================================================
+function setupCarouselCentering(containerSelector) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+
+  if (container._carouselObserver) {
+    container._carouselObserver.disconnect();
+    container._carouselObserver = null;
+  }
+
+  const items = container.querySelectorAll('.person-card, .ride-card');
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+        items.forEach(el => el.classList.remove('active'));
+        entry.target.classList.add('active');
+      }
+    });
+  }, {
+    root: container,
+    rootMargin: '0px -30% 0px -30%',
+    threshold: [0.6, 1.0],
+  });
+
+  items.forEach(el => observer.observe(el));
+  container._carouselObserver = observer;
+
+  // Первая карточка сразу активна
+  items[0].classList.add('active');
+}

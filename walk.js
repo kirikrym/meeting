@@ -55,6 +55,9 @@ function renderWalkBody() {
       if (user) sendWalkJoinRequest(user);
     });
   });
+
+  // Карусель: активируем центральную карточку
+  setupCarouselCentering('#mapBody_walk');
 }
 
 // ============================================================
@@ -100,7 +103,6 @@ function sendWalkJoinRequest(user) {
     }
   }, 1000);
 
-  // МОК: симуляция ответа через 3-5 секунд
   const delay = 3000 + Math.random() * 2000;
   mapBaseState.requestTimeout = setTimeout(() => {
     if (mapBaseState.requestCancelled) return;

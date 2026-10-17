@@ -39,9 +39,7 @@ function renderRideBody() {
         border: 1px solid var(--screen-border);
         border-radius: 16px;
         padding: 14px;
-        margin-bottom: 12px;
         cursor: pointer;
-        transition: 0.2s;
       ">
         <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
           <div class="person-avatar" style="background:#4D6CFF;">${avatarHtml}</div>
@@ -87,6 +85,9 @@ function renderRideBody() {
       if (ride) sendRideJoinRequest(ride);
     });
   });
+
+  // Карусель
+  setupCarouselCentering('#mapBody_ride');
 }
 
 // ============================================================
@@ -139,7 +140,6 @@ function sendRideJoinRequest(ride) {
     }
   }, 1000);
 
-  // МОК: симуляция ответа через 5-8 секунд
   const delay = 5000 + Math.random() * 3000;
   mapBaseState.requestTimeout = setTimeout(() => {
     if (mapBaseState.requestCancelled) return;
@@ -227,7 +227,6 @@ function openRideScreen(onClose) {
   createMapScreen('ride', user, onClose);
 
   setTimeout(() => {
-    // Пересоздаём мок-данные для попутчиков
     if (typeof generateMockRides === 'function') generateMockRides();
     if (mapBaseState.map) addNearbyMarkers('ride');
     renderRideBody();

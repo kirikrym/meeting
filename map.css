@@ -1,5 +1,7 @@
+/* ============================================================
+   ЭКРАНЫ КАРТ (walk / ride)
+   ============================================================ */
 .walk-screen,
-.lunch-screen,
 .ride-screen {
   position: fixed;
   top: 0; left: 0;
@@ -15,11 +17,9 @@
 }
 
 .walk-screen.active,
-.lunch-screen.active,
 .ride-screen.active { transform: translateX(0); }
 
 .walk-header,
-.lunch-header,
 .ride-header {
   display: flex;
   align-items: center;
@@ -34,7 +34,6 @@
 }
 
 .walk-back,
-.lunch-back,
 .ride-back {
   background: none;
   border: none;
@@ -48,21 +47,12 @@
 }
 
 .walk-back:active,
-.lunch-back:active,
 .ride-back:active { background: rgba(108, 92, 231, 0.15); }
 
 .walk-logo {
   font-size: 17px;
   font-weight: 700;
   background: linear-gradient(135deg, #6C5CE7, #A29BFE);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.lunch-logo {
-  font-size: 17px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #FF9F43, #FFD93D);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -76,7 +66,6 @@
 }
 
 .walk-avatar,
-.lunch-avatar,
 .ride-avatar {
   width: 36px;
   height: 36px;
@@ -92,15 +81,12 @@
 }
 
 .walk-avatar { background: #6C5CE7; }
-.lunch-avatar { background: #FF9F43; }
 .ride-avatar { background: #4D6CFF; }
 
 .walk-avatar img,
-.lunch-avatar img,
 .ride-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
 .walk-map-wrapper,
-.lunch-map-wrapper,
 .ride-map-wrapper {
   flex: 1;
   position: relative;
@@ -108,7 +94,7 @@
   z-index: 1;
 }
 
-#walkMap, #lunchMap, #rideMap {
+#walkMap, #rideMap {
   width: 100%;
   height: 100%;
   background: var(--screen-bg);
@@ -116,20 +102,16 @@
 }
 
 #walkMap .leaflet-tile-pane,
-#lunchMap .leaflet-tile-pane,
 #rideMap .leaflet-tile-pane {
   filter: var(--map-filter);
   transition: filter 0.3s;
 }
 
 #walkMap .leaflet-pane,
-#lunchMap .leaflet-pane,
 #rideMap .leaflet-pane { z-index: 1 !important; }
 
 #walkMap .leaflet-top,
 #walkMap .leaflet-bottom,
-#lunchMap .leaflet-top,
-#lunchMap .leaflet-bottom,
 #rideMap .leaflet-top,
 #rideMap .leaflet-bottom { z-index: 2 !important; }
 
@@ -142,8 +124,10 @@
   50% { fill-opacity: 0.15; stroke-opacity: 0.5; }
 }
 
+/* ============================================================
+   СЛАЙДЕР
+   ============================================================ */
 .walk-slider,
-.lunch-slider,
 .ride-slider {
   position: absolute;
   bottom: 0; left: 0;
@@ -161,11 +145,9 @@
 }
 
 .walk-slider.expanded,
-.lunch-slider.expanded,
 .ride-slider.expanded { height: 45vh; }
 
 .slider-header,
-.lunch-slider-header,
 .ride-slider-header {
   flex-shrink: 0;
   cursor: pointer;
@@ -178,7 +160,6 @@
 }
 
 .slider-handle,
-.lunch-slider-handle,
 .ride-slider-handle {
   width: 40px;
   height: 4px;
@@ -189,11 +170,9 @@
 }
 
 .slider-header:hover .slider-handle { background: #6C5CE7; }
-.lunch-slider-header:hover .lunch-slider-handle { background: #FF9F43; }
 .ride-slider-header:hover .ride-slider-handle { background: #4D6CFF; }
 
 .slider-stats,
-.lunch-slider-stats,
 .ride-slider-stats {
   display: flex;
   align-items: center;
@@ -211,32 +190,47 @@
 .stat-item b { color: var(--screen-text); font-weight: 600; }
 .stat-sep { color: var(--screen-text-muted); opacity: 0.5; }
 
+/* ============================================================
+   ТЕЛО СЛАЙДЕРА — ГОРИЗОНТАЛЬНАЯ КАРУСЕЛЬ
+   ============================================================ */
 .slider-body,
-.lunch-slider-body,
 .ride-slider-body {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 12px 16px 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 12px 0 24px;
   display: none;
-}
-
-.walk-slider.expanded .slider-body,
-.lunch-slider.expanded .lunch-slider-body,
-.ride-slider.expanded .ride-slider-body {
-  display: block;
+  align-items: center;
+  gap: 12px;
 }
 
 .slider-body::-webkit-scrollbar,
-.lunch-slider-body::-webkit-scrollbar,
-.ride-slider-body::-webkit-scrollbar { width: 3px; }
+.ride-slider-body::-webkit-scrollbar { display: none; }
 
-.slider-body::-webkit-scrollbar-thumb,
-.lunch-slider-body::-webkit-scrollbar-thumb,
-.ride-slider-body::-webkit-scrollbar-thumb {
-  background: var(--screen-border);
-  border-radius: 4px;
+.walk-slider.expanded .slider-body,
+.ride-slider.expanded .ride-slider-body {
+  display: flex;
+}
+
+/* Карточка в карусели */
+.person-card,
+.ride-card {
+  flex: 0 0 78%;
+  scroll-snap-align: center;
+  margin-bottom: 0;
+  transform: scale(0.85);
+  opacity: 0.55;
+  transition: transform 0.3s ease, opacity 0.3s ease, border-color 0.2s;
+  will-change: transform;
+}
+
+.person-card.active,
+.ride-card.active {
+  transform: scale(1);
+  opacity: 1;
 }
 
 .person-card {
@@ -247,12 +241,24 @@
   background: var(--screen-bg);
   border: 1px solid var(--screen-border);
   border-radius: 16px;
-  margin-bottom: 10px;
-  transition: 0.2s;
 }
 
-.person-card:active { transform: scale(0.98); border-color: var(--accent); }
+.person-card:active { border-color: var(--accent); }
 
+/* Пустое/загрузочное состояние — на всю ширину */
+.slider-body .empty-state,
+.ride-slider-body .empty-state,
+.slider-body .loading-state,
+.ride-slider-body .loading-state {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  padding: 0 16px;
+  text-align: center;
+}
+
+/* ============================================================
+   КАРТОЧКА ЧЕЛОВЕКА
+   ============================================================ */
 .person-avatar {
   width: 48px;
   height: 48px;
@@ -303,6 +309,9 @@
 
 .person-join-btn:active { transform: scale(0.95); }
 
+/* ============================================================
+   ПУСТОЕ СОСТОЯНИЕ
+   ============================================================ */
 .empty-state {
   text-align: center;
   padding: 30px 10px;
@@ -326,6 +335,9 @@
 
 .btn-expand-radius:active { transform: scale(0.96); }
 
+/* ============================================================
+   ЗАГРУЗКА
+   ============================================================ */
 .loading-state {
   text-align: center;
   padding: 30px 10px;
