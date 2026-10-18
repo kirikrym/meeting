@@ -6,9 +6,8 @@ function renderRideBody() {
   if (!carousel) return;
 
   const rides = mapBaseState.nearbyUsers;
-  const myReq = getMyRequest('ride');
 
-  if (!rides.length && !myReq) {
+  if (!rides.length) {
     carousel.innerHTML = `<div class="empty-state"><div class="empty-icon">🚗</div><div class="empty-text">Пока нет машин рядом</div><button class="btn-expand-radius" id="btnExpandRadiusRide">🔍 Расширить радиус</button></div>`;
     const btn = document.getElementById('btnExpandRadiusRide');
     if (btn) btn.addEventListener('click', () => expandMapRadius());
@@ -16,24 +15,7 @@ function renderRideBody() {
   }
 
   let html = '';
-  if (myReq) {
-    const pendingCount = myReq.responses.filter(r => r.status === 'pending').length;
-    const acceptedCount = myReq.responses.filter(r => r.status === 'accepted').length;
-    let badge = acceptedCount > 0 ? `✅` : pendingCount > 0 ? `💬 ${pendingCount}` : `⏳`;
-    html += `
-      <div class="ride-card my-card" data-my-card="ride" style="background:var(--screen-bg);border:1px solid var(--screen-border);border-radius:16px;padding:14px;cursor:pointer;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-          <div class="person-avatar" style="background:#4D6CFF;">📋</div>
-          <div class="person-info" style="flex:1;min-width:0;"><div class="person-name">Моя заявка</div><div class="person-age" style="color:#4D6CFF;font-weight:600;">${myReq.fromCity} → ${myReq.toCity}</div></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-size:14px;color:var(--screen-text);">${myReq.when}</div>
-          <span class="my-card-badge">${badge}</span>
-        </div>
-      </div>
-    `;
-  }
-
+  
   rides.forEach(r => {
     const initials = (r.firstName[0] || '') + (r.lastName[0] || '');
     const avatarHtml = r.avatar ? `<img src="${r.avatar}" alt="">` : initials;
@@ -55,9 +37,6 @@ function renderRideBody() {
   });
 
   carousel.innerHTML = html;
-
-  const myCard = carousel.querySelector('[data-my-card="ride"]');
-  if (myCard) myCard.addEventListener('click', () => openMyRequestModal('ride'));
 
   carousel.querySelectorAll('.person-join-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {

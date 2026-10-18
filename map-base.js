@@ -450,7 +450,6 @@ function updateHeaderCapsule() {
   let title = '';
   let icon = '';
 
-  // Приоритет отдаем прогулке, если есть только попутчики - покажем их
   if (walkReq) {
     activeReq = walkReq;
     type = 'walk';
@@ -469,7 +468,6 @@ function updateHeaderCapsule() {
     const pending = activeReq.responses ? activeReq.responses.filter(r => r.status === 'pending').length : 0;
     const badge = pending > 0 ? `💬 ${pending}` : `⏳ Ждём`;
 
-    // Собираем красивую капельку с иконкой, названием и бейджем
     capsuleText.innerHTML = `
       <span>${icon}</span> 
       <span>${title}</span> 
@@ -525,7 +523,6 @@ function openMyRequestModal(type) {
 
   document.getElementById('reqCloseBtn').addEventListener('click', closeOverlayGlobal);
   
-  // Чтобы избежать бага с {once:true} при клике по контенту, вешаем обычный обработчик
   const overlayClickHandler = (e) => {
     if (e.target === overlay) {
       closeOverlayGlobal();
@@ -598,27 +595,7 @@ function declineResponse(type, id) {
 }
 
 function renderMyRequestCompact(type) {
-  const container = document.getElementById('myRequestsContainer');
-  if (!container) return;
-  const old = document.getElementById(`myReqCompact_${type}`);
-  if (old) old.remove();
-  const req = getMyRequest(type);
-  if (!req) {
-    updateHeaderCapsule();
-    return;
-  }
-
-  const pendingCount = req.responses ? req.responses.filter(r => r.status === 'pending').length : 0;
-  const acceptedCount = req.responses ? req.responses.filter(r => r.status === 'accepted').length : 0;
-  let summary = type === 'walk' ? `${req.what || 'Прогулка'} · ${req.when || ''}` : `${req.fromCity} → ${req.toCity} · ${req.price === 0 ? 'Бесплатно' : req.price + ' ₽'}`;
-  let badge = acceptedCount > 0 ? `✅ Договорились` : pendingCount > 0 ? `💬 ${pendingCount}` : `⏳ Ждём`;
-
-  const card = document.createElement('div');
-  card.className = 'my-request-compact';
-  card.id = `myReqCompact_${type}`;
-  card.innerHTML = `<div class="my-req-icon">${type === 'walk' ? '🚶' : '🚗'}</div><div class="my-req-text"><div class="my-req-title">${type === 'walk' ? 'Прогуляться' : 'Попутчики'}</div><div class="my-req-summary">${summary}</div></div><div class="my-req-badge">${badge}</div>`;
-  card.addEventListener('click', () => openMyRequestModal(type));
-  container.appendChild(card);
-  
+  // Отрисовка большой карточки на главном экране полностью отключена,
+  // так как вся информация теперь в капельке в шапке.
   updateHeaderCapsule();
 }
