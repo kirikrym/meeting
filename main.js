@@ -181,9 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Блок "Моя заявка" на главной
-renderMyRequestCompact('walk');
-renderMyRequestCompact('ride');
+  // Блок "Моя заявка" на главной — ОТКЛЮЧЕНО, так как теперь есть капелька
+  // renderMyRequestCompact('walk');
+  // renderMyRequestCompact('ride');
+  
+  // Обновляем капельку в шапке при загрузке
+  updateHeaderCapsule();
 
   // Модалка выхода — кнопки
   const logoutChange = document.getElementById('logoutChange');

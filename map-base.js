@@ -76,7 +76,6 @@ function createMapScreen(type, user, onClose) {
   document.getElementById(`mapBack_${type}`).addEventListener('click', closeMapScreen);
   if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
 
-  // Кнопка "Создать заявку" внутри слайдера
   document.getElementById(`createRequestBtn_${type}`).addEventListener('click', () => openCreateRequestSheet(type));
 
   setupMapSliderGestures(type);
@@ -226,16 +225,11 @@ function setupMapSliderGestures(type) {
   if (!slider || !header) return;
 
   header.onclick = (e) => {
-    // Если кликнули на кнопку "Создать", не сворачиваем слайдер
     if (e.target.closest('.create-request-btn')) return;
-
-    // Если открыта форма, закрываем её
     if (slider.classList.contains('form-active')) {
       renderMapSlider(type);
       return;
     }
-
-    // Иначе стандартное поведение (развернуть/свернуть карусель)
     if (mapBaseState.sliderState === 'collapsed') {
       mapBaseState.sliderState = 'expanded';
       slider.classList.add('expanded');
@@ -333,11 +327,16 @@ function generateMockResponses(type) {
   }
   req.responses = responses;
   saveMyRequest(type, req);
+  
   if (type === 'walk' && typeof renderWalkBody === 'function') renderWalkBody();
   if (type === 'ride' && typeof renderRideBody === 'function') renderRideBody();
   renderMyRequestCompact(type);
-  const modal = document.getElementById(`myRequestModal_${type}`);
-  if (modal) renderResponsesList(type);
+  
+  const overlay = document.getElementById('overlay');
+  if (overlay && overlay.classList.contains('active')) {
+    const list = document.getElementById(`responsesList_${type}`);
+    if (list) renderResponsesList(type);
+  }
 }
 
 function openCreateRequestSheet(type) {
@@ -416,11 +415,15 @@ function submitCreateRequest(type) {
   if (!req) return;
   req.type = type; req.id = type + '_my_' + Date.now(); req.createdAt = Date.now(); req.responses = [];
   saveMyRequest(type, req);
+  
   renderMapSlider(type);
   updateCreateButton(type);
+  
   if (type === 'walk' && typeof renderWalkBody === 'function') renderWalkBody();
   if (type === 'ride' && typeof renderRideBody === 'function') renderRideBody();
+  
   renderMyRequestCompact(type);
+  
   setTimeout(() => generateMockResponses(type), 5000 + Math.random() * 10000);
 }
 
@@ -431,62 +434,116 @@ function updateCreateButton(type) {
   btn.textContent = req ? '📋 Моя заявка' : '➕ Создать заявку';
 }
 
-// Модалка управления заявкой (остается поверх, чтобы показать отклики)
+// ============================================================
+// МОДАЛКА МОЕЙ ЗАЯВКИ (СТИЛЬ CARD-PREVIEW) И КАПЕЛЬКА
+// ============================================================
+
+function updateHeaderCapsule() {
+  const walkReq = getMyRequest('walk');
+  const rideReq = getMyRequest('ride');
+  const capsule = document.getElementById('headerCapsule');
+  const capsuleText = document.getElementById('capsuleText');
+  if (!capsule || !capsuleText) return;
+
+  let activeReq = null;
+  let type = '';
+  let title = '';
+  let icon = '';
+
+  // Приоритет отдаем прогулке, если есть только попутчики - покажем их
+  if (walkReq) {
+    activeReq = walkReq;
+    type = 'walk';
+    title = 'Прогулка';
+    icon = '🚶';
+  } else if (rideReq) {
+    activeReq = rideReq;
+    type = 'ride';
+    title = 'Попутчики';
+    icon = '🚗';
+  }
+
+  if (activeReq) {
+    capsule.classList.remove('hidden');
+    
+    const pending = activeReq.responses ? activeReq.responses.filter(r => r.status === 'pending').length : 0;
+    const badge = pending > 0 ? `💬 ${pending}` : `⏳ Ждём`;
+
+    // Собираем красивую капельку с иконкой, названием и бейджем
+    capsuleText.innerHTML = `
+      <span>${icon}</span> 
+      <span>${title}</span> 
+      <span class="capsule-badge">${badge}</span>
+    `;
+    
+    capsule.onclick = () => openMyRequestModal(type);
+  } else {
+    capsule.classList.add('hidden');
+  }
+}
+
 function openMyRequestModal(type) {
   const req = getMyRequest(type);
   if (!req) return;
-  const old = document.getElementById(`myRequestModal_${type}`);
-  if (old) old.remove();
 
-  const overlay = document.createElement('div');
-  overlay.className = 'bottom-sheet-overlay';
-  overlay.id = `myRequestModal_${type}`;
-  overlay.innerHTML = `
-    <div class="bottom-sheet" id="myRequestSheet_${type}">
-      <div class="bottom-sheet-handle" id="myRequestHandle_${type}"></div>
-      <div class="bottom-sheet-header">
-        <div class="bottom-sheet-title">${type === 'walk' ? '🚶 Моя заявка' : '🚗 Моя заявка'}</div>
-      </div>
-      <div class="bottom-sheet-body" id="myRequestBody_${type}"></div>
-      <div class="bottom-sheet-footer"><button class="btn-primary" id="deleteRequestBtn_${type}" style="background:var(--danger);">🗑️ Удалить заявку</button></div>
+  const overlay = document.getElementById('overlay');
+  const overlayContent = document.getElementById('overlayContent');
+  
+  let info = '';
+  if (type === 'walk') {
+      info = `<div style="text-align:left; font-size:14px; color:var(--screen-text); margin-bottom:16px; background:var(--screen-bg); padding:12px; border-radius:14px;">
+        <div>📍 ${req.what || '—'}</div>
+        <div>⏰ ${req.when || '—'}</div>
+      </div>`;
+  } else {
+      info = `<div style="text-align:left; font-size:14px; color:var(--screen-text); margin-bottom:16px; background:var(--screen-bg); padding:12px; border-radius:14px;">
+        <div>📍 ${req.fromCity} → ${req.toCity}</div>
+        <div>⏰ ${req.when || '—'}</div>
+        <div>💺 Мест: ${req.freeSeats} из ${req.totalSeats} · 💰 ${req.price === 0 ? 'Бесплатно' : req.price + ' ₽'}</div>
+        <div>🚘 ${req.carBrand || 'Авто'}, ${req.carColor || ''}, ${req.carPlate || ''}</div>
+      </div>`;
+  }
+
+  overlayContent.innerHTML = `
+    <div class="card-preview" style="text-align: left;">
+      <button class="card-preview-close" id="reqCloseBtn">✕</button>
+      <div class="card-preview-icon" style="text-align:center;">${type === 'walk' ? '🚶' : '🚗'}</div>
+      <div class="card-preview-title" style="text-align:center;">Моя заявка</div>
+      
+      ${info}
+      
+      <div style="font-size:15px; font-weight:600; color:var(--screen-text); margin-bottom:12px; border-top:1px solid var(--screen-border); padding-top:12px;">Отклики (${req.responses ? req.responses.length : 0})</div>
+      <div id="responsesList_${type}" style="max-height: 220px; overflow-y:auto; margin-bottom:20px; padding-right:4px;"></div>
+      
+      <button class="btn-primary" id="deleteRequestBtn_${type}" style="background:var(--danger); width:100%;">🗑️ Удалить заявку</button>
     </div>
   `;
-  document.body.appendChild(overlay);
-  renderMyRequestModalContent(type);
 
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeMyRequestModal(type); });
-  setupSheetSwipe(`myRequestSheet_${type}`, `myRequestHandle_${type}`, () => closeMyRequestModal(type));
+  overlay.classList.add('active');
+  
+  renderResponsesList(type);
+
+  document.getElementById('reqCloseBtn').addEventListener('click', closeOverlayGlobal);
+  
+  // Чтобы избежать бага с {once:true} при клике по контенту, вешаем обычный обработчик
+  const overlayClickHandler = (e) => {
+    if (e.target === overlay) {
+      closeOverlayGlobal();
+      overlay.removeEventListener('click', overlayClickHandler);
+    }
+  };
+  overlay.addEventListener('click', overlayClickHandler);
 
   document.getElementById(`deleteRequestBtn_${type}`).addEventListener('click', () => {
     if (confirm('Удалить заявку?')) {
-      clearMyRequest(type); closeMyRequestModal(type); updateCreateButton(type);
+      clearMyRequest(type);
+      closeOverlayGlobal();
+      updateCreateButton(type);
       if (type === 'walk' && typeof renderWalkBody === 'function') renderWalkBody();
       if (type === 'ride' && typeof renderRideBody === 'function') renderRideBody();
       renderMyRequestCompact(type);
     }
   });
-  requestAnimationFrame(() => overlay.classList.add('active'));
-}
-
-function closeMyRequestModal(type) {
-  const overlay = document.getElementById(`myRequestModal_${type}`);
-  if (!overlay) return;
-  overlay.classList.remove('active');
-  setTimeout(() => overlay.remove(), 350);
-}
-
-function renderMyRequestModalContent(type) {
-  const body = document.getElementById(`myRequestBody_${type}`);
-  if (!body) return;
-  const req = getMyRequest(type);
-  if (!req) return;
-
-  const info = type === 'walk'
-    ? `<div class="my-req-info-row"><span>📍</span> ${req.what || '—'}</div><div class="my-req-info-row"><span>⏰</span> ${req.when || '—'}</div>`
-    : `<div class="my-req-info-row"><span>📍</span> ${req.fromCity} → ${req.toCity}</div><div class="my-req-info-row"><span>⏰</span> ${req.when || '—'}</div><div class="my-req-info-row"><span>💺</span> ${req.freeSeats} из ${req.totalSeats}</div><div class="my-req-info-row"><span>💰</span> ${req.price === 0 ? 'Бесплатно' : req.price + ' ₽'}</div><div class="my-req-info-row"><span>🚘</span> ${req.carBrand}, ${req.carColor}, ${req.carPlate}</div><div class="my-req-info-row"><span>📦</span> ${req.cargo ? 'С грузом' + (req.cargoWeight ? ' (' + req.cargoWeight + ' кг)' : '') : 'Без груза'}</div>`;
-
-  body.innerHTML = `<div class="my-req-info">${info}</div><div class="responses-title">Отклики (${req.responses.length})</div><div id="responsesList_${type}"></div>`;
-  renderResponsesList(type);
 }
 
 function renderResponsesList(type) {
@@ -494,23 +551,34 @@ function renderResponsesList(type) {
   if (!list) return;
   const req = getMyRequest(type);
   if (!req) return;
-  if (!req.responses.length) { list.innerHTML = `<div class="empty-state" style="padding:20px;"><div class="empty-text">Пока нет откликов</div></div>`; return; }
+  
+  if (!req.responses || !req.responses.length) {
+    list.innerHTML = `<div style="font-size:14px; color:var(--screen-text-muted); text-align:center; padding:10px;">Пока нет откликов</div>`;
+    return;
+  }
 
   let html = '';
   req.responses.forEach(r => {
-    const statusClass = r.status === 'accepted' ? 'accepted' : r.status === 'declined' ? 'declined' : '';
     const statusText = r.status === 'accepted' ? '✅ Принят' : r.status === 'declined' ? '❌ Отклонён' : '';
+    
     html += `
-      <div class="response-item ${statusClass}">
-        <div class="person-avatar">${r.avatar ? `<img src="${r.avatar}" alt="">` : (r.firstName[0]||'')+(r.lastName[0]||'')}</div>
-        <div class="person-info"><div class="person-name">${r.firstName} ${r.lastName}</div><div class="person-age">${r.age} лет</div></div>
-        <div class="response-actions">
-          ${r.status === 'pending' ? `<button class="resp-btn accept" data-resp-accept="${r.id}">✓</button><button class="resp-btn decline" data-resp-decline="${r.id}">✕</button>` : `<span class="resp-status">${statusText}</span>`}
+      <div class="response-item" style="display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--screen-border);">
+        <div class="person-avatar" style="width:40px; height:40px; font-size:14px; background:#6C5CE7; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; flex-shrink:0;">${r.avatar ? `<img src="${r.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : (r.firstName[0]||'')+(r.lastName[0]||'')}</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:14px; font-weight:600; color:var(--screen-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.firstName} ${r.lastName}</div>
+          <div style="font-size:12px; color:var(--screen-text-muted);">${r.age} лет</div>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          ${r.status === 'pending' ? `
+            <button class="resp-btn accept" data-resp-accept="${r.id}" style="background:var(--success); color:#fff; border:none; border-radius:10px; width:36px; height:36px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✓</button>
+            <button class="resp-btn decline" data-resp-decline="${r.id}" style="background:var(--danger); color:#fff; border:none; border-radius:10px; width:36px; height:36px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+          ` : `<span style="font-size:12px; font-weight:600; color:${r.status === 'accepted' ? 'var(--success)' : 'var(--danger)'};">${statusText}</span>`}
         </div>
       </div>
     `;
   });
   list.innerHTML = html;
+  
   list.querySelectorAll('[data-resp-accept]').forEach(btn => btn.addEventListener('click', () => acceptResponse(type, btn.dataset.respAccept)));
   list.querySelectorAll('[data-resp-decline]').forEach(btn => btn.addEventListener('click', () => declineResponse(type, btn.dataset.respDecline)));
 }
@@ -535,10 +603,13 @@ function renderMyRequestCompact(type) {
   const old = document.getElementById(`myReqCompact_${type}`);
   if (old) old.remove();
   const req = getMyRequest(type);
-  if (!req) return;
+  if (!req) {
+    updateHeaderCapsule();
+    return;
+  }
 
-  const pendingCount = req.responses.filter(r => r.status === 'pending').length;
-  const acceptedCount = req.responses.filter(r => r.status === 'accepted').length;
+  const pendingCount = req.responses ? req.responses.filter(r => r.status === 'pending').length : 0;
+  const acceptedCount = req.responses ? req.responses.filter(r => r.status === 'accepted').length : 0;
   let summary = type === 'walk' ? `${req.what || 'Прогулка'} · ${req.when || ''}` : `${req.fromCity} → ${req.toCity} · ${req.price === 0 ? 'Бесплатно' : req.price + ' ₽'}`;
   let badge = acceptedCount > 0 ? `✅ Договорились` : pendingCount > 0 ? `💬 ${pendingCount}` : `⏳ Ждём`;
 
@@ -548,14 +619,6 @@ function renderMyRequestCompact(type) {
   card.innerHTML = `<div class="my-req-icon">${type === 'walk' ? '🚶' : '🚗'}</div><div class="my-req-text"><div class="my-req-title">${type === 'walk' ? 'Прогуляться' : 'Попутчики'}</div><div class="my-req-summary">${summary}</div></div><div class="my-req-badge">${badge}</div>`;
   card.addEventListener('click', () => openMyRequestModal(type));
   container.appendChild(card);
-}
-
-function setupSheetSwipe(sheetId, handleId, onClose) {
-  const sheet = document.getElementById(sheetId);
-  const handle = document.getElementById(handleId);
-  if (!sheet || !handle) return;
-  let startY = 0, currentY = 0, dragging = false;
-  handle.addEventListener('touchstart', (e) => { dragging = true; startY = e.touches[0].clientY; sheet.style.transition = 'none'; }, { passive: true });
-  handle.addEventListener('touchmove', (e) => { if (!dragging) return; currentY = e.touches[0].clientY; const delta = currentY - startY; if (delta > 0) sheet.style.transform = `translateY(${delta}px)`; }, { passive: true });
-  handle.addEventListener('touchend', () => { if (!dragging) return; dragging = false; const delta = currentY - startY; sheet.style.transition = ''; sheet.style.transform = ''; if (delta > 100) onClose(); });
+  
+  updateHeaderCapsule();
 }

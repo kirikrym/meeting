@@ -80,7 +80,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
+  /* border-bottom: 1px solid var(--border);*/
   flex-shrink: 0;
 }
 
@@ -618,4 +618,50 @@ body {
   color: var(--accent-light);
   flex-shrink: 0;
   white-space: nowrap;
+}
+/* ============================================================
+   КАПСУЛА ЗАЯВКИ В ШАПКЕ
+   ============================================================ */
+.header {
+  position: relative; 
+}
+
+.header-capsule {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  border: 1.5px solid var(--accent);
+  border-radius: 20px;
+  padding: 6px 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+  animation: capsulePulse 2s infinite;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-light);
+  white-space: nowrap;
+}
+
+.header-capsule:active { transform: translateX(-50%) scale(0.95); }
+
+/* Стиль для бейджа с количеством откликов внутри капельки */
+.capsule-badge {
+  background: rgba(108, 92, 231, 0.2);
+  color: var(--screen-text);
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+/* Мы БОЛЬШЕ НЕ СКРЫВАЕМ логотип и Онлайн, удалили старые правила */
+
+@keyframes capsulePulse {
+  0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2); }
+  50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 4px 20px rgba(108, 92, 231, 0.6); }
 }
