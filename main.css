@@ -559,3 +559,63 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+/* ============================================================
+   БЛОК "МОЯ ЗАЯВКА" НА ГЛАВНОЙ
+   ============================================================ */
+.my-requests-container {
+  flex-shrink: 0;
+  padding: 12px 0 4px;
+}
+
+.my-requests-container:empty { display: none; }
+
+.my-request-compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--accent);
+  border-radius: 18px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.my-request-compact:active {
+  transform: scale(0.98);
+  background: var(--screen-card-2);
+}
+
+.my-req-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.my-req-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.my-req-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.my-req-summary {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-req-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-light);
+  flex-shrink: 0;
+  white-space: nowrap;
+}

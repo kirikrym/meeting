@@ -69,3 +69,27 @@ const mapConfig = {
     requestTimeoutSec: 300
   }
 };
+// ============================================================
+// КОНСТАНТЫ ДЛЯ СОЗДАНИЯ ЗАЯВОК
+// ============================================================
+
+// Walk — когда
+const WALK_WHEN_OPTIONS = ['Сейчас', 'Сегодня в 18:00', 'Завтра'];
+
+// Walk — радиусы
+const WALK_RADII = [
+  { value: 1000, label: '1 км' },
+  { value: 3000, label: '3 км' },
+  { value: 5000, label: '5 км' },
+  { value: 10000, label: '10 км' }
+];
+
+// Ride — когда
+const RIDE_WHEN_OPTIONS = ['Сейчас', 'Сегодня в 18:00', 'Завтра'];
+
+// Ride — быстрые цены (0 = бесплатно)
+const RIDE_PRICE_OPTIONS = [0, 500, 1000];
+
+// Ключи localStorage
+const LS_MY_WALK_REQUEST = 'meet_my_walk_request';
+const LS_MY_RIDE_REQUEST = 'meet_my_ride_request';

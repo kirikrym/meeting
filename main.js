@@ -181,6 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Блок "Моя заявка" на главной
+renderMyRequestCompact('walk');
+renderMyRequestCompact('ride');
+
   // Модалка выхода — кнопки
   const logoutChange = document.getElementById('logoutChange');
   const logoutDelete = document.getElementById('logoutDelete');

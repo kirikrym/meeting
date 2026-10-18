@@ -1,5 +1,5 @@
 /* ============================================================
-   ЭКРАНЫ КАРТ (walk / ride)
+   ЭКРАНЫ КАРТ
    ============================================================ */
 .walk-screen,
 .ride-screen {
@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), background 0.3s;
+  transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
   overflow: hidden;
 }
 
@@ -30,7 +30,6 @@
   border-bottom: 1px solid var(--screen-border);
   z-index: 1200;
   flex-shrink: 0;
-  transition: background 0.3s, border-color 0.3s;
 }
 
 .walk-back,
@@ -45,9 +44,6 @@
   border-radius: 12px;
   font-family: inherit;
 }
-
-.walk-back:active,
-.ride-back:active { background: rgba(108, 92, 231, 0.15); }
 
 .walk-logo {
   font-size: 17px;
@@ -82,9 +78,7 @@
 
 .walk-avatar { background: #6C5CE7; }
 .ride-avatar { background: #4D6CFF; }
-
-.walk-avatar img,
-.ride-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.walk-avatar img, .ride-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
 .walk-map-wrapper,
 .ride-map-wrapper {
@@ -101,24 +95,11 @@
   z-index: 0 !important;
 }
 
-#walkMap .leaflet-tile-pane,
-#rideMap .leaflet-tile-pane {
-  filter: var(--map-filter);
-  transition: filter 0.3s;
-}
+#walkMap .leaflet-tile-pane, #rideMap .leaflet-tile-pane { filter: var(--map-filter); }
+#walkMap .leaflet-pane, #rideMap .leaflet-pane { z-index: 1 !important; }
+#walkMap .leaflet-top, #walkMap .leaflet-bottom, #rideMap .leaflet-top, #rideMap .leaflet-bottom { z-index: 2 !important; }
 
-#walkMap .leaflet-pane,
-#rideMap .leaflet-pane { z-index: 1 !important; }
-
-#walkMap .leaflet-top,
-#walkMap .leaflet-bottom,
-#rideMap .leaflet-top,
-#rideMap .leaflet-bottom { z-index: 2 !important; }
-
-.radius-circle {
-  animation: radiusPulse 3s ease-in-out infinite;
-}
-
+.radius-circle { animation: radiusPulse 3s ease-in-out infinite; }
 @keyframes radiusPulse {
   0%, 100% { fill-opacity: 0.05; stroke-opacity: 0.2; }
   50% { fill-opacity: 0.15; stroke-opacity: 0.5; }
@@ -132,12 +113,12 @@
   position: absolute;
   bottom: 0; left: 0;
   width: 100%;
-  height: 85px;
+  height: 140px; /* Чуть выше, чтобы влезла кнопка */
   background: var(--screen-card);
   border-radius: 28px 28px 0 0;
   border-top: 1px solid var(--screen-border);
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
-  transition: height 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), background 0.3s, border-color 0.3s;
+  transition: height 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -147,16 +128,16 @@
 .walk-slider.expanded,
 .ride-slider.expanded { height: 45vh; }
 
+.walk-slider.form-active,
+.ride-slider.form-active { height: 85vh; }
+
 .slider-header,
 .ride-slider-header {
   flex-shrink: 0;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  padding: 10px 16px 14px;
+  padding: 10px 16px 0;
   border-bottom: 1px solid var(--screen-border);
-  touch-action: none;
-  transition: border-color 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .slider-handle,
@@ -166,11 +147,7 @@
   background: var(--screen-border);
   border-radius: 4px;
   margin: 0 auto 12px;
-  transition: 0.2s;
 }
-
-.slider-header:hover .slider-handle { background: #6C5CE7; }
-.ride-slider-header:hover .ride-slider-handle { background: #4D6CFF; }
 
 .slider-stats,
 .ride-slider-stats {
@@ -180,42 +157,59 @@
   gap: 8px;
   font-size: 13px;
   color: var(--screen-text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 8px;
+  padding: 0 8px 12px;
+  min-height: 31px;
 }
 
 .stat-item { display: inline-flex; align-items: center; gap: 4px; }
 .stat-item b { color: var(--screen-text); font-weight: 600; }
 .stat-sep { color: var(--screen-text-muted); opacity: 0.5; }
 
-/* ============================================================
-   ТЕЛО СЛАЙДЕРА — ГОРИЗОНТАЛЬНАЯ КАРУСЕЛЬ
-   ============================================================ */
+/* Кнопка "Создать заявку" внутри шапки слайдера */
+.create-request-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.create-request-btn:active { transform: scale(0.98); }
+.create-request-btn.hidden { display: none; }
+
+/* Тело слайдера */
 .slider-body,
 .ride-slider-body {
   flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- КАРУСЕЛЬ --- */
+.carousel-view {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 12px 0 24px;
-  display: none;
+  display: flex;
   align-items: center;
   gap: 12px;
+  transition: opacity 0.2s;
 }
 
-.slider-body::-webkit-scrollbar,
-.ride-slider-body::-webkit-scrollbar { display: none; }
+.carousel-view::-webkit-scrollbar { display: none; }
 
-.walk-slider.expanded .slider-body,
-.ride-slider.expanded .ride-slider-body {
-  display: flex;
-}
-
-/* Карточка в карусели */
 .person-card,
 .ride-card {
   flex: 0 0 78%;
@@ -223,8 +217,7 @@
   margin-bottom: 0;
   transform: scale(0.85);
   opacity: 0.55;
-  transition: transform 0.3s ease, opacity 0.3s ease, border-color 0.2s;
-  will-change: transform;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .person-card.active,
@@ -243,119 +236,115 @@
   border-radius: 16px;
 }
 
-.person-card:active { border-color: var(--accent); }
-
-/* Пустое/загрузочное состояние — на всю ширину */
-.slider-body .empty-state,
-.ride-slider-body .empty-state,
-.slider-body .loading-state,
-.ride-slider-body .loading-state {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
-  padding: 0 16px;
-  text-align: center;
+/* --- ФОРМА --- */
+.form-view {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 20px 40px;
+  display: none;
+  flex-direction: column;
 }
+
+/* Логика переключения */
+.walk-slider.form-active .carousel-view,
+.ride-slider.form-active .carousel-view { display: none; }
+
+.walk-slider.form-active .form-view,
+.ride-slider.form-active .form-view { display: flex; }
+
+/* Стили формы */
+.form-field { margin-bottom: 16px; }
+.form-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--screen-text-muted);
+  margin-bottom: 6px;
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--screen-bg);
+  border: 1.5px solid var(--screen-border);
+  border-radius: 14px;
+  color: var(--screen-text);
+  font-size: 15px;
+  outline: none;
+  font-family: inherit;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { resize: vertical; min-height: 70px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 14px;
+  background: var(--screen-bg);
+  border: 1.5px solid var(--screen-border);
+  border-radius: 20px;
+  color: var(--screen-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.2s;
+}
+.chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* ============================================================
-   КАРТОЧКА ЧЕЛОВЕКА
+   КАРТОЧКА ЧЕЛОВЕКА (ВНУТРИ)
    ============================================================ */
 .person-avatar {
-  width: 48px;
-  height: 48px;
+  width: 48px; height: 48px;
   border-radius: 50%;
   background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
-  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #fff;
+  flex-shrink: 0; overflow: hidden;
 }
-
 .person-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
 .person-info { flex: 1; min-width: 0; }
-
-.person-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--screen-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.person-age {
-  font-size: 13px;
-  color: var(--screen-text-muted);
-  margin-top: 2px;
-}
-
+.person-name { font-size: 15px; font-weight: 600; color: var(--screen-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.person-age { font-size: 13px; color: var(--screen-text-muted); margin-top: 2px; }
 .person-join-btn {
   padding: 8px 14px;
   background: var(--accent);
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  font-family: inherit;
-  flex-shrink: 0;
+  border: none; border-radius: 12px; color: #fff;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit; flex-shrink: 0;
 }
-
 .person-join-btn:active { transform: scale(0.95); }
 
-/* ============================================================
-   ПУСТОЕ СОСТОЯНИЕ
-   ============================================================ */
-.empty-state {
-  text-align: center;
-  padding: 30px 10px;
-}
-
+.empty-state { text-align: center; padding: 30px 10px; }
 .empty-icon { font-size: 48px; margin-bottom: 12px; }
 .empty-text { font-size: 15px; color: var(--screen-text-muted); margin-bottom: 20px; }
-
 .btn-expand-radius {
-  padding: 12px 24px;
-  background: var(--accent);
-  border: none;
-  border-radius: 16px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  font-family: inherit;
+  padding: 12px 24px; background: var(--accent); border: none; border-radius: 16px;
+  color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
 }
 
-.btn-expand-radius:active { transform: scale(0.96); }
-
-/* ============================================================
-   ЗАГРУЗКА
-   ============================================================ */
-.loading-state {
-  text-align: center;
-  padding: 30px 10px;
+/* Карусель для пустого состояния */
+.carousel-view .empty-state,
+.carousel-view .loading-state {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
 }
 
-.loading-icon {
-  font-size: 40px;
-  margin-bottom: 12px;
-  animation: spin 2s linear infinite;
+/* Стили для бейджа "Моя заявка" */
+.my-card { border-color: var(--accent) !important; }
+.my-card-badge {
+  padding: 4px 10px; background: var(--accent); color: #fff;
+  border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* Кнопка "Создать" в форме */
+.btn-primary {
+  padding: 16px; background: var(--accent); border: none; border-radius: 16px;
+  color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit;
 }
-
-.loading-text {
-  font-size: 14px;
-  color: var(--screen-text-muted);
-  line-height: 1.6;
-}
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
