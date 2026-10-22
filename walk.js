@@ -60,6 +60,20 @@ function setupWalkFormLogic() {
   const submitBtn = document.getElementById('createSubmitBtn');
   let selectedWhen = null;
 
+  // НОВОЕ: Логика кнопок Да/Нет для групповой прогулки
+  const groupChips = document.querySelectorAll('#walkGroupChips .chip');
+  const groupSizeWrap = document.getElementById('walkGroupSizeWrap');
+
+  groupChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      groupChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const isGroup = chip.dataset.group === 'true';
+      groupSizeWrap.style.display = isGroup ? 'block' : 'none';
+      validateWalkForm();
+    });
+  });
+
   chips.forEach(chip => {
     chip.addEventListener('click', () => {
       chips.forEach(c => c.classList.remove('active'));
@@ -100,6 +114,11 @@ function collectWalkForm() {
   } else {
     when = activeChip.dataset.when;
   }
+
+  // НОВОЕ: Собираем данные о группе
+  const isGroup = document.querySelector('#walkGroupChips .chip.active').dataset.group === 'true';
+  const groupSize = isGroup ? parseInt(document.getElementById('walkFormGroupSizeSelect').value, 10) : 1;
+
   if (!what || !when) return null;
-  return { what, when, whenCustom, radius, comment };
+  return { what, when, whenCustom, radius, comment, groupSize };
 }

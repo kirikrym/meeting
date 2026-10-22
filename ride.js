@@ -75,6 +75,32 @@ function setupRideFormLogic() {
   const submitBtn = document.getElementById('createSubmitBtn');
   let selectedWhen = null, selectedPrice = null, selectedCargo = false;
 
+  // --- МАСКА ДЛЯ АВТОМОБИЛЬНОГО НОМЕРА ---
+  const plateInput = document.getElementById('rideFormCarPlate');
+  if (plateInput) {
+    plateInput.addEventListener('input', (e) => {
+      // Оставляем только буквы и цифры, переводим в верхний регистр
+      let v = e.target.value.toUpperCase().replace(/[^А-ЯA-Z0-9]/g, '');
+      let res = '';
+      
+      for (let i = 0; i < v.length; i++) {
+        let char = v[i];
+        // Буква (1-я)
+        if (res.length === 0) { if (/[А-ЯA-Z]/.test(char)) res += char; }
+        // Три цифры
+        else if (res.length >= 1 && res.length <= 3) { if (/[0-9]/.test(char)) res += char; }
+        // Две буквы
+        else if (res.length >= 4 && res.length <= 5) { if (/[А-ЯA-Z]/.test(char)) res += char; }
+        // Пробел и первая цифра региона
+        else if (res.length === 6) { if (/[0-9]/.test(char)) res += ' ' + char; }
+        // Остальные цифры региона (до 3-х)
+        else if (res.length >= 7 && res.length <= 9) { if (/[0-9]/.test(char)) res += char; }
+      }
+      e.target.value = res;
+    });
+  }
+  // ---------------------------------------
+
   whenChips.forEach(chip => {
     chip.addEventListener('click', () => {
       whenChips.forEach(c => c.classList.remove('active'));
@@ -91,6 +117,24 @@ function setupRideFormLogic() {
       chip.classList.add('active');
       if (chip.dataset.price === 'custom') { priceCustomWrap.style.display = 'block'; selectedPrice = 'custom'; }
       else { priceCustomWrap.style.display = 'none'; priceCustomInput.value = ''; selectedPrice = parseInt(chip.dataset.price, 10); }
+      validateRideForm();
+    });
+  });
+
+  const smokingChips = document.querySelectorAll('#rideSmokingChips .chip');
+  smokingChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      smokingChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      validateRideForm();
+    });
+  });
+
+  const petsChips = document.querySelectorAll('#ridePetsChips .chip');
+  petsChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      petsChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
       validateRideForm();
     });
   });
@@ -114,21 +158,22 @@ function setupRideFormLogic() {
   });
 
   function validateRideForm() {
-    const from = document.getElementById('rideFormFrom').value;
-    const to = document.getElementById('rideFormTo').value;
+    const from = document.getElementById('rideFormFrom').value.trim();
+    const to = document.getElementById('rideFormTo').value.trim();
     const brand = document.getElementById('rideFormCarBrand').value.trim();
     const color = document.getElementById('rideFormCarColor').value.trim();
     const plate = document.getElementById('rideFormCarPlate').value.trim();
     let whenOk = selectedWhen === 'custom' ? !!whenCustomInput.value : !!selectedWhen;
     let priceOk = selectedPrice === 'custom' ? (priceCustomInput.value !== '' && parseInt(priceCustomInput.value, 10) >= 0) : selectedPrice !== null;
-    submitBtn.disabled = !(from !== to && whenOk && priceOk && brand && color && plate);
+    // Добавил проверку, что номер введен полностью (минимум 8 символов, например "А123БВ 77")
+    submitBtn.disabled = !(from.length > 1 && to.length > 1 && from !== to && whenOk && priceOk && brand && color && plate.length >= 8);
   }
   submitBtn.onclick = () => submitCreateRequest('ride');
 }
 
 function collectRideForm() {
-  const fromCity = document.getElementById('rideFormFrom').value;
-  const toCity = document.getElementById('rideFormTo').value;
+  const fromCity = document.getElementById('rideFormFrom').value.trim();
+  const toCity = document.getElementById('rideFormTo').value.trim();
   const freeSeats = parseInt(document.getElementById('rideFormSeats').value, 10);
   const carBrand = document.getElementById('rideFormCarBrand').value.trim();
   const carColor = document.getElementById('rideFormCarColor').value.trim();
@@ -155,7 +200,7 @@ function collectRideForm() {
   const selectedCargo = document.querySelector('#rideCargoChips .chip.active').dataset.cargo === 'true';
   const cargoWeight = selectedCargo ? parseInt(document.getElementById('rideFormCargoWeight').value, 10) || 0 : 0;
 
-  if (fromCity === toCity) return null;
+  if (fromCity === toCity || !fromCity || !toCity) return null;
 
   return { fromCity, toCity, when, whenCustom, freeSeats, totalSeats: 4, price, smoking: selectedSmoking, pets: selectedPets, cargo: selectedCargo, cargoWeight, carBrand, carColor, carPlate, comment };
 }

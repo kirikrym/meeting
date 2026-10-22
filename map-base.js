@@ -1,26 +1,10 @@
 "use strict";
 
 const mapBaseState = {
-  currentType: null,
-  map: null,
-  userMarker: null,
-  otherMarkers: [],
-  radiusCircle: null,
-  sliderState: 'collapsed',
-  radius: 1000,
-  userLat: null,
-  userLng: null,
-  watchId: null,
-  weather: null,
-  nearbyUsers: [],
-  currentUser: null,
-  onClose: null,
-  screenEl: null,
-  requestTimer: null,
-  requestTimeout: null,
-  requestSecondsLeft: 60,
-  requestTarget: null,
-  requestCancelled: false
+  currentType: null, map: null, userMarker: null, otherMarkers: [], radiusCircle: null,
+  sliderState: 'collapsed', radius: 1000, userLat: null, userLng: null, watchId: null,
+  weather: null, nearbyUsers: [], currentUser: null, onClose: null, screenEl: null,
+  requestTimer: null, requestTimeout: null, requestSecondsLeft: 60, requestTarget: null, requestCancelled: false
 };
 
 function createMapScreen(type, user, onClose) {
@@ -63,7 +47,6 @@ function createMapScreen(type, user, onClose) {
 
   document.body.appendChild(el);
   mapBaseState.screenEl = el;
-
   requestAnimationFrame(() => el.classList.add('active'));
 
   const av = document.getElementById(`mapAvatar_${type}`);
@@ -75,21 +58,15 @@ function createMapScreen(type, user, onClose) {
 
   document.getElementById(`mapBack_${type}`).addEventListener('click', closeMapScreen);
   if (av) av.addEventListener('click', () => alert('👤 Профиль — в разработке'));
-
   document.getElementById(`createRequestBtn_${type}`).addEventListener('click', () => openCreateRequestSheet(type));
 
   setupMapSliderGestures(type);
   startMapGeolocation(type);
-
   return el;
 }
 
 function startMapGeolocation(type) {
-  if (!navigator.geolocation) {
-    alert('❌ Браузер не поддерживает геолокацию');
-    return;
-  }
-
+  if (!navigator.geolocation) return alert('❌ Браузер не поддерживает геолокацию');
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       mapBaseState.userLat = pos.coords.latitude;
@@ -98,8 +75,7 @@ function startMapGeolocation(type) {
       initMapBase(type, mapBaseState.userLat, mapBaseState.userLng);
       mapBaseState.weather = await fetchWeather(mapBaseState.userLat, mapBaseState.userLng);
 
-      if (type === 'ride') generateMockRides();
-      else generateMockNearbyUsers(type);
+      if (type === 'ride') generateMockRides(); else generateMockNearbyUsers(type);
 
       addRadiusCircle(type);
       addNearbyMarkers(type);
@@ -110,8 +86,7 @@ function startMapGeolocation(type) {
           mapBaseState.userLat = p.coords.latitude;
           mapBaseState.userLng = p.coords.longitude;
           if (mapBaseState.userMarker) mapBaseState.userMarker.setLatLng([mapBaseState.userLat, mapBaseState.userLng]);
-        },
-        () => {}, { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+        }, () => {}, { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
       );
     },
     (err) => alert('⚠️ Не удалось получить геолокацию: ' + err.message),
@@ -160,9 +135,9 @@ function generateMockRides() {
   mapBaseState.nearbyUsers = [];
   for (let i = 0; i < count; i++) {
     const car = MOCK_CARS[i % MOCK_CARS.length];
-    const fromCity = MOCK_CITIES[Math.floor(Math.random() * MOCK_CITIES.length)];
-    let toCity = MOCK_CITIES[Math.floor(Math.random() * MOCK_CITIES.length)];
-    while (toCity === fromCity) toCity = MOCK_CITIES[Math.floor(Math.random() * MOCK_CITIES.length)];
+    const fromCity = RUSSIAN_CITIES[Math.floor(Math.random() * RUSSIAN_CITIES.length)];
+    let toCity = RUSSIAN_CITIES[Math.floor(Math.random() * RUSSIAN_CITIES.length)];
+    while (toCity === fromCity) toCity = RUSSIAN_CITIES[Math.floor(Math.random() * RUSSIAN_CITIES.length)];
     const angle = Math.random() * 2 * Math.PI;
     const distance = 0.005 + Math.random() * 0.02;
     mapBaseState.nearbyUsers.push({
@@ -226,10 +201,7 @@ function setupMapSliderGestures(type) {
 
   header.onclick = (e) => {
     if (e.target.closest('.create-request-btn')) return;
-    if (slider.classList.contains('form-active')) {
-      renderMapSlider(type);
-      return;
-    }
+    if (slider.classList.contains('form-active')) { renderMapSlider(type); return; }
     if (mapBaseState.sliderState === 'collapsed') {
       mapBaseState.sliderState = 'expanded';
       slider.classList.add('expanded');
@@ -275,8 +247,7 @@ function expandMapRadius() {
   else { alert('🔍 Максимальный радиус'); return; }
 
   if (mapBaseState.radiusCircle) mapBaseState.radiusCircle.setRadius(mapBaseState.radius);
-  const extraCount = 3;
-  for (let i = 0; i < extraCount; i++) {
+  for (let i = 0; i < 3; i++) {
     const angle = Math.random() * 2 * Math.PI;
     const distance = 0.005 + Math.random() * 0.02;
     mapBaseState.nearbyUsers.push({
@@ -322,7 +293,7 @@ function generateMockResponses(type) {
       firstName: MOCK_FIRST_NAMES[Math.floor(Math.random() * MOCK_FIRST_NAMES.length)],
       lastName: MOCK_LAST_NAMES[Math.floor(Math.random() * MOCK_LAST_NAMES.length)],
       age: MOCK_AGES[Math.floor(Math.random() * MOCK_AGES.length)],
-      avatar: null, status: 'pending', createdAt: Date.now()
+      avatar: null, status: 'pending', createdAt: Date.now(), chat: []
     });
   }
   req.responses = responses;
@@ -330,7 +301,7 @@ function generateMockResponses(type) {
   
   if (type === 'walk' && typeof renderWalkBody === 'function') renderWalkBody();
   if (type === 'ride' && typeof renderRideBody === 'function') renderRideBody();
-  renderMyRequestCompact(type);
+  updateCardNotification();
   
   const overlay = document.getElementById('overlay');
   if (overlay && overlay.classList.contains('active')) {
@@ -364,6 +335,23 @@ function openCreateRequestSheet(type) {
         </div>
         <div id="walkWhenCustomWrap" style="display:none; margin-top:8px;"><input type="datetime-local" id="walkFormWhenCustom"></div>
       </div>
+      
+      <div class="form-field">
+        <label>Групповая прогулка</label>
+        <div class="chip-row" id="walkGroupChips">
+          <button class="chip" data-group="true">Да</button>
+          <button class="chip active" data-group="false">Нет</button>
+        </div>
+        <div id="walkGroupSizeWrap" style="display:none; margin-top:8px;">
+          <select id="walkFormGroupSizeSelect">
+            <option value="2">2 человека</option>
+            <option value="3">3 человека</option>
+            <option value="4">4 человека</option>
+            <option value="5">5 человек</option>
+          </select>
+        </div>
+      </div>
+
       <div class="form-field"><label>Радиус</label><select id="walkFormRadius">${WALK_RADII.map(r => `<option value="${r.value}">${r.label}</option>`).join('')}</select></div>
       <div class="form-field"><label>Комментарий <span class="optional">(необязательно)</span></label><textarea id="walkFormComment" placeholder="..." maxlength="140" rows="3"></textarea></div>
       <div class="form-field"><button class="btn-primary" id="createSubmitBtn" disabled style="width:100%;">Создать</button></div>
@@ -371,9 +359,12 @@ function openCreateRequestSheet(type) {
     setupWalkFormLogic();
   } else {
     formView.innerHTML = `
+      <datalist id="citiesList">
+        ${RUSSIAN_CITIES.map(c => `<option value="${c}">`).join('')}
+      </datalist>
       <div class="form-row">
-        <div class="form-field"><label>Откуда</label><select id="rideFormFrom">${MOCK_CITIES.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
-        <div class="form-field"><label>Куда</label><select id="rideFormTo">${MOCK_CITIES.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+        <div class="form-field"><label>Откуда</label><input type="text" id="rideFormFrom" list="citiesList" placeholder="Например, Балашов" maxlength="40"></div>
+        <div class="form-field"><label>Куда</label><input type="text" id="rideFormTo" list="citiesList" placeholder="Например, Балаково" maxlength="40"></div>
       </div>
       <div class="form-field">
         <label>Когда</label>
@@ -418,11 +409,7 @@ function submitCreateRequest(type) {
   
   renderMapSlider(type);
   updateCreateButton(type);
-  
-  if (type === 'walk' && typeof renderWalkBody === 'function') renderWalkBody();
-  if (type === 'ride' && typeof renderRideBody === 'function') renderRideBody();
-  
-  renderMyRequestCompact(type);
+  updateCardNotification();
   
   setTimeout(() => generateMockResponses(type), 5000 + Math.random() * 10000);
 }
@@ -435,48 +422,44 @@ function updateCreateButton(type) {
 }
 
 // ============================================================
-// МОДАЛКА МОЕЙ ЗАЯВКИ (СТИЛЬ CARD-PREVIEW) И КАПЕЛЬКА
+// УПРАВЛЕНИЕ ЗАЯВКАМИ И ОТКЛИКАМИ
 // ============================================================
 
-function updateHeaderCapsule() {
+function updateCardNotification() {
   const walkReq = getMyRequest('walk');
   const rideReq = getMyRequest('ride');
-  const capsule = document.getElementById('headerCapsule');
-  const capsuleText = document.getElementById('capsuleText');
-  if (!capsule || !capsuleText) return;
+  
+  const walkCard = document.querySelector('.card[data-card="walk"]');
+  const rideCard = document.querySelector('.card[data-card="ride"]');
 
-  let activeReq = null;
-  let type = '';
-  let title = '';
-  let icon = '';
+  if (walkCard) {
+    if (walkReq) {
+      const total = walkReq.groupSize || 1;
+      const accepted = walkReq.responses ? walkReq.responses.filter(r => r.status === 'accepted').length : 0;
+      const isFull = accepted >= total;
 
-  if (walkReq) {
-    activeReq = walkReq;
-    type = 'walk';
-    title = 'Прогулка';
-    icon = '🚶';
-  } else if (rideReq) {
-    activeReq = rideReq;
-    type = 'ride';
-    title = 'Попутчики';
-    icon = '🚗';
+      walkCard.classList.add('has-request');
+      walkCard.classList.toggle('is-full', isFull);
+      walkCard.setAttribute('data-badge', isFull ? accepted : `${accepted}/${total}`);
+    } else {
+      walkCard.classList.remove('has-request', 'is-full');
+      walkCard.removeAttribute('data-badge');
+    }
   }
 
-  if (activeReq) {
-    capsule.classList.remove('hidden');
-    
-    const pending = activeReq.responses ? activeReq.responses.filter(r => r.status === 'pending').length : 0;
-    const badge = pending > 0 ? `💬 ${pending}` : `⏳ Ждём`;
+  if (rideCard) {
+    if (rideReq) {
+      const total = rideReq.freeSeats || 1;
+      const accepted = rideReq.responses ? rideReq.responses.filter(r => r.status === 'accepted').length : 0;
+      const isFull = accepted >= total;
 
-    capsuleText.innerHTML = `
-      <span>${icon}</span> 
-      <span>${title}</span> 
-      <span class="capsule-badge">${badge}</span>
-    `;
-    
-    capsule.onclick = () => openMyRequestModal(type);
-  } else {
-    capsule.classList.add('hidden');
+      rideCard.classList.add('has-request');
+      rideCard.classList.toggle('is-full', isFull);
+      rideCard.setAttribute('data-badge', isFull ? accepted : `${accepted}/${total}`);
+    } else {
+      rideCard.classList.remove('has-request', 'is-full');
+      rideCard.removeAttribute('data-badge');
+    }
   }
 }
 
@@ -489,15 +472,20 @@ function openMyRequestModal(type) {
   
   let info = '';
   if (type === 'walk') {
+      const total = req.groupSize || 1;
+      const accepted = req.responses ? req.responses.filter(r => r.status === 'accepted').length : 0;
       info = `<div style="text-align:left; font-size:14px; color:var(--screen-text); margin-bottom:16px; background:var(--screen-bg); padding:12px; border-radius:14px;">
         <div>📍 ${req.what || '—'}</div>
         <div>⏰ ${req.when || '—'}</div>
+        <div>👥 Собрано: ${accepted} из ${total}</div>
       </div>`;
   } else {
+      const total = req.freeSeats || 1;
+      const accepted = req.responses ? req.responses.filter(r => r.status === 'accepted').length : 0;
       info = `<div style="text-align:left; font-size:14px; color:var(--screen-text); margin-bottom:16px; background:var(--screen-bg); padding:12px; border-radius:14px;">
         <div>📍 ${req.fromCity} → ${req.toCity}</div>
         <div>⏰ ${req.when || '—'}</div>
-        <div>💺 Мест: ${req.freeSeats} из ${req.totalSeats} · 💰 ${req.price === 0 ? 'Бесплатно' : req.price + ' ₽'}</div>
+        <div>💺 Собрано: ${accepted} из ${total} мест</div>
         <div>🚘 ${req.carBrand || 'Авто'}, ${req.carColor || ''}, ${req.carPlate || ''}</div>
       </div>`;
   }
@@ -511,14 +499,13 @@ function openMyRequestModal(type) {
       ${info}
       
       <div style="font-size:15px; font-weight:600; color:var(--screen-text); margin-bottom:12px; border-top:1px solid var(--screen-border); padding-top:12px;">Отклики (${req.responses ? req.responses.length : 0})</div>
-      <div id="responsesList_${type}" style="max-height: 220px; overflow-y:auto; margin-bottom:20px; padding-right:4px;"></div>
+      <div id="responsesList_${type}" style="max-height: 220px; overflow-y:auto; margin-bottom:20px; padding: 4px;"></div>
       
       <button class="btn-primary" id="deleteRequestBtn_${type}" style="background:var(--danger); width:100%;">🗑️ Удалить заявку</button>
     </div>
   `;
 
   overlay.classList.add('active');
-  
   renderResponsesList(type);
 
   document.getElementById('reqCloseBtn').addEventListener('click', closeOverlayGlobal);
@@ -536,9 +523,9 @@ function openMyRequestModal(type) {
       clearMyRequest(type);
       closeOverlayGlobal();
       updateCreateButton(type);
+      updateCardNotification();
       if (type === 'walk' && typeof renderWalkBody === 'function') renderWalkBody();
       if (type === 'ride' && typeof renderRideBody === 'function') renderRideBody();
-      renderMyRequestCompact(type);
     }
   });
 }
@@ -554,48 +541,213 @@ function renderResponsesList(type) {
     return;
   }
 
+  const acceptedCount = req.responses.filter(r => r.status === 'accepted').length;
+  const limit = type === 'walk' ? (req.groupSize || 1) : req.freeSeats; 
+  const isFull = acceptedCount >= limit;
+
   let html = '';
   req.responses.forEach(r => {
-    const statusText = r.status === 'accepted' ? '✅ Принят' : r.status === 'declined' ? '❌ Отклонён' : '';
+    const isAccepted = r.status === 'accepted';
     
+    let rowStyle = `display:flex; align-items:center; gap:10px; padding:12px 8px; border-bottom:1px solid var(--screen-border); transition:0.2s;`;
+    if (isAccepted) {
+      rowStyle = `display:flex; align-items:center; gap:10px; padding:12px 12px; margin-bottom:8px; border-radius:14px; background:rgba(108, 92, 231, 0.1); border:1px solid var(--accent); cursor:pointer; transition:0.2s;`;
+    }
+
     html += `
-      <div class="response-item" style="display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--screen-border);">
+      <div class="response-item ${isAccepted ? 'chat-clickable' : ''}" 
+           data-chat-id="${isAccepted ? r.id : ''}"
+           style="${rowStyle}"
+           ${isAccepted ? 'onmouseover="this.style.background=\'rgba(108, 92, 231, 0.2)\'" onmouseout="this.style.background=\'rgba(108, 92, 231, 0.1)\'"' : ''}>
         <div class="person-avatar" style="width:40px; height:40px; font-size:14px; background:#6C5CE7; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; flex-shrink:0;">${r.avatar ? `<img src="${r.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : (r.firstName[0]||'')+(r.lastName[0]||'')}</div>
         <div style="flex:1; min-width:0;">
           <div style="font-size:14px; font-weight:600; color:var(--screen-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.firstName} ${r.lastName}</div>
           <div style="font-size:12px; color:var(--screen-text-muted);">${r.age} лет</div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
-          ${r.status === 'pending' ? `
-            <button class="resp-btn accept" data-resp-accept="${r.id}" style="background:var(--success); color:#fff; border:none; border-radius:10px; width:36px; height:36px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✓</button>
-            <button class="resp-btn decline" data-resp-decline="${r.id}" style="background:var(--danger); color:#fff; border:none; border-radius:10px; width:36px; height:36px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
-          ` : `<span style="font-size:12px; font-weight:600; color:${r.status === 'accepted' ? 'var(--success)' : 'var(--danger)'};">${statusText}</span>`}
+          ${r.status === 'pending' ? (
+            isFull ? `<span style="font-size:12px; font-weight:600; color:var(--screen-text-muted);">Мест нет</span>` : `
+              <button class="resp-btn accept" data-resp-accept="${r.id}" style="background:var(--success); color:#fff; border:none; border-radius:10px; width:36px; height:36px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✓</button>
+              <button class="resp-btn decline" data-resp-decline="${r.id}" style="background:var(--danger); color:#fff; border:none; border-radius:10px; width:36px; height:36px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+            `
+          ) : isAccepted ? `
+            <span style="font-size:14px; font-weight:600; color:var(--accent);">💬 Открыть чат</span>
+          ` : ''}
         </div>
       </div>
     `;
   });
   list.innerHTML = html;
   
-  list.querySelectorAll('[data-resp-accept]').forEach(btn => btn.addEventListener('click', () => acceptResponse(type, btn.dataset.respAccept)));
-  list.querySelectorAll('[data-resp-decline]').forEach(btn => btn.addEventListener('click', () => declineResponse(type, btn.dataset.respDecline)));
+  list.querySelectorAll('[data-resp-accept]').forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    acceptResponse(type, btn.dataset.respAccept);
+  }));
+  list.querySelectorAll('[data-resp-decline]').forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    declineResponse(type, btn.dataset.respDecline);
+  }));
+  
+  list.querySelectorAll('.chat-clickable').forEach(row => {
+    row.addEventListener('click', () => {
+      openChatScreen(type, row.dataset.chatId);
+    });
+  });
 }
 
 function acceptResponse(type, id) {
   const req = getMyRequest(type); if (!req) return;
   const resp = req.responses.find(r => r.id === id); if (!resp) return;
-  resp.status = 'accepted'; saveMyRequest(type, req);
-  renderResponsesList(type); renderMyRequestCompact(type);
+  
+  const limit = type === 'walk' ? (req.groupSize || 1) : req.freeSeats; 
+  const acceptedCount = req.responses.filter(r => r.status === 'accepted').length;
+
+  if (acceptedCount >= limit) {
+    alert('Вы уже набрали нужное количество людей!');
+    return;
+  }
+
+  resp.status = 'accepted'; 
+  saveMyRequest(type, req);
+  
+  renderResponsesList(type);
+  updateCardNotification();
+  
+  // Обновляем инфу в модалке, чтобы счетчик "Собрано: X из Y" обновился
+  const infoContainer = document.querySelector('#overlayContent .card-preview > div:nth-child(4)');
+  if (infoContainer) {
+      const total = type === 'walk' ? (req.groupSize || 1) : req.freeSeats;
+      const newAccepted = req.responses.filter(r => r.status === 'accepted').length;
+      if (type === 'walk') {
+          infoContainer.innerHTML = `<div>📍 ${req.what || '—'}</div><div>⏰ ${req.when || '—'}</div><div>👥 Собрано: ${newAccepted} из ${total}</div>`;
+      } else {
+          infoContainer.innerHTML = `<div>📍 ${req.fromCity} → ${req.toCity}</div><div>⏰ ${req.when || '—'}</div><div>💺 Собрано: ${newAccepted} из ${total} мест</div><div>🚘 ${req.carBrand || 'Авто'}, ${req.carColor || ''}, ${req.carPlate || ''}</div>`;
+      }
+  }
 }
 
 function declineResponse(type, id) {
   const req = getMyRequest(type); if (!req) return;
-  const resp = req.responses.find(r => r.id === id); if (!resp) return;
-  resp.status = 'declined'; saveMyRequest(type, req);
-  renderResponsesList(type); renderMyRequestCompact(type);
+  
+  req.responses = req.responses.filter(r => r.id !== id);
+  saveMyRequest(type, req);
+  
+  const list = document.getElementById(`responsesList_${type}`);
+  if (list) {
+    renderResponsesList(type);
+    updateCardNotification();
+    
+    const searchDiv = document.createElement('div');
+    searchDiv.id = `searchNewResp_${type}`;
+    searchDiv.style = "text-align:center; color:var(--accent); padding:12px; font-size:13px; font-weight:600;";
+    searchDiv.innerHTML = `<span style="display:inline-block; animation: spin 2s linear infinite;">⏳</span> Ищем нового собеседника...`;
+    list.appendChild(searchDiv);
+
+    setTimeout(() => {
+      if (!document.getElementById(`responsesList_${type}`)) return;
+      
+      const newResp = {
+        id: 'resp_' + type + '_' + Date.now(),
+        firstName: MOCK_FIRST_NAMES[Math.floor(Math.random() * MOCK_FIRST_NAMES.length)],
+        lastName: MOCK_LAST_NAMES[Math.floor(Math.random() * MOCK_LAST_NAMES.length)],
+        age: MOCK_AGES[Math.floor(Math.random() * MOCK_AGES.length)],
+        avatar: null, status: 'pending', createdAt: Date.now(), chat: []
+      };
+      req.responses.push(newResp);
+      saveMyRequest(type, req);
+      renderResponsesList(type);
+      updateCardNotification();
+      if (typeof playNotificationSound === 'function') playNotificationSound();
+    }, 4000);
+  }
+}
+
+function openChatScreen(type, respId) {
+  let req = getMyRequest(type);
+  if (!req) return;
+  let resp = req.responses.find(r => r.id === respId);
+  if (!resp) return;
+
+  if (!resp.chat) resp.chat = [];
+  saveMyRequest(type, req);
+
+  const overlay = document.getElementById('overlay');
+  const overlayContent = document.getElementById('overlayContent');
+
+  overlayContent.innerHTML = `
+    <div class="card-preview" style="padding:0; overflow:hidden; height:70vh; display:flex; flex-direction:column; width: 100%; max-width: 500px;">
+      <div style="padding:16px; border-bottom:1px solid var(--screen-border); display:flex; align-items:center; gap:12px;">
+        <button id="chatBackBtn" style="background:none; border:none; color:var(--accent); font-size:24px; cursor:pointer;">←</button>
+        <div class="person-avatar" style="width:36px; height:36px; background:var(--accent); font-size:14px;">${resp.firstName[0]}</div>
+        <div>
+          <div style="font-weight:600; font-size:15px; color:var(--screen-text);">${resp.firstName} ${resp.lastName}</div>
+          <div style="font-size:12px; color:var(--success);">Онлайн</div>
+        </div>
+      </div>
+      <div id="chatMessages" style="flex:1; padding:16px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; background:var(--screen-bg);"></div>
+      <div style="padding:12px; border-top:1px solid var(--screen-border); display:flex; gap:8px;">
+        <input type="text" id="chatInput" placeholder="Сообщение..." style="flex:1; padding:10px 16px; border-radius:20px; border:1px solid var(--screen-border); background:var(--screen-bg); color:var(--screen-text); outline:none;">
+        <button id="chatSendBtn" style="width:40px; height:40px; border-radius:50%; background:var(--accent); border:none; color:#fff; cursor:pointer;">➤</button>
+      </div>
+    </div>
+  `;
+
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  const messagesContainer = document.getElementById('chatMessages');
+
+  function renderChat() {
+    req = getMyRequest(type);
+    resp = req.responses.find(r => r.id === respId);
+
+    let html = '';
+    if (resp.chat.length === 0) {
+      const initialMsg = `Привет! Откуда начнем ${type === 'walk' ? 'прогулку' : 'поездку'}? 😊`;
+      resp.chat.push({ text: initialMsg, isMe: false, time: getTime() });
+      saveMyRequest(type, req);
+    }
+    
+    resp.chat.forEach(msg => {
+      html += `<div class="soul-msg ${msg.isMe ? 'me' : 'them'}">${escapeHtml(msg.text)}<div class="soul-msg-time">${msg.time}</div></div>`;
+    });
+    messagesContainer.innerHTML = html;
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  renderChat();
+
+  function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    req = getMyRequest(type);
+    resp = req.responses.find(r => r.id === respId);
+
+    resp.chat.push({ text, isMe: true, time: getTime() });
+    saveMyRequest(type, req);
+    input.value = '';
+    renderChat();
+
+    setTimeout(() => {
+      req = getMyRequest(type);
+      resp = req.responses.find(r => r.id === respId);
+
+      const reply = ['Отличная идея!', 'Я как раз собирался(ась) туда.', 'Давай через 15 минут?', 'Скинь геолокацию, где встретимся.'][Math.floor(Math.random() * 4)];
+      resp.chat.push({ text: reply, isMe: false, time: getTime() });
+      saveMyRequest(type, req);
+      renderChat();
+      if (typeof playNotificationSound === 'function') playNotificationSound();
+    }, 1500);
+  }
+
+  sendBtn.onclick = sendMessage;
+  input.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
+
+  document.getElementById('chatBackBtn').onclick = () => {
+    openMyRequestModal(type);
+  };
 }
 
 function renderMyRequestCompact(type) {
-  // Отрисовка большой карточки на главном экране полностью отключена,
-  // так как вся информация теперь в капельке в шапке.
-  updateHeaderCapsule();
+  updateCardNotification();
 }
